@@ -23,16 +23,16 @@ class PIDConfig:
     circuit_break_threshold: float = 0.45
     
     # Integration limits for anti-windup
-    integral_max: float = 2.0
+    integral_max: float = 1.0  # Strengthened anti-windup
     integral_min: float = -0.5
     
     # Threshold learning
-    threshold: float = 0.0
+    threshold: float = 0.6  # Set high to prevent false alarms during normal browsing
     threshold_learning_rate: float = 0.01
     
     # Risk calculation constants
     max_session_minutes: float = 45.0
-    safe_zone_threshold: float = 0.3
+    safe_zone_threshold: float = 0.6
 
 @dataclass
 class RLConfig:

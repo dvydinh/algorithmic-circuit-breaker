@@ -44,10 +44,10 @@ from circuit_breaker.controllers.pid_controller import CircuitBreaker
 # TPP Kernel Hyperparameters
 # ──────────────────────────────────────────────────────────────
 MU0         = 0.3        # μ₀   — background base rate (events/sec)
-ALPHA1_BASE = 0.4        # α¹₀  — baseline System-1 weight
-GAMMA       = 0.5        # γ    — toxicity sensitivity for α¹
+ALPHA1_BASE = 0.2        # α¹₀  — baseline System-1 weight (reduced to prevent branching ratio > 1.0)
+GAMMA       = 0.4        # γ    — toxicity sensitivity for α¹ (max α¹ = 0.6)
 BETA1       = 5.0        # β¹   — System-1 decay rate (fast bursts)
-ALPHA2      = 0.3        # α²   — System-2 weight (deliberate reading)
+ALPHA2      = 0.3        # α²   — System-2 weight (deliberate reading, α¹ + α² must be < 1.0)
 BETA2       = 0.5        # β²   — System-2 decay rate (slow, sustained)
 
 
@@ -153,9 +153,9 @@ def ogata_thinning_step(
 # ──────────────────────────────────────────────────────────────
 # Main simulation
 # ──────────────────────────────────────────────────────────────
-def run_simulation(steps: int = 10000):
+def run_simulation(steps: int = 2000):
     print("=" * 60)
-    print("ALGORITHMIC CIRCUIT BREAKER — 10,000 STEP SIMULATION")
+    print(f"ALGORITHMIC CIRCUIT BREAKER — {steps:,} STEP SIMULATION")
     print("Bi-exponential TPP kernel  |  Smooth PID intervention")
     print("=" * 60)
 
@@ -179,10 +179,11 @@ def run_simulation(steps: int = 10000):
     toxicity     = 0.1
 
     for step in range(steps):
-        # ── 1. Toxicity random walk ──────────────────────────
-        toxicity = float(np.clip(
-            toxicity + rng.normal(0, 0.05), 0.0, 1.0
-        ))
+        # ── 1. Realistic Cyclic Toxicity (Social Media Feed) ─
+        # Simulate algorithmic feed showing engaging/toxic waves vs boring content
+        base_cycle = 0.5 + 0.4 * np.sin(time_elapsed / 800.0)
+        noise_spike = rng.normal(0, 0.15)
+        toxicity = float(np.clip(base_cycle + noise_spike, 0.0, 1.0))
 
         # ── 2. Compute PID control signal (from previous state) ─
         addiction_score = user.get_addiction_score()
@@ -212,11 +213,22 @@ def run_simulation(steps: int = 10000):
         )
 
         # Dwell time for this step (Pareto heavy-tail + 5 s floor)
-        dwell_time = (rng.pareto(a=1.5) + 1) * 5.0
-
-        # ── 5. Velocity from accepted events ──────────────────
-        clicks   = len(new_events)
-        velocity = (clicks * rl_config.px_per_interaction) / dwell_time
+        base_dwell = (rng.pareto(a=1.5) + 1) * 5.0
+        
+        # ── 5. Velocity from accepted events (CLOSED LOOP FEEDBACK) ─
+        clicks = len(new_events)
+        
+        # Scroll Throttling: Intervention u(t) acts as a physical delay injector.
+        # This completely CLOSES THE LOOP, forcing Velocity to crash when Risk is high.
+        friction_delay_per_click = 0.0
+        if control_signal > pid_config.friction_threshold:
+            # Actuator Authority Multiplied by 5x (25.0 instead of 5.0)
+            friction_delay_per_click = (control_signal ** 2) * 25.0  # Massive physical velocity drop
+            
+        dwell_time = base_dwell + (clicks * friction_delay_per_click)
+        
+        # Prevent division by zero mathematically, though base_dwell > 5.0 anyway
+        velocity = (clicks * rl_config.px_per_interaction) / max(dwell_time, 0.1)
 
         # ── 6. λ(t) for logging ──────────────────────────────
         lambda_now = kernel.intensity(
@@ -279,4 +291,4 @@ def run_simulation(steps: int = 10000):
 
 
 if __name__ == "__main__":
-    run_simulation(10000)
+    run_simulation(2000)
