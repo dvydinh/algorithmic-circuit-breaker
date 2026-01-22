@@ -60,7 +60,7 @@ Dưới góc nhìn thiết kế kiến trúc phần mềm (Software Architecture
 Việc quy đổi trực tiếp Vận tốc cuộn (Scroll Velocity) thành Tín hiệu sai lệch dự đoán phần thưởng (RPE) trong phương trình Rescorla-Wagner là một phép tính xấp xỉ mang tính kỹ thuật. Mô hình này không thể phản ánh 100% mức độ phức tạp sinh học của sự phân tiết Dopamine trong thực tế. Nó bỏ qua ngưỡng chịu đựng nền (baseline tolerance) khác biệt của từng cá nhân và các tác nhân sinh lý ngoại lai.
 
 \textbf{2. Điểm mù Ngữ cảnh của Bộ lọc NLP Shift-Left:}
-Để đổi lấy chuẩn mực \textit{Privacy by Design} tuyệt đối (không gửi văn bản về máy chủ), chúng tôi buộc phải hy sinh độ chính xác phân tích ngôn ngữ. Việc quét cây DOM cục bộ trên trình duyệt bằng Từ điển tĩnh (Static Dictionary Heuristics) chắc chắn sẽ dẫn đến việc mất hoàn toàn ngữ cảnh ngữ nghĩa (Semantic Context). Hệ thống không thể phân biệt được sự mỉa mai (Sarcasm), tính giễu nhại (Irony) hay trích dẫn mang tính giáo dục, dẫn đến tỷ lệ Dương tính giả (False Positive Rate) cao hơn đáng kể so với việc chạy các mô hình ngôn ngữ lớn (LLMs) trên máy chủ.
+Để đổi lấy chuẩn mực \textit{Privacy by Design} mô phỏng lý thuyết (không giả định gửi văn bản về máy chủ), kiến trúc hệ thống buộc phải hy sinh độ chính xác phân tích. Việc ứng dụng giải thuật Từ điển tĩnh (Static Dictionary Heuristics) để cô lập dữ liệu cục bộ chắc chắn sẽ hạn chế phân tích ngữ cảnh ngữ nghĩa (Semantic Context). Mô hình không thể phân biệt được sự mỉa mai (Sarcasm), tính giễu nhại (Irony) hay trích dẫn mang tính giáo dục, dẫn đến tỷ lệ Dương tính giả (False Positive Rate) cao hơn đáng kể so với việc khai thác các mô hình ngôn ngữ lớn (LLMs) điện toán đám mây.
 
 \textbf{Hướng phát triển thực dụng:}
 \begin{itemize}

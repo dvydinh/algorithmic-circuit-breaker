@@ -17,8 +17,8 @@ Scroll velocity is strictly utilized as a **behavioral proxy** for dopamine-seek
 
 ### 2. Opinion Manipulation Countermeasure
 Content toxicity exposure is calculated without centralized text-scraping. 
-- In production, it utilizes Shift-Left Local NLP Heuristics. Toxicity is scored $O(1)$ strictly on the client browser using a Jigsaw-derived dataset. ZERO user text is transmitted to the server.
-- In system simulation, toxicity is modeled mathematically as a simple Random Walk (`np.random.normal(0, 0.05)`). 
+- In the theoretical architecture, it utilizes Shift-Left Local NLP Heuristics. Toxicity is evaluated $O(1)$ strictly on local boundaries using a Jigsaw-derived dataset, ensuring ZERO user text is transmitted centrally.
+- In this mathematical simulation setup, toxicity is modeled parametrically as a Cyclic Sine Wave combined with Gaussian Noise (`base_cycle + noise_spike`) to replicate algorithmic engagement manipulation.
 
 ### 3. PID Control (Mindful Friction Engine)
 A Proportional-Integral-Derivative (PID) controller monitors risk and applies interventions. The control signal is computed against a 3-Component Risk Index:
@@ -28,8 +28,8 @@ I_risk = w1 * Addiction + w2 * Toxicity + w3 * Session
 ```
 
 To prevent **Psychological Reactance**, the system avoids traditional "Hard Blocks". Instead, the PID output triggers a **Mindful Friction** strategy (passive deprivation):
-1. **Level 1 (Desaturation):** Applies proportional grayscale CSS filters to the DOM, silently choking visual dopamine rewards when Risk > 0.6.
-2. **Level 2 (Scroll Throttling):** Injects event-loop delays (100ms-300ms) into `wheel`/`touchmove` handlers when Risk > 0.8. This intentionally degrades the platform's frictionless UI to force a cognitive switch from System-1 back to System-2.
+1. **Level 1 (Desaturation):** A mathematical penalty applied to visual dopamine rewards when Risk > 0.6, degrading the internal $V(t)$ expectation.
+2. **Level 2 (Scroll Throttling):** Injects mathematical feedback loop delays directly into the `dwell_time` of the Point-Process when Risk > 0.8. This intentionally degrades frictionless engagement to force a cognitive switch from System-1 back to System-2.
 
 ## Simulation Pipeline (`run_simulation.py`)
 

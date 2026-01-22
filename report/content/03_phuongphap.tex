@@ -7,15 +7,13 @@
 
 Các thuật toán mạng xã hội hiện đại cực đại hóa sự gắn kết (engagement) bằng cách thao túng hệ thống dopamine thông qua các lịch trình phần thưởng biến thiên. Để kiến trúc hóa biện pháp đối phó, hệ thống lượng hóa sự kỳ vọng nội tâm bằng cách mô hình hóa người dùng như một tác tử học tăng cường (Reinforcement Learning Agent).
 
-Cơ sở sinh học thần kinh cho cách tiếp cận này bắt nguồn từ khám phá nền tảng của Schultz và cộng sự (1997) \cite{schultz1997}, trong đó chứng minh rằng các nơ-ron tiết dopamine không mã hóa giá trị phần thưởng tuyệt đối, mà chỉ phản ứng với sai lệch dự đoán phần thưởng (Reward Prediction Error - RPE). Tuy nhiên, nguyên lý sinh học vi mô này chỉ thiết lập nền tảng cho phương trình RPE, hoàn toàn không đủ cơ sở để trực tiếp ngoại suy hay định lượng hành vi tiêu thụ nội dung số vĩ mô.
-
-Để chứng minh tính hợp lệ của việc dùng mô hình Học tăng cường để đo lường mức độ nghiện của con người trên không gian mạng, hệ thống được thiết kế hoàn toàn dựa trên khuôn khổ của Tâm thần học Tính toán (Computational Psychiatry). Cụ thể, nghiên cứu của Kato và cộng sự (2023) về các mô hình tính toán cho chứng nghiện hành vi \cite{kato2023} đã chính thức công nhận Học tăng cường là khuôn khổ chuẩn mực trong y văn để lượng hóa các rối loạn bốc đồng, điển hình như Rối loạn chơi game trên Internet (Internet Gaming Disorder). Việc biểu diễn tín hiệu RPE cho phép chúng tôi cung cấp một thước đo định lượng đại diện cho trạng thái khao khát (craving) sinh ra từ sự thao túng phần thưởng.
-
-Trong khối kiến trúc này, mức độ nghiện được cập nhật qua từng bước thời gian dưới dạng RPE theo phương trình Rescorla-Wagner:
+Cơ sở sinh lý thần kinh cho sự định lượng này bắt nguồn trực tiếp từ mô hình của Schultz và cộng sự (1997) \cite{schultz1997}. Công trình này thiết lập cốt lõi toán học về cách nơ-ron dopamine phản ánh sai lệch dự đoán phần thưởng (Reward Prediction Error - RPE). Do đó, công thức toán học tính sai số dự đoán $\delta(t)$ và cập nhật trọng số kỳ vọng được diễn đạt nguyên bản theo phương trình Rescorla-Wagner:
 
 \begin{equation}
     V(t+1) = V(t) + \alpha [R(t) - V(t)]
 \end{equation}
+
+Mặc dù Schultz (1997) cung cấp nền tảng toán học thần kinh (neuro-mathematics) vi mô, việc ngoại suy công thức này để đánh giá hành vi lướt mạng xã hội vĩ mô cần bảo chứng học thuật. Vì vậy, hệ thống dựa trên mô hình Tâm thần học Tính toán (Computational Psychiatry). Cụ thể, nghiên cứu tổng quan (review) của Kato và cộng sự (2023) \cite{kato2023} chứng minh giới y khoa thế giới đang chính thức ứng dụng cơ chế Học tăng cường (Reinforcement Learning) dựa trên RPE này làm khuôn khổ chuẩn để lượng hóa các "chứng nghiện hành vi" (Behavioral Addictions), đơn cử như Rối loạn chơi game trên Internet. Việc biểu diễn tín hiệu RPE cho phép chúng tôi cung cấp một thước đo định lượng đại diện cho trạng thái khao khát (craving) sinh ra từ sự thao túng phần thưởng.
 
 Với $RPE = R(t) - V(t)$ đóng vai trò là biến trạng thái phản hồi. Do tính chất trừu tượng của giao diện, hệ thống trích xuất vận tốc cuộn (scroll velocity) làm biến đại diện hành vi (behavioral proxy) cho tín hiệu tìm kiếm phần thưởng $R(t)$. Tốc độ cuộn càng cao tỷ lệ thuận với cường độ khao khát bị kích hoạt ở Hệ thống vô thức. Để duy trì tính liên tục của động học thần kinh, một cơ chế tích phân rò rỉ (leaky integrator) được áp dụng: khi $RPE \le 0$, mức độ khao khát không triệt tiêu theo hàm bước (step function) mà suy thoái từ từ theo hàm mũ với hệ số $\gamma = 0.95$. Giá trị RPE tích lũy này sau đó được cấp làm tín hiệu nhiễu cho khối điều khiển.
 
@@ -23,7 +21,7 @@ Với $RPE = R(t) - V(t)$ đóng vai trò là biến trạng thái phản hồi.
 
 \subsubsection{Xử lý Ngôn ngữ Tự nhiên Cục bộ (Shift-Left Local NLP Heuristics)}
 
-Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức \textit{Privacy by Design} (Thiết kế đặt quyền riêng tư làm trọng tâm), hệ thống loại bỏ hoàn toàn các mô hình học sâu (Deep Learning) cồng kềnh trong việc phân tích nội dung. Thay vào đó, phần mở rộng trình duyệt (Chrome Extension) ứng dụng phương pháp "Shift-Left Local NLP Heuristics". Trình duyệt sử dụng một từ điển tĩnh được cấu hình cứng (hardcoded static dictionary) gồm 150 từ khóa mang độc tính cao nhất, được trích xuất ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Tiện ích mở rộng quét toàn bộ cây DOM nội hạt thông qua Biểu thức chính quy (Regular Expressions - Regex) với độ phức tạp thời gian $\mathcal{O}(1)$, từ đó vi tính hóa một Điểm số Độc hại (Toxicity Score, $\Gamma(t)$) có miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng (user text) bị truyền tải về máy chủ.
+Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức \textit{Privacy by Design} (Thiết kế đặt quyền riêng tư làm trọng tâm), hệ thống loại bỏ hoàn toàn các mô hình học sâu (Deep Learning) cồng kềnh trong việc phân tích nội dung. Thay vào đó, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp "Shift-Left Local NLP Heuristics". Cấu trúc này giả định việc sử dụng một từ điển tĩnh (static dictionary heuristic) gồm các từ khóa mang độc tính cao nhất, trích xuất ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Thay vì phân tích phức tạp trên đám mây, một Điểm số Độc hại (Toxicity Score, $\Gamma(t)$) được vi tính hóa với miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị nội hạt. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng (user text) bị truyền tải về máy chủ.
 
 \subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
 
@@ -58,7 +56,7 @@ Trong đó, các biến tham số được định nghĩa như sau:
 
 Dưới góc độ Kỹ thuật Hệ thống và Thiết kế Giao diện Người-Máy (HCI), việc áp dụng cơ chế "Khóa Cứng" (Hard Blocks) - ví dụ: hiển thị một màn hình cảnh báo cưỡng chế toàn bộ trình duyệt hay chặn hoàn toàn một trang web khi phát hiện sự lạm dụng - là một sai lầm cơ bản mang tính kiến trúc. 
 
-Về mặt tâm lý học hành vi, các biện pháp can thiệp thô bạo này lập tức kích hoạt \textit{Tâm lý Phản kháng} (Psychological Reactance). Khi cảm quan về quyền tự chủ (autonomy) bị đe dọa trực diện, xung đột nhận thức nội tại buộc người xem phản ứng lại theo cách tiêu cực đối với chính hệ thống bảo vệ (tìm cách tắt extension, gỡ cài đặt phần mềm). Khóa cứng là biểu hiện của một triết lý thiết kế hệ thống lười biếng, thiếu khả năng tinh chỉnh độ phân giải của tác động.
+Về mặt tâm lý học hành vi, các biện pháp can thiệp thô bạo này lập tức kích hoạt \textit{Tâm lý Phản kháng} (Psychological Reactance). Khi cảm quan về quyền tự chủ (autonomy) bị đe dọa trực diện, xung đột nhận thức nội tại buộc người xem phản ứng lại theo cách tiêu cực đối với chính hệ thống bảo vệ (tìm cách tắt hệ thống, gỡ cài đặt phần mềm). Khóa cứng là biểu hiện của một triết lý thiết kế hệ thống lười biếng, thiếu khả năng tinh chỉnh độ phân giải của tác động.
 
 Thay vào đó, đầu ra của khối PID Controller trong kiến trúc v3.0 kích hoạt chiến lược \textbf{Ma sát Giao diện Tinh tế} (Mindful Friction), vận hành theo nguyên lý tước đoạt thụ động:
 

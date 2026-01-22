@@ -22,9 +22,9 @@ Do đó, kiến trúc Algorithmic Circuit Breaker v3.0 tuân thủ một cách c
 
 \subsection{Bảo mật tột đỉnh bằng Toán học hóa}
 
-Tất cả các cơ chế cào dữ liệu (text-scraping) tập trung đã bị nhổ rễ hoàn toàn khỏi hệ thống. Việc phân tích định lượng độc hại được đẩy hoàn toàn về phía máy khách (Shift-Left Local NLP), sử dụng mô hình Heuristic độ phức tạp $O(1)$ chạy ngầm trên trình duyệt. 
+Tất cả các cơ chế cào dữ liệu (text-scraping) tập trung xâm phạm quyền riêng tư bị loại bỏ cục bộ hóa. Việc phân tích định lượng độc hại được quy hoạch hoàn toàn về phía luồng thiết bị cuối (Shift-Left Local NLP), sử dụng mô hình Heuristic độ phức tạp $O(1)$ để xử lý độc lập không cần bên trung gian.
 
-Hệ thống giao tiếp với trung tâm phân tích thuần túy bằng siêu dữ liệu toán học dưới dạng đại lượng vô hướng vô danh (Anonymous scalars). Server backend từ chối tiếp nhận bất kỳ chuỗi văn bản hay đường dẫn URL nào, mà chỉ tiêu thụ mức vận tốc cuộn chuột (Tín hiệu hành vi) và điểm số độc hại (Tham số độc tính). Kiến trúc cô lập này cung cấp lớp bảo mật tột đỉnh: ngay cả khi máy chủ bị xâm nhập, dữ liệu rò rỉ cũng chỉ là các con số vô nghĩa, loại bỏ vĩnh viễn rủi ro bóc tách danh tính.
+Biến trạng thái phân tích được tối giản hóa thuần túy thao tác với siêu dữ liệu toán học dưới dạng đại lượng vô hướng vô danh (Anonymous scalars). Cấu trúc liên kết này mô phỏng nguyên tắc từ chối tiếp nhận bất kỳ chuỗi văn bản hay đường dẫn URL nào, mà chỉ phân tích mức độ đồng biến giữa vận tốc tiếp nhận thông tin (Tín hiệu hành vi) và điểm số độc hại (Tham số độc tính). Khối kiến trúc cô lập giả định này cung cấp một khuôn mẫu cho lớp bảo mật nguyên thủy: ngay cả khi bị can thiệp, dữ liệu thô cũng chỉ là các con số vô nghĩa, loại bỏ vĩnh viễn rủi ro bóc tách danh tính cá nhân.
 
 \subsection{Trách nhiệm giải trình trước Tính ngoại biên Tâm lý}
 

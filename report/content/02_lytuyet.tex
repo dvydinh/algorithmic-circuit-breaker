@@ -52,7 +52,7 @@ Hành vi của người dùng mạng xã hội có thể được định lượ
     \item \textbf{Hệ thống 2 (System-2):} Đại diện cho tư duy có ý thức, chậm rãi, đòi hỏi nỗ lực phân tích phân bổ và hướng tới các giá trị/tiện ích (Utility) dài hạn mang tính phản tư.
 \end{itemize}
 
-Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại được thiết kế với hàm mục tiêu độc quyền là thao túng và cực đại hóa sự gắn kết của Hệ thống 1 (System-1 Engagement), từ đó tước đoạt hoàn toàn quyền tự chủ của Hệ thống 2. Để biểu diễn toán học sự thao túng này, cường độ tương tác của người dùng theo thời gian thực được mô hình hóa bằng hàm mật độ xác suất hỗn hợp mũ (mixed exponential density) của Temporal Point-Processes:
+Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại được thiết kế với hàm mục tiêu độc quyền là thao túng và cực đại hóa sự gắn kết của Hệ thống 1 (System-1 Engagement), từ đó tước đoạt hoàn toàn quyền tự chủ của Hệ thống 2. Để biểu diễn toán học sự thao túng này, cường độ tương tác của người dùng theo thời gian thực được mô hình hóa bằng hàm mật độ xác suất hỗn hợp mũ (mixed exponential density) của Temporal Point-Processes. Toàn bộ phương trình hạt nhân $\kappa(t)$ tổng 2 hàm mũ phân rã dưới đây được trích dẫn chuẩn xác từ Phương trình (1), Mục 2.3 và Phụ lục A (Lemma 2) của bài báo Agarwal và cộng sự (2024) \cite{agarwal2024}:
 
 \begin{equation}
     \kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)
@@ -132,23 +132,22 @@ Cực (pole) của hệ thống: $p = \alpha - \beta$
 
 \subsubsection{Cơ sở lý thuyết của Shift-Left Local NLP Heuristics}
 
-Thay vì sử dụng các mô hình nhúng không gian vector (vector embeddings) hay học sâu (deep learning) phức tạp và tiêu tốn tài nguyên đo lường sự thao túng dư luận, kiến trúc v3.0 ứng dụng phương pháp tiếp cận \textit{Shift-Left Local NLP Heuristics}.
+Thay vì sử dụng các mô hình nhúng không gian vector (vector embeddings) hay học sâu (deep learning) phức tạp và tiêu tốn tài nguyên đo lường sự thao túng dư luận, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp tiếp cận \textit{Shift-Left Local NLP Heuristics}.
 
-"Shift-Left" trong kỹ thuật phần mềm truyền thống mang ý nghĩa đẩy việc kiểm thử về giai đoạn đầu của vòng đời phát triển. Trong bối cảnh đồ án này, "Shift-Left" mang ý nghĩa kiến trúc: đẩy toàn bộ khối lượng tính toán và phân tích ngôn ngữ tự nhiên (NLP) rời khỏi máy chủ trung tâm (phía bên phải của mô hình Client-Server), chuyển giao hoàn toàn về phía ứng dụng của người dùng (phía bên trái - Client Browser).
+"Shift-Left" trong kỹ thuật phần mềm truyền thống mang ý nghĩa đẩy việc kiểm thử về giai đoạn đầu của vòng đời phát triển. Trong bối cảnh đồ án này, "Shift-Left" mang ý nghĩa kiến trúc: đẩy toàn bộ khối lượng tính toán và phân tích ngôn ngữ tự nhiên (NLP) rời khỏi máy chủ trung tâm, chuyển giao hoàn toàn về phía thiết bị cuối của người dùng (End-user Device).
 
 \subsubsection{Thuật toán đo lường độc tính tĩnh}
 
 Thay vì khởi tạo các vector trạng thái đa chiều trôi dạt (drift velocity), hệ thống tính toán một điểm số vô hướng duy nhất đại diện cho mức độ phơi nhiễm ngôn từ độc hại (Toxicity Score).
 
-Thuật toán sử dụng một từ điển tĩnh (static dictionary heuristic) chứa các thuật ngữ có trọng số phân loại độc tính cao nhất, được trích xuất và chắt lọc từ tập dữ liệu Jigsaw Toxic Comment Classification. Điểm số độc hại $\Gamma(t)$ tại thời điểm $t$ có miền giá trị được giới hạn nghiêm ngặt $\Gamma(t) \in [0.0, 1.0]$.
+Thuật toán giả định sử dụng một từ điển tĩnh (static dictionary heuristic) chứa các thuật ngữ có trọng số phân loại độc tính cao nhất, được trích xuất từ tập dữ liệu Jigsaw Toxic Comment Classification. Điểm số độc hại $\Gamma(t)$ tại thời điểm $t$ có miền giá trị được giới hạn nghiêm ngặt $\Gamma(t) \in [0.0, 1.0]$.
 
-Trong môi trường thực tế (production Extension), thuật toán duyệt cây DOM của nội dung hiển thị trên màn hình với độ phức tạp thời gian cực kỳ tối ưu $\mathcal{O}(1)$. Thuật toán đếm tần suất xuất hiện của danh sách từ khóa tĩnh, tính toán tỷ trọng, và trả về $\Gamma(t)$ trực tiếp trên thiết bị người dùng. Tại môi trường mô phỏng (Simulation), $\Gamma(t)$ được mô hình hóa bằng một quá trình bước ngẫu nhiên (Random Walk) theo phân phối chuẩn để giả lập sự biến thiên môi trường.
-
+Trong môi trường thực tế lý thuyết (Production Architecture), thuật toán chỉ cần duyệt nội dung văn bản vô danh với độ phức tạp thời gian cực kỳ tối ưu $\mathcal{O}(1)$ để tính toán tỷ trọng và trả về $\Gamma(t)$ trực tiếp trên thiết bị (Local Device). Còn tại môi trường mô phỏng toán học (Simulation Environment) triển khai trong khuôn khổ đồ án, $\Gamma(t)$ được mô hình hóa bằng sự kết hợp của hàm tuần hoàn chu kỳ (Cyclic sine wave) và nhiễu ngẫu nhiên phân phối chuẩn (Gaussian noise) để giả lập sự biến thiên liên tục của một luồng cấp dữ liệu (News Feed) mạng xã hội.
 \subsubsection{Đạo đức công nghệ: Bảo vệ Quyền riêng tư cốt lõi (Privacy by Design)}
 
 Quyết định kiến trúc từ bỏ các không gian vector phức tạp tại máy chủ để sử dụng một thuật toán Heuristic tính toán nội bộ mang một ý nghĩa đạo đức (AI Ethics) và bảo mật sâu sắc.
 
-Bằng cách thực thi \textit{Shift-Left Local NLP}, hệ thống không bao giờ cần thiết phải gửi bất kỳ văn bản tự nhiên (user text) nào mà người dùng đang đọc về máy chủ trung tâm để phân tích. Hệ thống chỉ truyền đi một con số vô hướng vô danh $\Gamma(t)$ sang khối điều khiển PID. 
+Bằng cách thiết lập nguyên lý \textit{Shift-Left Local NLP}, mô hình toán học này chứng minh rằng hệ thống không bao giờ cần thiết phải gửi bất kỳ văn bản tự nhiên (user text) nào mà người dùng đang đọc về máy chủ. Việc đánh giá rủi ro chỉ cần dựa vào một con số vô hướng vô danh $\Gamma(t)$ chạy qua hệ phương trình điều khiển PID. 
 
 Điều này định nghĩa một tiêu chuẩn thiết kế \textit{Privacy by Design} tuyệt đối: ngay cả khi máy chủ backend bị tấn công và lộ lọt toàn bộ cơ sở dữ liệu, kẻ tấn công cũng không có quyền truy cập vào thông tin định dạng nội dung mà người dùng thực tế đã xem, xóa bỏ triệt để rủi ro xâm phạm danh tính cá nhân trong quá trình đo lường sức khỏe tâm lý.
 
@@ -190,7 +189,7 @@ Nguyên nhân:
 
 \subsubsection{Sự lệch pha mục tiêu (Misaligned Objectives)}
 
-Sự bất cân xứng quyền lực lớn nhất của thời đại kỹ thuật số bắt nguồn từ bài toán căn chỉnh giá trị (Value Alignment Problem) \cite{value_alignment}. Hàm mục tiêu nội tại của thuật toán mạng xã hội được thiết kế chỉ để cực đại hóa Thời gian tương tác (Time-on-site) thay vì Thời gian ý nghĩa (Time well spent). Vì người dùng cuối (End-users) hoàn toàn không có đặc quyền truy cập hay tinh chỉnh trọng số mạng neural tại phía máy chủ (Server-side weights), bất kỳ nỗ lực căn chỉnh nào dựa vào sự tự giác của nhà cung cấp nền tảng đều mang tính ảo tưởng.
+Sự bất cân xứng quyền lực lớn nhất của thời đại kỹ thuật số bắt nguồn từ bài toán căn chỉnh giá trị (Value Alignment Problem) \cite{stray2021}. Hàm mục tiêu nội tại của thuật toán mạng xã hội được thiết kế chỉ để cực đại hóa Thời gian tương tác (Time-on-site) thay vì Thời gian ý nghĩa (Time well spent). Vì người dùng cuối (End-users) hoàn toàn không có đặc quyền truy cập hay tinh chỉnh trọng số mạng neural tại phía máy chủ (Server-side weights), bất kỳ nỗ lực căn chỉnh nào dựa vào sự tự giác của nhà cung cấp nền tảng đều mang tính ảo tưởng.
 
 \subsubsection{Middleware phía máy khách (Client-side Middleware)}
 

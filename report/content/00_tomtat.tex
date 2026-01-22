@@ -5,27 +5,19 @@
 \subsection*{Tiếng Việt}
 Báo cáo này nghiên cứu tác động của mạng xã hội đến tâm lý người dùng từ góc độ kỹ thuật hệ thống. Khác với các nghiên cứu xã hội học truyền thống, chúng tôi tiếp cận vấn đề bằng cách định lượng hóa các hiện tượng tâm lý thành các biến số toán học có thể đo lường và kiểm soát. Ba vấn đề chính được phân tích bao gồm: (1) thiết kế gây nghiện thông qua cơ chế sai lệch dự đoán phần thưởng, (2) điều hướng dư luận thông qua mức độ phơi nhiễm ngôn từ độc hại cục bộ (local toxicity exposure), và (3) trách nhiệm điều chỉnh thông qua kiến trúc an toàn hệ thống.
 
-Giải pháp đề xuất là \textit{Algorithmic Circuit Breaker} - một cơ chế ngắt mạch tự động dựa trên lý thuyết điều khiển PID. Hệ thống hoạt động như một lớp phần mềm trung gian, giám sát liên tục các chỉ số sinh học và can thiệp khi phát hiện dấu hiệu mất ổn định. Phiên bản 2.2 của dự án triển khai đầy đủ hệ thống bao gồm:
-\begin{itemize}
-    \item Flask Backend: Server Python xử lý logic PID, mô phỏng dopamine, và tính toán chỉ số rủi ro theo thời gian thực dựa trên dữ liệu mô phỏng phân phối thống kê lượng hóa.
-    \item Chrome Extension: Giao diện Dual-Mode (HUD Cyberpunk và Sidebar Matrix Terminal), theo dõi vận tốc cuộn trang, sử dụng Background Bridge Pattern để vượt qua Mixed Content Policy.
-\end{itemize}
+Giải pháp đề xuất là \textit{Algorithmic Circuit Breaker} - một cơ chế ngắt mạch tự động dựa trên lý thuyết điều khiển PID. Hệ thống hoạt động như một lớp phần mềm trung gian giả định, giám sát liên tục các chỉ số sinh học và định lượng hóa can thiệp khi phát hiện dấu hiệu mất ổn định. Mô hình điện toán sử dụng hệ thống Phương trình Vi phân ngẫu nhiên (Temporal Point-Processes) và phương trình Rescorla-Wagner để kiến trúc hóa người dùng mạng xã hội thực thể thành một tác tử học tăng cường.
 
-Kết quả mô phỏng cho thấy giải pháp giúp duy trì hệ số khuếch đại vòng lặp dưới ngưỡng an toàn, đồng thời tối ưu hóa giá trị trọn đời khách hàng cho doanh nghiệp.
+Kết quả mô phỏng thuật toán trực quan cho thấy giải pháp bằng "Ma sát chánh niệm" (Mindful Friction) đã giúp duy trì vận tốc tiếp nhận thông tin và hệ số kích thích vòng lặp của người dùng dưới ngưỡng an toàn, đồng thời tối ưu hóa khả năng chống chịu sự cám dỗ.
 
-\textbf{Từ khóa:} Mạng xã hội, tâm lý người dùng, thiết kế gây nghiện, lý thuyết điều khiển, đạo đức AI, hệ thống gợi ý, Chrome Extension, Flask Backend
+\textbf{Từ khóa:} Mạng xã hội, tâm lý người dùng, thiết kế gây nghiện, lý thuyết điều khiển, đạo đức AI, hệ thống gợi ý, Temporal Point Processes, mô phỏng toán học
 
 \subsection*{Abstract (English)}
 This report investigates the impact of social media on user psychology from a system engineering perspective. Unlike traditional sociological studies, we approach the problem by quantifying psychological phenomena into measurable and controllable mathematical variables. Three main issues are analyzed: (1) addictive design through reward prediction error mechanisms, (2) opinion manipulation via local toxicity exposure, and (3) regulatory responsibility through system safety architecture.
 
-The proposed solution is the \textit{Algorithmic Circuit Breaker} - an automatic shutdown mechanism based on PID control theory. The system operates as middleware, continuously monitoring biological indicators and intervening when detecting signs of instability. Version 2.2 of the project includes a complete implementation:
-\begin{itemize}
-    \item Flask Backend: Python server handling PID logic, dopamine simulation, and real-time risk index calculation based on quantified statistical distribution simulation data.
-    \item Chrome Extension: Dual-Mode UI (Cyberpunk HUD and Matrix Terminal Sidebar), scroll velocity tracking, using Background Bridge Pattern to bypass Mixed Content Policy.
-\end{itemize}
+The proposed solution is the \textit{Algorithmic Circuit Breaker} - an automatic shutdown mechanism based on PID control theory. The system operates as a theoretical middleware, continuously monitoring biological indicators and quantifying interventions when detecting signs of instability. The computational model utilizes Stochastic Differential Equations (Temporal Point-Processes) and the Rescorla-Wagner equation to architect the social media user as a reinforcement learning agent.
 
-Simulation results demonstrate that the solution maintains loop gain below safety thresholds while optimizing customer lifetime value for businesses.
+Algorithm simulation results demonstrate that the solution, via "Mindful Friction", maintains the information processing velocity and loop excitement coefficient below safety thresholds, while optimizing the user's resistance to digital temptation.
 
-\textbf{Keywords:} Social media, user psychology, addictive design, control theory, AI ethics, recommendation systems, Chrome Extension, Flask Backend
+\textbf{Keywords:} Social media, user psychology, addictive design, control theory, AI ethics, recommendation systems, Temporal Point Processes, mathematical simulation
 
 \newpage
