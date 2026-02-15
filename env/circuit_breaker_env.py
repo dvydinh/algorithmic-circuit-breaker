@@ -120,7 +120,7 @@ class CircuitBreakerEnv(gym.Env):
 
         # Spaces
         self.observation_space = spaces.Box(
-            low=0.0, high=1.0, shape=(5,), dtype=np.float32
+            low=0.0, high=1.0, shape=(20,), dtype=np.float32
         )
         self.action_space = spaces.Box(
             low=-1.0, high=1.0, shape=(4,), dtype=np.float32
@@ -171,14 +171,21 @@ class CircuitBreakerEnv(gym.Env):
         return obs, {}
 
     def _get_obs(self) -> np.ndarray:
-        """Build 5-D observation for PPO."""
-        return np.array([
+        """Build 20-D observation: 5 scalars + 15 flattened window values."""
+        # Lấy risk_index thực tế thay vì 0.0
+        risk_index = getattr(self, 'current_risk_index', 0.0)
+        
+        base_obs = np.array([
             self.toxicity,
             self.user.get_addiction_score(),
-            0.0,  # risk_index placeholder (will be computed in step)
+            risk_index,
             self.prev_velocity_norm,
             self.prev_control_signal,
         ], dtype=np.float32)
+        
+        # Ép phẳng (flatten) cửa sổ trượt và nối vào base_obs
+        window_obs = self.state_window.flatten()
+        return np.concatenate([base_obs, window_obs]).astype(np.float32)
 
     def step(self, action: np.ndarray):
         # ── Apply PPO action: adjust PID gains ──────────────
@@ -215,6 +222,7 @@ class CircuitBreakerEnv(gym.Env):
             session_duration=self.time_elapsed,
             dt=1.0,
         )
+        self.current_risk_index = risk_index  # Save for _get_obs()
 
         # ── 3. Decay factor for α¹ ─────────────────────────
         decay_factor = self.controller.compute_decay_factor(control_signal)
@@ -267,13 +275,7 @@ class CircuitBreakerEnv(gym.Env):
                                        friction_delay_per_click)
 
         # ── 10. Build observation ───────────────────────────
-        obs = np.array([
-            self.toxicity,
-            dopamine,
-            risk_index,
-            velocity_norm,
-            control_signal,
-        ], dtype=np.float32)
+        obs = self._get_obs()
 
         # ── 11. Record history ──────────────────────────────
         intervention = self.controller.determine_intervention(control_signal)
@@ -314,7 +316,7 @@ class CircuitBreakerEnv(gym.Env):
         reward = 0.0
 
         # ── Friction penalty (hard wall) ──
-        if friction_delay > MAX_FRICTION_DELAY:
+        if friction_delay >= MAX_FRICTION_DELAY - 0.01:
             return -10.0
 
         # ── Dopamine component (smooth gradient) ──
