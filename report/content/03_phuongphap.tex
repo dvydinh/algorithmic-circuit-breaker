@@ -1,11 +1,11 @@
 % 03_phuongphap.tex - Phần 3: Phương pháp và giải pháp
 \section{Phương pháp và giải pháp: Tam giác liên ngành}
 
-Để đối phó với sự phức tạp của các bộ máy gợi ý tỷ đô, kiến trúc Algorithmic Circuit Breaker v3.0 áp dụng tam giác ứng phó liên ngành (The interdisciplinary triumvirate), quy đổi các sự kiện tâm lý thành lý thuyết điều khiển, xử lý ngôn ngữ tự nhiên và học tăng cường.
+Để đối phó với sự phức tạp của các bộ máy gợi ý điện toán đám mây, kiến trúc mạch ngắt thuật toán v3.0 áp dụng tam giác ứng phó liên ngành, quy đổi các sự kiện tâm lý thành lý thuyết điều khiển, xử lý ngôn ngữ tự nhiên và học tăng cường.
 
 \subsection{Cơ chế đối phó thiết kế gây nghiện: Mô hình Rescorla-Wagner}
 
-Các thuật toán mạng xã hội hiện đại cực đại hóa sự gắn kết (engagement) bằng cách thao túng hệ thống dopamine thông qua các lịch trình phần thưởng biến thiên. Để kiến trúc hóa biện pháp đối phó, hệ thống lượng hóa sự kỳ vọng nội tâm bằng cách mô hình hóa người dùng như một tác tử học tăng cường (Reinforcement Learning Agent).
+Các thuật toán mạng xã hội hiện đại cực đại hóa sự gắn kết bằng cách thao túng hệ thống dopamine thông qua các lịch trình phần thưởng biến thiên. Để kiến trúc hóa biện pháp đối phó, hệ thống lượng hóa sự kỳ vọng nội tâm bằng cách mô hình hóa người dùng như một tác tử học tăng cường.
 
 Cơ sở sinh lý thần kinh cho sự định lượng này bắt nguồn trực tiếp từ mô hình của Schultz và cộng sự (1997) \cite{schultz1997}. Công trình này thiết lập cốt lõi toán học về cách nơ-ron dopamine phản ánh sai lệch dự đoán phần thưởng (Reward Prediction Error - RPE). Do đó, công thức toán học tính sai số dự đoán $\delta(t)$ và cập nhật trọng số kỳ vọng được diễn đạt nguyên bản theo phương trình Rescorla-Wagner:
 
@@ -13,32 +13,32 @@ Cơ sở sinh lý thần kinh cho sự định lượng này bắt nguồn trự
     V(t+1) = V(t) + \alpha [R(t) - V(t)]
 \end{equation}
 
-Mặc dù Schultz (1997) cung cấp nền tảng toán học thần kinh (neuro-mathematics) vi mô, việc ngoại suy công thức này để đánh giá hành vi lướt mạng xã hội vĩ mô cần bảo chứng học thuật. Vì vậy, hệ thống dựa trên mô hình Tâm thần học Tính toán (Computational Psychiatry). Cụ thể, nghiên cứu tổng quan (review) của Kato và cộng sự (2023) \cite{kato2023} chứng minh giới y khoa thế giới đang chính thức ứng dụng cơ chế Học tăng cường (Reinforcement Learning) dựa trên RPE này làm khuôn khổ chuẩn để lượng hóa các "chứng nghiện hành vi" (Behavioral Addictions), đơn cử như Rối loạn chơi game trên Internet. Việc biểu diễn tín hiệu RPE cho phép chúng tôi cung cấp một thước đo định lượng đại diện cho trạng thái khao khát (craving) sinh ra từ sự thao túng phần thưởng.
+Mặc dù Schultz (1997) cung cấp nền tảng toán học thần kinh vi mô, việc ngoại suy công thức này để đánh giá hành vi lướt mạng xã hội vĩ mô cần bảo chứng học thuật. Vì vậy, hệ thống dựa trên mô hình tâm thần học tính toán. Cụ thể, nghiên cứu tổng quan của Kato và cộng sự (2023) \cite{kato2023} chứng minh giới y khoa thế giới đang chính thức ứng dụng cơ chế học tăng cường dựa trên RPE này làm khuôn khổ chuẩn để lượng hóa các chứng nghiện hành vi, đơn cử như rối loạn chơi game trên Internet. Việc biểu diễn tín hiệu RPE cho phép chúng tôi cung cấp một thước đo định lượng đại diện cho trạng thái khao khát sinh ra từ sự thao túng phần thưởng.
 
-Với $RPE = R(t) - V(t)$ đóng vai trò là biến trạng thái phản hồi. Do tính chất trừu tượng của giao diện, hệ thống trích xuất vận tốc cuộn (scroll velocity) làm biến đại diện hành vi (behavioral proxy) cho tín hiệu tìm kiếm phần thưởng $R(t)$. Tốc độ cuộn càng cao tỷ lệ thuận với cường độ khao khát bị kích hoạt ở Hệ thống vô thức. Để duy trì tính liên tục của động học thần kinh, một cơ chế tích phân rò rỉ (leaky integrator) được áp dụng: khi $RPE \le 0$, mức độ khao khát không triệt tiêu theo hàm bước (step function) mà suy thoái từ từ theo hàm mũ với hệ số $\gamma = 0.95$. Giá trị RPE tích lũy này sau đó được cấp làm tín hiệu nhiễu cho khối điều khiển.
+Với $RPE = R(t) - V(t)$ đóng vai trò là biến trạng thái phản hồi. Do tính chất trừu tượng của giao diện, hệ thống trích xuất vận tốc cuộn làm biến đại diện hành vi cho tín hiệu tìm kiếm phần thưởng $R(t)$. Tốc độ cuộn càng cao tỷ lệ thuận với cường độ khao khát bị kích hoạt ở hệ thống vô thức. Để duy trì tính liên tục của động học thần kinh, một cơ chế tích phân rò rỉ được áp dụng: khi $RPE \le 0$, mức độ khao khát không triệt tiêu theo hàm bước mà suy thoái từ từ theo hàm mũ với hệ số $\gamma = 0.95$. Giá trị RPE tích lũy này sau đó được cấp làm tín hiệu nhiễu cho khối điều khiển.
 
-\subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
+\subsection{Cơ chế đối phó thao túng dư luận: Đánh giá ngữ nghĩa cục bộ}
 
-\subsubsection{Xử lý Ngôn ngữ Tự nhiên Cục bộ (Shift-Left Local NLP Heuristics)}
+\subsubsection{Xử lý ngôn ngữ tự nhiên cục bộ}
 
-Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức \textit{Privacy by Design} (Thiết kế đặt quyền riêng tư làm trọng tâm), hệ thống loại bỏ hoàn toàn các mô hình học sâu (Deep Learning) cồng kềnh trong việc phân tích nội dung. Thay vào đó, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp "Shift-Left Local NLP Heuristics". Cấu trúc này giả định việc sử dụng một từ điển tĩnh (static dictionary heuristic) gồm các từ khóa mang độc tính cao nhất, trích xuất ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Thay vì phân tích phức tạp trên đám mây, một Điểm số Độc hại (Toxicity Score, $\Gamma(t)$) được vi tính hóa với miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị nội hạt. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng (user text) bị truyền tải về máy chủ.
+Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức thiết kế ưu tiên quyền riêng tư (\textit{Privacy by Design}), hệ thống loại bỏ hoàn toàn các cấu trúc mạng nơ-ron học sâu cồng kềnh trong việc phân tích nội dung. Thay vào đó, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp quét cục bộ sớm. Cấu trúc này dùng một từ điển tĩnh gồm các từ khóa mang độc tính cao nhất, đánh dấu sẵn ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Thay vì tính toán phức tạp trên máy chủ, một điểm số độc hại $\Gamma(t)$ được vi tính hóa với miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị nội hạt. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng bị truyền tải thoát ra ngoài.
 
 \subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
 
-Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán (algorithmic circuit breaker).
+Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán.
 
-Được truyền cảm hứng từ ứng dụng PID vào kỹ thuật phần mềm của Hellerstein et al. (2004) \cite{hellerstein2004feedback}, bộ điều khiển xử lý biến trạng thái đầu vào:
+Được thiết kế dựa trên ứng dụng PID vào kỹ thuật phần mềm của Hellerstein và cộng sự (2004) \cite{hellerstein2004feedback}, bộ điều khiển tự động phản hồi đầu vào:
 
 \begin{equation}
     u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau)d\tau + K_d \frac{de(t)}{dt}
     \label{eq:pid}
 \end{equation}
 
-Khi thao túng tâm lý vọt qua ngưỡng an toàn, bộ điều khiển sinh ra lực ma sát kỹ thuật số (digital friction). Điều này chứng minh tuyệt đối rằng đội ngũ kỹ sư có thể tự tay xây dựng các cơ chế quản lý tự động trực tiếp vào lõi phần mềm.
+Khi tương tác vượt qua giới hạn cảnh báo, bộ điều khiển sinh ra ma sát kỹ thuật số cản trở luồng nội dung. Điều này chứng minh rằng nhóm kỹ sư phần mềm hoàn toàn có thể nhúng các cơ chế quản trị hành vi trực tiếp vào gốc rễ của thiết kế giao diện.
 
-\subsubsection{Công thức Chỉ số Rủi ro Tổng hợp (Risk Index)}
+\subsubsection{Công thức tính chỉ số rủi ro tổng hợp}
 
-Tín hiệu kích hoạt mạch ngắt thuật toán (đại lượng $e(t)$ trong khối PID) được định lượng bởi Chỉ số Rủi ro tổng hợp ($I_{risk}(t)$). Chỉ số này liên kết đa chiều các trạng thái tương tác thành một đại lượng phản hồi tuyến tính duy nhất. Hàm rủi ro được thiết lập chính xác bao gồm 3 thành phần cấu thành:
+Tín hiệu kích hoạt mạch ngắt thuật toán được định lượng bởi một chỉ số rủi ro tổng hợp $I_{risk}(t)$. Chỉ số này liên kết đa chiều các trạng thái tương tác thành một đại lượng phản hồi tuyến tính duy nhất. Hàm rủi ro được thiết lập chính xác bao gồm ba thành phần cấu thành:
 
 \begin{equation}
     I_{risk}(t) = w_1 \cdot A(t) + w_2 \cdot \Gamma(t) + w_3 \cdot S(t)
@@ -47,41 +47,41 @@ Tín hiệu kích hoạt mạch ngắt thuật toán (đại lượng $e(t)$ tro
 
 Trong đó, các biến tham số được định nghĩa như sau:
 \begin{itemize}
-    \item $A(t)$: Trạng thái Gây nghiện (Addiction) biểu diễn dưới dạng vận tốc cuộn cơ học (Velocity), chịu trọng số cao nhất $w_1 = 0.6$.
-    \item $\Gamma(t)$: Điểm số Độc hại (Toxicity) quét cục bộ, đánh giá mức phơi nhiễm theo thời gian thực với trọng số $w_2 = 0.3$.
-    \item $S(t)$: Thời lượng Phiên hoạt động (Session Duration) trích xuất sự hao hụt năng lượng sinh lý, vận hành với trọng số $w_3 = 0.1$.
+    \item $A(t)$: Biến rủi ro gây nghiện, biểu diễn dưới dạng vận tốc cuộn cơ học, chịu trọng số cao nhất $w_1 = 0.6$.
+    \item $\Gamma(t)$: Điểm số độc hại quét trực tiếp, đánh giá mức phơi nhiễm theo thời gian thực với trọng số $w_2 = 0.3$.
+    \item $S(t)$: Thời lượng phiên hoạt động, trích xuất sự hao hụt năng lượng sinh lý hệ thống, vận hành với trọng số $w_3 = 0.1$.
 \end{itemize}
 
-\subsubsection{Cơ chế thực thi: Ngụy biện Thiết kế của "Khóa Cứng" (The Fallacy of Hard Blocks)}
+\subsubsection{Ngụy biện của phương pháp khóa màn hình}
 
-Dưới góc độ Kỹ thuật Hệ thống và Thiết kế Giao diện Người-Máy (HCI), việc áp dụng cơ chế "Khóa Cứng" (Hard Blocks) - ví dụ: hiển thị một màn hình cảnh báo cưỡng chế toàn bộ trình duyệt hay chặn hoàn toàn một trang web khi phát hiện sự lạm dụng - là một sai lầm cơ bản mang tính kiến trúc. 
+Dưới góc độ kỹ thuật hệ thống và thiết kế tương tác người máy, việc áp dụng cơ chế khóa cứng (chặn cửa sổ hiển thị hoặc giới hạn truy cập ứng dụng tuyệt đối bằng cảnh báo màn hình) là một sai lầm mang tính kiến trúc. 
 
-Về mặt tâm lý học hành vi, các biện pháp can thiệp thô bạo này lập tức kích hoạt \textit{Tâm lý Phản kháng} (Psychological Reactance). Khi cảm quan về quyền tự chủ (autonomy) bị đe dọa trực diện, xung đột nhận thức nội tại buộc người xem phản ứng lại theo cách tiêu cực đối với chính hệ thống bảo vệ (tìm cách tắt hệ thống, gỡ cài đặt phần mềm). Khóa cứng là biểu hiện của một triết lý thiết kế hệ thống lười biếng, thiếu khả năng tinh chỉnh độ phân giải của tác động.
+Về mặt tâm lý học hành vi, các biện pháp can thiệp thô bạo này lập tức kích hoạt hiệu ứng tâm lý phản kháng. Khi cảm quan về quyền tự chủ bị đe dọa trực diện, xung đột nhận thức buộc não bộ phản ứng tiêu cực đối với chính hệ thống bảo vệ, thúc đẩy người dùng gỡ cài đặt phần mềm. Khóa cứng màn hình là biểu hiện của một triết lý thiết kế lười biếng, thiếu khả năng tinh chỉnh độ giãn nở của lực cản.
 
-Thay vào đó, đầu ra của khối PID Controller trong kiến trúc v3.0 kích hoạt chiến lược \textbf{Ma sát Giao diện Tinh tế} (Mindful Friction), vận hành theo nguyên lý tước đoạt thụ động:
+Thay vào đó, thuật toán xuất ra cấu trúc ma sát chánh niệm lồng vào giao diện:
 
 \begin{itemize}
-    \item \textbf{Cấp độ 1 - Triệt tiêu thị giác (Desaturation):} Khi $\text{Risk\_Index} > 0.6$, hệ thống tiêm mã CSS nội suy triệt tiêu độ bão hòa màu của toàn bộ bề mặt hiển thị (\textit{grayscale}) theo tỷ lệ tuyến tính với chỉ số rủi ro. Hành động này lặng lẽ thu hồi "dopamine thị giác" do các kỹ sư nền tảng thiết kế sẵn bằng các màu sắc sặc sỡ nhắm vào não bộ vô thức, cắt giảm hàm lượng phần thưởng thu được ($R_t$).
-    \item \textbf{Cấp độ 2 - Điều biến Động lượng (Scroll Throttling):} Khi $\text{Risk\_Index} > 0.8$, hệ thống chèn một vi kẽ hở thời gian (\textit{100ms - 300ms delay}) vào bộ xử lý luồng thao tác cuộn (\textit{scroll events}). Can thiệp này chặn đứng độ mượt mà vốn được tối ưu hóa khắt khe (\textit{frictionless}) của luồng thao tác. Nỗ lực để duy trì hành vi lướt tự động (System-1) đột ngột vượt quá mức năng lượng nhận thức khởi điểm, ép buộc não bộ chuyển mạch sang Hệ thống 2 thống trị (System-2) để đánh giá lại hành động cuộn.
+    \item \textbf{Cấp độ 1 - Triệt tiêu thị giác:} Khi $\text{Risk\_Index} > 0.6$, hệ thống tiêm mã CSS để giảm độ bão hòa màu của toàn bộ bề mặt hiển thị theo tỷ lệ tuyến tính. Hành động này lặng lẽ thu hồi hiệu ứng tưởng thưởng thị giác mà các nền tảng cố tình lập trình thông qua bảng màu rực rỡ, qua đó giảm kích thích.
+    \item \textbf{Cấp độ 2 - Điều biến luồng dữ liệu:} Khi $\text{Risk\_Index} > 0.8$, thuật toán chèn vi kẽ hở thời gian từ 100ms đến 300ms vào bộ tính toán sự kiện cuộn. Sự chậm trễ này phá vỡ cảm giác liền mạch mượt mà vốn duy trì thói quen vô thức, buộc vùng võng mạc cung cấp nhiên liệu nhận thức để chuyển sang hệ thống phản tư.
 \end{itemize}
 
-Tuyệt đối không có bất kỳ dòng cảnh báo dạng văn bản hay nút bấm chặn đứng (pop-up alerts) nào xuất hiện. Ma sát xuất hiện vô hình như lực cản vật lý, trả lại hoàn toàn quyền tự do ý chí nhưng gia tăng tỷ lệ chi phí-lợi ích lên não bộ khi tiêu thụ nội dung.
+Lực ma sát này hoàn toàn vô hình. Nó tuân thủ quyền kiểm soát của người dùng nhưng ép bộ não tiêu tốn nhiều năng lượng giải mã hơn nếu tiếp tục muốn nhận phần thưởng từ việc lướt bảng tin.
 
-\subsection{Kiến trúc Điều khiển Phân cấp PPO-PID (Hierarchical Control)}
+\subsection{Kiến trúc điều khiển phân cấp}
 
-Mặc dù bộ điều khiển PID cung cấp khả năng phản hồi thời gian thực hiệu quả, các tham số $K_p$, $K_i$, $K_d$ và ngưỡng ma sát (friction threshold) là tĩnh — bất biến trước sự tiến hóa của thuật toán gợi ý đối kháng (adversarial recommender). Để khắc phục giới hạn này, kiến trúc v3.0 bổ sung tầng điều khiển phân cấp (\textit{Hierarchical Control}) bằng cách đặt một bộ siêu-điều khiển (meta-controller) Proximal Policy Optimization (PPO) phía trên khối PID:
+Mặc dù bộ điều khiển PID cung cấp khả năng phản hồi thời gian thực rất tốt, nhưng các tham số tĩnh của nó sẽ thất bại trước sự tiến hóa của thuật toán học máy từ mạng xã hội. Vì vậy, kiến trúc bổ sung tầng điều khiển phân cấp bằng cách tích hợp một cơ chế học tăng cường sâu phía trên khối PID:
 
 \begin{itemize}
-    \item \textbf{Tầng Chiến lược (PPO Meta-Controller):} Agent PPO quan sát vector trạng thái không gian 20 chiều $\mathbf{s}(t) \in \mathbb{R}^{20}$, bao gồm 5 biến trạng thái tĩnh $[\Gamma(t), A(t), I_{risk}(t), \dot{v}_{norm}(t), u(t-1)]$ kết nối (concatenate) với ma trận cửa sổ trượt (sliding window) của 5 bước thời gian gần nhất $\mathcal{W}_{t-4}^{t} \in \mathbb{R}^{5 \times 3}$, đại diện cho $[\dot{v}_{norm}, \Gamma, S_{dwell}]$. Đầu ra là 4 hành động liên tục: $[\Delta K_p, \Delta K_i, \Delta K_d, \Delta\theta_{friction}]$, điều chỉnh online các tham số PID tại mỗi bước thời gian. Chính sách (policy) được tham số hóa bởi mạng perceptron đa tầng (\textit{MlpPolicy}) và tối ưu hóa qua thuật toán PPO-Clip (Schulman et al., 2017).
-    \item \textbf{Tầng Chiến thuật (PID Controller):} Bộ PID giữ nguyên phương trình (\ref{eq:pid}) nhưng các hệ số giờ đây là biến được điều chỉnh liên tục bởi tầng trên, tạo thành vòng phản hồi kép (dual-loop feedback).
+    \item \textbf{Tầng chiến lược (Mạng nơ-ron PPO):} Mô hình thuật toán quan sát vector trạng thái không gian 20 chiều $\mathbf{s}(t) \in \mathbb{R}^{20}$, bao gồm các biến số nối theo dạng ma trận cửa sổ trượt của 5 bước thời gian gần nhất $\mathcal{W}_{t-4}^{t} \in \mathbb{R}^{5 \times 3}$. Đầu ra là 4 hành động biểu diễn giá trị khoảng phân bổ: $[\Delta K_p, \Delta K_i, \Delta K_d, \Delta\theta_{friction}]$, giúp điều chỉnh linh hoạt các hằng số toán học của PID ngay trong hoạt động thực của người dùng.
+    \item \textbf{Tầng chiến thuật (Hệ điều khiển PID PID):} Phương trình giữ nguyên hệ tọa độ nhưng tham số động bị mạng nơ-ron tuyến trên ghi đè tạo nên cơ chế vòng lặp phản hồi kép.
 \end{itemize}
 
-Hàm thưởng (reward function) được thiết kế để cân bằng ba tiêu chí mâu thuẫn: (1) duy trì mức dopamine dưới ngưỡng an toàn ($A(t) < 0.5$, thưởng $+1.0$), (2) phạt nặng nếu bộ nghiện không kiểm soát được ($A(t) > 0.8$, phạt $-5.0$), và (3) phạt cực nặng nếu hệ thống quá hung hãn gây ức chế người dùng (ma sát $> 2.5$s, phạt $-10.0$). Thiết kế này đảm bảo PPO học cách ``tinh chỉnh nhẹ nhàng'' thay vì ``đè bẹp'', ngăn ngừa hiện tượng người dùng rời bỏ hệ thống (\textit{User Churn}) do can thiệp quá mức.
+Hàm nhận phần thưởng tập trung sự trừng phạt nặng nề nhất vào ma sát vượt quá 2.5 giây. Thiết kế thuật toán này giúp mô hình đào tạo được chính sách ưu tiên tinh chỉnh nhẹ nhàng thay vì đè bẹp hệ thống.
 
-Đồng thời, ba điểm yếu kiến trúc được khắc phục: (i) Môi trường mô phỏng nâng cấp thành \textbf{đối kháng} — khi vận tốc người dùng sụt giảm (do PID can thiệp), nền tảng phản ứng bằng cách phun nội dung giật gân có $\Gamma(t) \in [0.85, 1.0]$; (ii) Thay thế ánh xạ trực tiếp Velocity $\to$ Dopamine bằng cửa sổ trượt trạng thái (\textit{sliding window}) 5 bước gần nhất; (iii) Ma sát mềm (\textit{Soft Friction}) giới hạn cứng tối đa 2.5 giây, loại bỏ công thức bạo lực $u(t)^2 \times 25$.
+Để khắc phục môi trường tĩnh, mô phỏng nâng cấp thiết kế bổ sung quy trình: (i) Tính chất sinh học đối kháng - nền tảng thả mồi câu độc hại khi vận tốc cuộn giảm; (ii) Giám sát bằng cửa sổ trượt quá khứ; (iii) Kẹp giới hạn biên ma sát trần lên tối đa 2.5 giây giới hạn.
 
-\subsubsection{Cơ chế Ngẫu nhiên hóa Miền (Domain Randomization)}
-Để ngăn chặn hiện tượng học vẹt (overfitting) vào một hồ sơ người dùng cố định, môi trường huấn luyện cài cắm kỹ thuật Ngẫu nhiên hóa Miền tâm lý. Tại mỗi chu kỳ đánh giá (episode), tốc độ chuyển hóa mức độ Dopamine (\textit{dopamine\_decay}) được lấy mẫu ngẫu nhiên từ phân phối đều $\sim \mathcal{U}(0.90, 0.98)$ đại diện cho tần suất đào thải kích thích nội sinh. Đồng thời, hệ số phản ứng $\alpha$ của mô hình Rescorla-Wagner được lấy mẫu $\sim \mathcal{U}(0.05, 0.25)$ nhằm đa dạng hóa độ nhạy cảm của người dùng đối với nội dung giật gân, buộc Agent PPO phải học được một chính sách (policy) tổng quát.
+\subsubsection{Cơ chế ngẫu nhiên hóa miền ảo}
+Tại mỗi đánh giá huấn luyện, chỉ số tốc độ tổng hợp dopamine sinh học được lấy mẫu từ phân bố biến số $\sim \mathcal{U}(0.90, 0.98)$. Đồng thời hệ số $\alpha$ được đa hình hóa $\sim \mathcal{U}(0.05, 0.25)$ nhằm đa dạng hóa cấu hình người thụ hưởng, tránh thuật toán bị mắc kẹt vào khuân mẫu duy nhất.
 
-\subsubsection{Cơ chế Mỏ neo Tính toán (Hard Constraints)}
-Nhằm đảm bảo an toàn thao tác cơ sở, mọi hành động xuất ra từ mạng Not-Safe-For-Control của RL đều bị rào cứng bằng bộ kẹp biên toán học (\textit{clipping constraints}): $K_p \in [0.1, 3.0]$, $K_i \in [0.0, 1.0]$, $K_d \in [0.0, 2.0]$. Ràng buộc vật lý này bóp nghẹt tuyệt đối rủi ro Tác tử RL đẩy các hệ số Gain xuống số Âm — nguyên nhân cốt lõi gây vòng lặp Hồi tiếp dương (Positive Feedback Loop) làm nổ tung độ ổn định trên các hệ thống điều khiển thực tế.
+\subsubsection{Cơ chế kẹp biên toán học}
+Mọi hành động nhả ra từ mạng học sâu bị rào cứng bằng bộ kẹp biên giới hạn toán học: $K_p \in [0.1, 3.0]$, $K_i \in [0.0, 1.0]$, $K_d \in [0.0, 2.0]$. Ràng buộc vật lý cốt lõi này khóa lại hoàn toàn các đợt phát sinh vòng lặp hồi tiếp dương do thông số chênh lệch bị dịch chuyển về số âm.
