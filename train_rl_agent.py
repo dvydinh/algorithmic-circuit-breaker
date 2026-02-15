@@ -61,7 +61,8 @@ class ProgressCallback(BaseCallback):
                 print(
                     f"  [Step {self.num_timesteps:>7,}] "
                     f"Mean Reward: {mean_reward:+.2f}  |  "
-                    f"Mean Ep Len: {mean_len:.0f}"
+                    f"Mean Ep Len: {mean_len:.0f}",
+                    flush=True
                 )
         return True
 
@@ -82,7 +83,7 @@ def train(timesteps: int = 2_000_000, save_path: str = "output/ppo_circuit_break
     model = PPO(
         "MlpPolicy",
         env,
-        verbose=0,
+        verbose=1,  # Đổi sang 1 để PPO in log liên tục mỗi chu kỳ cho đỡ sốt ruột
         learning_rate=3e-4,
         n_steps=2048,
         batch_size=64,
