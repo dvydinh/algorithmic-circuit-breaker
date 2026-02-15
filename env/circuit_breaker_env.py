@@ -167,6 +167,14 @@ class CircuitBreakerEnv(gym.Env):
         if seed is not None:
             self._seed = seed
         self._init_internals()
+        
+        # Domain Randomization
+        random_alpha = float(self.rng.uniform(0.05, 0.25))
+        random_decay = float(self.rng.uniform(0.90, 0.98))
+        self.rl_config = RLConfig(alpha=random_alpha, initial_expected_reward=0.2)
+        self.user = UserAgent(config=self.rl_config)
+        self.user.dopamine_decay = random_decay
+        
         obs = self._get_obs()
         return obs, {}
 
@@ -189,19 +197,15 @@ class CircuitBreakerEnv(gym.Env):
 
     def step(self, action: np.ndarray):
         # ── Apply PPO action: adjust PID gains ──────────────
-        delta_kp = float(action[0]) * 0.3   # ΔKp ∈ [-0.3, +0.3]
-        delta_ki = float(action[1]) * 0.05  # ΔKi ∈ [-0.05, +0.05]
-        delta_kd = float(action[2]) * 0.1   # ΔKd ∈ [-0.1, +0.1]
-        delta_ft = float(action[3]) * 0.05  # Δfriction_threshold ∈ [-0.05, +0.05]
+        delta_kp, delta_ki, delta_kd, delta_ft = action
 
-        self.controller.kp = float(np.clip(
-            self.controller.kp + delta_kp, *KP_RANGE))
-        self.controller.ki = float(np.clip(
-            self.controller.ki + delta_ki, *KI_RANGE))
-        self.controller.kd = float(np.clip(
-            self.controller.kd + delta_kd, *KD_RANGE))
+        # Cập nhật và khóa cứng (Clip) trong biên độ an toàn của lý thuyết điều khiển
+        self.controller.kp = float(np.clip(self.controller.kp + delta_kp * 0.1, 0.1, 3.0))
+        self.controller.ki = float(np.clip(self.controller.ki + delta_ki * 0.05, 0.0, 1.0))
+        self.controller.kd = float(np.clip(self.controller.kd + delta_kd * 0.05, 0.0, 2.0))
         self.controller.friction_threshold = float(np.clip(
-            self.controller.friction_threshold + delta_ft, *FRICTION_THRESH_RANGE))
+            self.controller.friction_threshold + delta_ft * 0.05, 0.3, 0.8
+        ))
 
         # ── 1. Adversarial Toxicity (Fix 1) ─────────────────
         base_cycle = 0.5 + 0.4 * np.sin(self.time_elapsed / 800.0)

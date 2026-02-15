@@ -28,7 +28,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from env.circuit_breaker_env import CircuitBreakerEnv
+
+def make_env(seed=42):
+    def _init():
+        env = CircuitBreakerEnv(max_steps=500, seed=seed)
+        return env
+    return _init
 
 
 # ─────────────────────────────────────────────────────────────
@@ -62,13 +69,15 @@ class ProgressCallback(BaseCallback):
 # ─────────────────────────────────────────────────────────────
 # Training
 # ─────────────────────────────────────────────────────────────
-def train(timesteps: int = 100_000, save_path: str = "output/ppo_circuit_breaker"):
+def train(timesteps: int = 2_000_000, save_path: str = "output/ppo_circuit_breaker"):
     print("=" * 60)
     print("PPO-PID HIERARCHICAL CONTROLLER — TRAINING")
     print(f"Total timesteps: {timesteps:,}")
     print("=" * 60)
 
-    env = CircuitBreakerEnv(max_steps=500, seed=42)
+    # Sử dụng SubprocVecEnv chạy 4 môi trường song song để tăng tốc
+    num_envs = 4
+    env = SubprocVecEnv([make_env(seed=42 + i) for i in range(num_envs)])
 
     model = PPO(
         "MlpPolicy",
@@ -143,16 +152,14 @@ def evaluate(model, eval_steps: int = 2000):
 # Visualization
 # ─────────────────────────────────────────────────────────────
 def visualize():
-    """Run the existing visualization pipeline."""
-    print("\nGenerating visualization dashboard...")
+    """Run the ablation study pipeline."""
+    print("\nGenerating ablation study dashboard...")
     import subprocess
     subprocess.run(
-        [sys.executable, "visualize_results.py",
-         "--input", "output/simulation_log.csv",
-         "--output", "simulation_result.png"],
+        [sys.executable, "ablation_study.py"],
         cwd=os.path.dirname(os.path.abspath(__file__)),
     )
-    print("Dashboard saved to: simulation_result.png")
+    print("Ablation study completed. PNG saved in output folder.")
 
 
 # ─────────────────────────────────────────────────────────────
@@ -163,8 +170,8 @@ def main():
         description="Train & Evaluate PPO-PID Hierarchical Controller"
     )
     parser.add_argument(
-        "--timesteps", type=int, default=100_000,
-        help="Total PPO training timesteps (default: 100000)"
+        "--timesteps", type=int, default=2_000_000,
+        help="Total PPO training timesteps (default: 2000000)"
     )
     parser.add_argument(
         "--eval-steps", type=int, default=2000,

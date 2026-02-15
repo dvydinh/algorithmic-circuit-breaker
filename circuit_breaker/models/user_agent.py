@@ -11,6 +11,7 @@ class UserAgent:
         self.expected_reward = self.config.initial_expected_reward
         self.rpe = 0.0
         self.current_dopamine = 0.0
+        self.dopamine_decay = 0.95  # Default, can be overridden by Domain Randomization
         
     def calculate_rpe(self, velocity: float, toxicity_score: float) -> float:
         """
@@ -42,7 +43,7 @@ class UserAgent:
             self.current_dopamine += (self.rpe * self.config.rpe_scaling_factor)
             self.current_dopamine = min(self.current_dopamine, 1.0)
         else:
-            self.current_dopamine *= 0.95  # 5% decay per step
+            self.current_dopamine *= self.dopamine_decay  # Configurable decay per step
             
         return max(0.0, self.current_dopamine)
         
