@@ -92,6 +92,7 @@ def train(timesteps: int = 2_000_000, save_path: str = "output/ppo_circuit_break
         clip_range=0.2,
         ent_coef=0.01,
         seed=42,
+        device="cpu",  # Bắt buộc dùng CPU vì MlpPolicy nhỏ dùng GPU sẽ bị nghẽn cổ chai và lỗi CUDA sm_60
     )
 
     print("\nTraining PPO agent...")
