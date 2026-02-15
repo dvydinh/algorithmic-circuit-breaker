@@ -45,4 +45,13 @@ Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích l
     \item \textbf{Kịch bản PID tĩnh (Truyền thống):} Khối điều khiển hoạt động đơn biến với hệ số hằng số. Mặc dù kéo giãn được sự hưng phấn xuống mức chấp nhận, giao diện bộc lộ nhược điểm can thiệp giật cục, liên tục đóng mở các ngưỡng dừng cực gắt một cách thiếu tinh tế dễ gây ức chế hệ thần kinh.
     \item \textbf{Kịch bản PPO-PID (Đề xuất):} Được định hướng bởi chiến lược dài hạn từ mạng nơ-ron, các tham số hồi tiếp được cập nhật theo quỹ đạo, tạo ra đường cong bảo vệ mềm mại, phân bổ cường độ ma sát mượt mà tránh được cú sốc thay đổi đột ngột.
 \end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    % \includegraphics[width=1\textwidth]{images/ablation_result.png}
+    \vspace{3cm} % Giữ chỗ 3cm chờ ảnh thật
+    \caption{[PENDING: CHÈN ẢNH BIỂU ĐỒ ABLATION STUDY VÀO ĐÂY LẤY TỪ KAGGLE]}
+    \label{fig:ablation_result}
+\end{figure}
+
 Kết luận thực nghiệm này củng cố luận điểm: Máy học tăng cường phân bố không thay thế lý thuyết điều khiển cổ điển, thiết kế hợp tác cho thấy chúng làm nhiệm vụ bộ tinh chỉnh thích nghi vượt hẳn giới hạn tĩnh của PID thông thường. Kiến trúc bảo vệ phân cấp giải phóng người dùng khỏi việc phản kháng với môi trường thuật toán không gian mạng.
