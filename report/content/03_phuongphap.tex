@@ -66,3 +66,16 @@ Thay vào đó, đầu ra của khối PID Controller trong kiến trúc v3.0 k�
 \end{itemize}
 
 Tuyệt đối không có bất kỳ dòng cảnh báo dạng văn bản hay nút bấm chặn đứng (pop-up alerts) nào xuất hiện. Ma sát xuất hiện vô hình như lực cản vật lý, trả lại hoàn toàn quyền tự do ý chí nhưng gia tăng tỷ lệ chi phí-lợi ích lên não bộ khi tiêu thụ nội dung.
+
+\subsection{Kiến trúc Điều khiển Phân cấp PPO-PID (Hierarchical Control)}
+
+Mặc dù bộ điều khiển PID cung cấp khả năng phản hồi thời gian thực hiệu quả, các tham số $K_p$, $K_i$, $K_d$ và ngưỡng ma sát (friction threshold) là tĩnh — bất biến trước sự tiến hóa của thuật toán gợi ý đối kháng (adversarial recommender). Để khắc phục giới hạn này, kiến trúc v3.0 bổ sung tầng điều khiển phân cấp (\textit{Hierarchical Control}) bằng cách đặt một bộ siêu-điều khiển (meta-controller) Proximal Policy Optimization (PPO) phía trên khối PID:
+
+\begin{itemize}
+    \item \textbf{Tầng Chiến lược (PPO Meta-Controller):} Agent PPO quan sát vector trạng thái $\mathbf{s}(t) = [\Gamma(t), A(t), I_{risk}(t), \dot{v}_{norm}(t), u(t-1)]$ và xuất ra 4 hành động liên tục: $[\Delta K_p, \Delta K_i, \Delta K_d, \Delta\theta_{friction}]$, điều chỉnh online các tham số PID tại mỗi bước thời gian. Chính sách (policy) được tham số hóa bởi mạng perceptron đa tầng (\textit{MlpPolicy}) và tối ưu hóa qua thuật toán PPO-Clip (Schulman et al., 2017).
+    \item \textbf{Tầng Chiến thuật (PID Controller):} Bộ PID giữ nguyên phương trình (\ref{eq:pid}) nhưng các hệ số giờ đây là biến được điều chỉnh liên tục bởi tầng trên, tạo thành vòng phản hồi kép (dual-loop feedback).
+\end{itemize}
+
+Hàm thưởng (reward function) được thiết kế để cân bằng ba tiêu chí mâu thuẫn: (1) duy trì mức dopamine dưới ngưỡng an toàn ($A(t) < 0.5$, thưởng $+1.0$), (2) phạt nặng nếu bộ nghiện không kiểm soát được ($A(t) > 0.8$, phạt $-5.0$), và (3) phạt cực nặng nếu hệ thống quá hung hãn gây ức chế người dùng (ma sát $> 2.5$s, phạt $-10.0$). Thiết kế này đảm bảo PPO học cách ``tinh chỉnh nhẹ nhàng'' thay vì ``đè bẹp'', ngăn ngừa hiện tượng người dùng rời bỏ hệ thống (\textit{User Churn}) do can thiệp quá mức.
+
+Đồng thời, ba điểm yếu kiến trúc được khắc phục: (i) Môi trường mô phỏng nâng cấp thành \textbf{đối kháng} — khi vận tốc người dùng sụt giảm (do PID can thiệp), nền tảng phản ứng bằng cách phun nội dung giật gân có $\Gamma(t) \in [0.85, 1.0]$; (ii) Thay thế ánh xạ trực tiếp Velocity $\to$ Dopamine bằng cửa sổ trượt trạng thái (\textit{sliding window}) 5 bước gần nhất; (iii) Ma sát mềm (\textit{Soft Friction}) giới hạn cứng tối đa 2.5 giây, loại bỏ công thức bạo lực $u(t)^2 \times 25$.

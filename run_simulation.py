@@ -178,12 +178,21 @@ def run_simulation(steps: int = 2000):
     time_elapsed = 0.0
     toxicity     = 0.1
 
+    prev_velocity_norm = 0.5  # For adversarial env tracking
+    state_window = np.zeros((5, 3), dtype=np.float32)  # Fix 2: sliding window
+    MAX_FRICTION_DELAY = 2.5  # Fix 3: hard-cap
+
     for step in range(steps):
-        # ── 1. Realistic Cyclic Toxicity (Social Media Feed) ─
-        # Simulate algorithmic feed showing engaging/toxic waves vs boring content
+        # ── 1. Adversarial Cyclic Toxicity (Fix 1) ────────────
+        # Base cycle: social media feed engagement waves
         base_cycle = 0.5 + 0.4 * np.sin(time_elapsed / 800.0)
         noise_spike = rng.normal(0, 0.15)
         toxicity = float(np.clip(base_cycle + noise_spike, 0.0, 1.0))
+
+        # Adversarial spike: platform retaliates when velocity drops
+        if prev_velocity_norm < 0.3:
+            spike = rng.uniform(0.85, 1.0)
+            toxicity = float(np.clip(toxicity * 0.3 + spike * 0.7, 0.0, 1.0))
 
         # ── 2. Compute PID control signal (from previous state) ─
         addiction_score = user.get_addiction_score()
@@ -215,20 +224,26 @@ def run_simulation(steps: int = 2000):
         # Dwell time for this step (Pareto heavy-tail + 5 s floor)
         base_dwell = (rng.pareto(a=1.5) + 1) * 5.0
         
-        # ── 5. Velocity from accepted events (CLOSED LOOP FEEDBACK) ─
+        # ── 5. Soft Friction (Fix 3) — CLOSED LOOP FEEDBACK ──
         clicks = len(new_events)
         
-        # Scroll Throttling: Intervention u(t) acts as a physical delay injector.
-        # This completely CLOSES THE LOOP, forcing Velocity to crash when Risk is high.
+        # Soft friction: linear ramp, hard-capped at 2.5s per click
         friction_delay_per_click = 0.0
         if control_signal > pid_config.friction_threshold:
-            # Actuator Authority Multiplied by 5x (25.0 instead of 5.0)
-            friction_delay_per_click = (control_signal ** 2) * 25.0  # Massive physical velocity drop
+            raw_delay = control_signal * 2.5  # linear scale, max 2.5s
+            friction_delay_per_click = min(raw_delay, MAX_FRICTION_DELAY)
             
         dwell_time = base_dwell + (clicks * friction_delay_per_click)
         
         # Prevent division by zero mathematically, though base_dwell > 5.0 anyway
         velocity = (clicks * rl_config.px_per_interaction) / max(dwell_time, 0.1)
+        velocity_norm = min(velocity / rl_config.max_velocity_px_s, 1.0)
+
+        # ── Fix 2: Update sliding window state vector ─────────
+        state_window = np.roll(state_window, -1, axis=0)
+        state_window[-1] = [velocity_norm, toxicity, min(dwell_time / 60.0, 1.0)]
+        prev_velocity_norm = velocity_norm
+
 
         # ── 6. λ(t) for logging ──────────────────────────────
         lambda_now = kernel.intensity(
