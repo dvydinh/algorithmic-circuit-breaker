@@ -38,4 +38,11 @@ Trong quá trình huấn luyện, phần thưởng tích lũy trung bình (Mean 
 
 Đánh giá trên tập kiểm tra 2,000 steps cho thấy kiến trúc PPO-PID duy trì khả năng kiểm soát chỉ số rủi ro ($I_{risk}$) ở mức cao ($\approx 0.88$) — phản ánh áp lực lớn từ môi trường đối kháng — trong khi hệ số suy giảm (decay factor) trung bình là $0.016$, chứng minh Agent PPO chủ động đè nén trọng số bốc đồng $\alpha^1$ gần như hoàn toàn tại các giai đoạn nguy hiểm.
 
-Kiến trúc phân cấp này chứng minh tính khả thi của việc sử dụng Học Tăng cường Sâu (Deep RL) như một cơ chế tinh chỉnh tự động (Auto-Tuning) cho bộ điều khiển PID cổ điển, mở ra hướng nghiên cứu về hệ thống điều khiển thích ứng đối kháng trong bài toán bảo vệ sức khỏe người dùng trước thuật toán gợi ý.
+\subsubsection{Nghiên cứu Cắt bỏ (Ablation Study) và Tính Vượt trội}
+Để chứng minh tính tất yếu của kiến trúc kết hợp, một \textit{Ablation Study} được thực thi trên môi trường mô phỏng 1,000 bước với 3 kịch bản kiểm chứng độc lập:
+\begin{enumerate}
+    \item \textbf{Kịch bản Baseline (Không can thiệp):} Bộ điều khiển bị vô hiệu hóa ($K_p=K_i=K_d=0$). Hệ thống cho thấy mức Dopamine liên tục duy trì ở mức Addictive ($\approx 1.0$) do ảnh hưởng trực tiếp từ Toxicity của nền tảng mà không gặp bất kỳ kháng cự ma sát nào.
+    \item \textbf{Kịch bản Static PID (Cổ điển):} Bộ PID hoạt động với hệ số tĩnh. Mặc dù kéo giảm được Dopamine xuống mức an toàn, hệ thống bộc lộ nhược điểm \textit{Over-Correction} (Can thiệp chắp vá), liên tục đóng/mở ma sát cực gắt tại các ngưỡng viền, dễ gây ức chế cho người dùng.
+    \item \textbf{Kịch bản PPO-PID Hybrid (Đề xuất):} Được định hướng bởi chiến lược dài hạn từ mạng nơ-ron, hệ số PID được nội suy linh hoạt, tạo ra đường cong Dopamine hạ cánh mềm mại, phân bổ cường độ ma sát mượt mà tránh tạo cảm giác giật cục (seamlessly intervened).
+\end{enumerate}
+Kết quả thực nghiệm này củng cố luận điểm: Deep RL không thay thế lý thuyết điều khiển cổ điển, mà đóng vai trò như một bộ "tinh chỉnh tự động" (Auto-Tuner) thượng tầng, hóa giải giới hạn tĩnh của PID trước tính chất phi tuyến của não bộ người dùng. Kiến trúc phân cấp mở ra hướng nghiên cứu mới về điều khiển thích ứng đối kháng bảo vệ sức khỏe tâm thần trong không gian mạng.
