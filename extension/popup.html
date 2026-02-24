@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithmic Engagement Monitor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-green: #00ff41;
+            --neon-yellow: #ffff00;
+            --neon-orange: #ff6600;
+            --neon-red: #ff0040;
+            --neon-pink: #ff00ff;
+            --bg-dark: #000000;
+            --bg-panel: rgba(0, 20, 20, 0.85);
+            --grid-color: rgba(0, 255, 65, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 350px;
+            min-height: 480px;
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-dark);
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #fff;
+            padding: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.1) 0px,
+                    rgba(0, 0, 0, 0.1) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HEADER === */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid var(--neon-green);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            background: var(--bg-panel);
+            position: relative;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green), 0 0 30px var(--neon-green);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .pulse-dot.warning {
+            background: var(--neon-yellow);
+            box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);
+        }
+
+        .pulse-dot.danger {
+            background: var(--neon-red);
+            box-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
+            animation: pulse-fast 0.3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        @keyframes pulse-fast {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .header-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .header-text.warning {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .header-text.danger {
+            color: var(--neon-red);
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* === DOPAMINE GAUGE === */
+        .gauge-section {
+            background: var(--bg-panel);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .gauge-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        .gauge-wrapper {
+            position: relative;
+            width: 180px;
+            height: 100px;
+            margin: 0 auto;
+        }
+
+        .gauge-bg {
+            position: absolute;
+            width: 180px;
+            height: 90px;
+            border-radius: 180px 180px 0 0;
+            background: linear-gradient(90deg,
+                    var(--neon-green) 0%,
+                    var(--neon-cyan) 30%,
+                    var(--neon-yellow) 50%,
+                    var(--neon-orange) 70%,
+                    var(--neon-red) 100%);
+            opacity: 0.2;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            position: absolute;
+            width: 180px;
+            height: 90px;
+            border-radius: 180px 180px 0 0;
+            background: conic-gradient(from 180deg at 50% 100%,
+                    var(--neon-green) 0deg,
+                    var(--neon-cyan) calc(var(--fill-angle, 0) * 0.3),
+                    var(--neon-yellow) calc(var(--fill-angle, 0) * 0.5),
+                    var(--neon-orange) calc(var(--fill-angle, 0) * 0.7),
+                    var(--neon-red) var(--fill-angle, 0deg),
+                    transparent var(--fill-angle, 0deg));
+            filter: drop-shadow(0 0 8px currentColor);
+            transition: --fill-angle 0.3s ease;
+        }
+
+        .gauge-mask {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            width: 140px;
+            height: 70px;
+            background: var(--bg-dark);
+            border-radius: 140px 140px 0 0;
+        }
+
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            height: 70px;
+            background: linear-gradient(to top, var(--neon-cyan), transparent);
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(calc(var(--needle-angle, -90deg)));
+            transition: transform 0.3s ease;
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .gauge-center {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .gauge-value {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .gauge-unit {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            margin-top: 5px;
+        }
+
+        .gauge-label {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* === RISK BAR === */
+        .risk-section {
+            background: var(--bg-panel);
+            border: 1px solid var(--neon-yellow);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .risk-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow);
+        }
+
+        .risk-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .risk-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .risk-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .risk-fill.safe {
+            background: linear-gradient(90deg, #004400, var(--neon-green));
+            box-shadow: inset 0 0 20px var(--neon-green);
+        }
+
+        .risk-fill.warning {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow));
+            box-shadow: inset 0 0 20px var(--neon-yellow);
+        }
+
+        .risk-fill.danger {
+            background: linear-gradient(90deg, var(--neon-yellow), var(--neon-orange), var(--neon-red));
+            box-shadow: inset 0 0 20px var(--neon-red);
+        }
+
+        .risk-fill.critical {
+            background: linear-gradient(90deg, var(--neon-red), var(--neon-pink));
+            box-shadow: inset 0 0 30px var(--neon-red);
+            animation: critical-pulse 0.5s infinite;
+        }
+
+        @keyframes critical-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* === STATS GRID === */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .stat-box {
+            background: var(--bg-panel);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === SECONDARY METRICS === */
+        .metrics-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .metric-mini {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .metric-mini .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--neon-green);
+        }
+
+        .metric-mini .label {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+        }
+
+        /* === ACTIONS === */
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            border-radius: 4px;
+            color: var(--neon-green);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        button.danger {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+
+        button.danger:hover {
+            background: rgba(255, 0, 64, 0.2);
+            box-shadow: 0 0 20px rgba(255, 0, 64, 0.3);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* === CRITICAL FLASH === */
+        .flash-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 0, 64, 0.3);
+            z-index: 999;
+            animation: flash 0.5s infinite;
+            pointer-events: none;
+        }
+
+        .flash-overlay.active {
+            display: block;
+        }
+
+        @keyframes flash {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* === OFFLINE === */
+        .offline-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .offline-overlay.active {
+            display: flex;
+        }
+
+        .offline-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .offline-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--neon-red);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Flash overlay for critical state -->
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <!-- Offline overlay -->
+    <div class="offline-overlay" id="offlineOverlay">
+        <div class="offline-icon">⚠</div>
+        <div class="offline-text">CONNECTION LOST</div>
+        <div style="color: rgba(255,255,255,0.4); margin-top: 6px; font-size: 10px;">
+            Run: python server.py
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="pulse-dot" id="pulseDot"></div>
+            <span class="header-text" id="headerText">MONITOR: CONNECTED</span>
+        </div>
+
+        <!-- Toxicity Level -->
+        <div class="gauge-section">
+            <div class="gauge-title">▸ LOCAL TOXICITY LEVEL ◂</div>
+            <div class="gauge-wrapper">
+                <div class="gauge-bg"></div>
+                <div class="gauge-fill" id="gaugeFill"></div>
+                <div class="gauge-mask"></div>
+                <div class="gauge-needle" id="gaugeNeedle"></div>
+                <div class="gauge-center"></div>
+                <div class="gauge-value">
+                    <span id="toxicityValue">0</span><span class="gauge-unit">%</span>
+                </div>
+            </div>
+            <div class="gauge-labels">
+                <span class="gauge-label">0</span>
+                <span class="gauge-label">25</span>
+                <span class="gauge-label">50</span>
+                <span class="gauge-label">75</span>
+                <span class="gauge-label">100</span>
+            </div>
+        </div>
+
+        <!-- Risk Bar -->
+        <div class="risk-section">
+            <div class="risk-header">
+                <span class="risk-title">▸ ADDICTION RISK INDEX ◂</span>
+                <span class="risk-value" id="riskValue" style="color: var(--neon-green);">0.00</span>
+            </div>
+            <div class="risk-bar">
+                <div class="risk-fill safe" id="riskFill"></div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="velocityValue">0</div>
+                <div class="stat-label">Scroll Velocity</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="sessionTime">0:00</div>
+                <div class="stat-label">Session Time</div>
+            </div>
+        </div>
+
+        <!-- Secondary Metrics -->
+        <div class="metrics-row">
+            <div class="metric-mini">
+                <div class="value" id="statusValue">SAFE</div>
+                <div class="label">Status</div>
+            </div>
+            <div class="metric-mini" style="flex: 2;">
+                <div class="value" id="actionValue">NONE</div>
+                <div class="label">Auto-Intervention</div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button id="refreshBtn">↻ Refresh</button>
+            <button class="danger" id="resetBtn">⟲ Reset</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            CIRCUIT BREAKER v2.1 | 127.0.0.1:5000
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
