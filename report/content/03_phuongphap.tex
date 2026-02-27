@@ -1,0 +1,39 @@
+% 03_phuongphap.tex - Phần 3: Phương pháp và giải pháp
+\section{Phương pháp và giải pháp: Tam giác liên ngành}
+
+Để đối phó với sự phức tạp của các bộ máy gợi ý tỷ đô, kiến trúc Algorithmic Circuit Breaker v3.0 áp dụng tam giác ứng phó liên ngành (The interdisciplinary triumvirate), quy đổi các sự kiện tâm lý thành lý thuyết điều khiển, xử lý ngôn ngữ tự nhiên và học tăng cường.
+
+\subsection{Cơ chế đối phó thiết kế gây nghiện: Mô hình Rescorla-Wagner}
+
+Mạng xã hội cực đại hóa sự gắn kết bằng cách thao túng mức độ dopamine. Dưới góc độ kỹ thuật hệ thống, thiết kế gây nghiện hoạt động như một cỗ máy cờ bạc tận dụng tỷ lệ phần thưởng biến thiên. 
+
+Biện pháp đối phó của chúng tôi là toán học hóa sự kỳ vọng nội tâm. Lấy cảm hứng từ khám phá của Schultz et al. (1997) \cite{schultz1997dopamine} về nơ-ron dopamine, hệ thống mô hình hóa não bộ người dùng như một tác tử học tăng cường (Reinforcement learning agent). Vận tốc cuộn (Scroll velocity) được sử dụng làm biến proxy hành vi đại diện tuyệt đối cho tìm kiếm phần thưởng: cuộn càng nhanh, sự khao khát càng lớn.
+
+Mức độ nghiện được định lượng trực tiếp dưới dạng sai số dự đoán phần thưởng (Reward prediction error - RPE) theo phương trình Rescorla-Wagner:
+
+\begin{equation}
+    V(t+1) = V(t) + \alpha [R(t) - V(t)]
+\end{equation}
+
+$RPE = R(t) - V(t)$ sẽ đóng vai trò là khối tín hiệu kích thích đầu vào cho bộ điều khiển.
+
+\subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
+
+Luồng nội dung độc hại (Toxicity) được các nền tảng sử dụng để kích hoạt trạng thái "chiến đấu hay bỏ chạy", giam cầm người dùng vào các buồng vang (Echo chambers).
+
+Giải pháp giải quyết bài toán này mà không đánh đổi quyền riêng tư là nguyên lý Shift-Left Local NLP Heuristics. Nhóm nghiên cứu đã sử dụng một từ điển tĩnh gồm 150 thuật ngữ có độc tính cao nhất, được chắt lọc từ tập dữ liệu Jigsaw gốc.
+
+Thao tác tính điểm độc hại $\Gamma(t)$ được thực thi nghiêm ngặt trên trình duyệt của máy khách (Client-side). Cụ thể, thuật toán sẽ duyệt cây DOM theo độ phức tạp thời gian cực nhẹ $O(1)$, đếm tần suất xuất hiện nhóm từ vựng và sinh ra một số vô hướng duy nhất. Tuyệt đối không có văn bản người dùng (user text) nào được truyền sang máy chủ. Mô hình đáp ứng tiêu chuẩn \textit{Privacy by Design} một cách tận gốc.
+
+\subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
+
+Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán (Algorithmic circuit breaker).
+
+Được truyền cảm hứng từ ứng dụng PID vào kỹ thuật phần mềm của Hellerstein et al. (2004) \cite{hellerstein2004feedback}, bộ điều khiển xử lý biến trạng thái đầu vào:
+
+\begin{equation}
+    u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau)d\tau + K_d \frac{de(t)}{dt}
+    \label{eq:pid}
+\end{equation}
+
+Khi thao túng tâm lý vọt qua ngưỡng an toàn, bộ điều khiển sinh ra lực ma sát kỹ thuật số (Digital friction). Điều này chứng minh tuyệt đối rằng đội ngũ kỹ sư có thể tự tay xây dựng các cơ chế quản lý tự động trực tiếp vào lõi phần mềm.
