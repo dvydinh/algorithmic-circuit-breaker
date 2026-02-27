@@ -1,0 +1,149 @@
+% 04_extension.tex - Phần 4: Triển khai Chrome Extension
+\section{Triển khai Chrome Extension}
+
+\subsection{Tổng quan kiến trúc}
+
+Hệ thống Algorithmic Circuit Breaker v3.0 được triển khai dưới dạng một Chrome Extension độc lập kết hợp với Flask Backend siêu nhẹ quản lý mô hình kỹ thuật. Kiến trúc được thiết kế xoay quanh tính toán \textit{Shift-Left}:
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[node distance=2.5cm, auto, thick, scale=0.85, transform shape]
+        \tikzstyle{service} = [rectangle, draw, fill=green!20, text width=6em, text centered, minimum height=2.5em, rounded corners]
+        \tikzstyle{db} = [cylinder, draw, fill=yellow!20, text width=5em, text centered, minimum height=2em, aspect=0.3]
+        
+        \node [service] (content) {content.js (NLP Local)};
+        \node [service, right of=content, node distance=4cm] (background) {background.js};
+        \node [service, right of=background, node distance=4cm] (flask) {Flask Server};
+        \node [db, below of=flask, node distance=2.5cm] (state) {Session State};
+        \node [service, above of=flask, node distance=2.5cm] (pid) {PID Controller};
+        \node [service, left of=pid, node distance=4cm] (user) {RL UserAgent};
+        
+        \draw [<->] (content) -- node[above] {sendMessage} (background);
+        \draw [<->] (background) -- node[above] {REST API} (flask);
+        \draw [<->] (flask) -- (state);
+        \draw [<->] (flask) -- (pid);
+        \draw [<->] (pid) -- (user);
+    \end{tikzpicture}
+    \caption{Kiến trúc hệ thống Extension + Flask Backend (V3.0)}
+    \label{fig:extension_arch}
+\end{figure}
+
+\subsubsection{Các thành phần chính}
+
+\begin{table}[H]
+\centering
+\caption{Các thành phần của hệ thống V3.0}
+\begin{tabular}{|l|p{5cm}|p{6cm}|}
+\hline
+Thành phần & Mô tả & Công nghệ \\
+\hline
+content.js & Service quản lý phân tích NLP trực tiếp trên DOM và thu thập Scrolling Velocity. Xử lý đồ họa hiển thị (Terminal UI). & JavaScript, CSS injection \\
+\hline
+background.js & Dịch vụ cầu nối trung gian (Service Worker) forward payload JSON bảo mật. & Chrome Extension API, fetch \\
+\hline
+server.py & Điểm cuối API (API Gateway). Liên kết Tác Tử Học Tăng Cường với Bộ Điều Khiển. & Python, Flask \\
+\hline
+manifest.json & Khung chỉ thị quyền hệ thống. & Manifest V3 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Kiến trúc Flask Backend}
+
+\subsubsection{Mô hình UserAgent Học Tăng Cường}
+
+Lớp UserAgent loại bỏ hoàn toàn suy đoán ngẫu nhiên thông qua hàm Rescorla-Wagner chính xác:
+
+\begin{lstlisting}[language=Python, caption=Trích đoạn cấu trúc tác tử RL UserAgent V3.0]
+class UserAgent:
+    def __init__(self, config: RLConfig = None):
+        self.config = config or RLConfig()
+        self.expected_reward = self.config.initial_expected_reward
+        self.rpe = 0.0
+        
+    def calculate_rpe(self, velocity: float, toxicity_score: float) -> float:
+        norm_v = min(velocity / 800.0, 1.0)
+        actual_reward = min(norm_v + (toxicity_score * 0.5), 1.0)
+        
+        # Rescorla-Wagner RPE Calculation
+        self.rpe = actual_reward - self.expected_reward
+        self.expected_reward = self.expected_reward + self.config.alpha * self.rpe
+        return self.rpe
+\end{lstlisting}
+
+Điểm gây nghiện (Addiction Score) được chuẩn hóa thẳng từ RPE với phương pháp nhân hệ số giới hạn để đẩy vào mô hình PID. 
+
+\subsection{Cấu trúc Chrome Extension} 
+
+\subsubsection{Manifest V3 Configuration}
+
+Để tuân thủ tuyệt đối quy định an ninh lưu trữ của Chrome Security:
+\begin{lstlisting}[language=JavaScript, caption=manifest.json (Lược dịch)]
+{
+  "manifest_version": 3,
+  "name": "Algorithmic Engagement Monitor",
+  "version": "3.0.0",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1:5000/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }]
+}
+\end{lstlisting}
+
+\subsubsection{Background Bridge Pattern}
+
+Vấn đề: Do Content Scripts chạy trên bảo mật Content Security Policy (HTTPS, ví dụ: \textit{facebook.com}) không thể gửi gói trực tiếp tới máy chủ phát triển (HTTP Localhost). Nút trung chuyển được thiết lập để bẻ khóa chính sách CORS một cách an toàn thông qua \textit{Message Passing}.
+
+\begin{lstlisting}[language=JavaScript, caption=Định tuyến Packet bảo mật]
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'SEND_METRICS') {
+        const payload = message.payload;
+        // Payload has strict { velocity, toxicity, scroll_time }
+        fetch('http://127.0.0.1:5000/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => sendResponse({ success: true, data: data }));
+        return true; 
+    }
+});
+\end{lstlisting}
+
+Độ phức tạp quyền riêng tư được kiểm soát tối đa khi chỉ có số liệu trừu tượng $O(1)$ lọt vào đường ống Fetch. Mọi cụm từ khóa (keywords) trong DOM được loại khỏi giao diện gửi.
+
+\subsubsection{Giao diện Terminal Monitor}
+
+Thao tác UI (User Interface) được chuẩn hóa theo phong cách "Terminal/Monitor" loại bỏ các cụm từ y tế tiêu cực. Thông tin hệ thống chỉ có dạng các biến ma trận cảnh báo kỹ thuật số.
+
+\begin{lstlisting}[language=CSS, caption=Trích dẫn giao diện Terminal UI]
+.cb-gauge-val {
+    position: absolute !important;
+    bottom: 4px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--cb-cyan) !important;
+    text-shadow: 0 0 15px var(--cb-cyan) !important;
+}
+\end{lstlisting}
+
+\subsection{Luồng dữ liệu (Data Pipeline) 3.0}
+
+\begin{enumerate}
+    \item Người dùng tương tác tốc độ cao trên DOM mạng xã hội.
+    \item \textbf{content.js} giám sát vận tốc trung bình (2000ms moving window) và Quét Toxicity tại chỗ bằng tĩnh từ điển `TOXICITY_DICTIONARY`.
+    \item Xây dựng Payload vô hình dạng Metadata (`{ velocity: 654, toxicity: 0.1, scroll_time: 2 }`).
+    \item \textbf{background.js} truyền đi dưới chuẩn HTTP Fetch đến Cổng `/analyze`.
+    \item \textbf{server.py} thực thi phương trình học tăng cường tính ra lượng dư RPE.
+    \item Cung cấp thông số RPE, Toxicity, Thời gian Session vào PID Controller phân loại.
+    \item Trả tín hiệu điều khiển trực tiếp về \textbf{content.js} để kích hoạt ngắt mạch DOM.
+\end{enumerate}
