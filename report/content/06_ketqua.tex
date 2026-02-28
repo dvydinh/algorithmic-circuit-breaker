@@ -1,0 +1,22 @@
+% 06_ketqua.tex - Phần 5: Kết quả và thảo luận
+\section{Kết quả thực nghiệm}
+
+\subsection{Minh chứng dữ liệu tổng hợp}
+
+Để tuân thủ tuyệt đối chuẩn mực đạo đức không lưu trữ văn bản, hiệu năng của hệ thống được chứng minh thông qua khung mô phỏng dữ liệu tổng hợp thay vì thử nghiệm xâm phạm thủ công.
+
+Script mô phỏng tích hợp \texttt{run\_simulation.py} sử dụng các phân phối thống kê lượng hóa tiêu chuẩn hóa nhằm tái tạo tính dị hướng của con người:
+\begin{itemize}
+    \item Phân phối Poisson (Poisson distribution): Được thiết lập để tạo khung tần suất tương tác cơ sở, tính toán mật độ các lượt vuốt thông thường.
+    \item Phân phối Pareto (Pareto distribution): Được cấu hình để mô phỏng cực đoan các khoảng thời gian nán lại (Dwell times) mang tính "đuôi dài", đại diện chính xác về mặt toán học cho các trạng thái cuộn lướt vô định (Doomscrolling) bất thường.
+\end{itemize}
+
+\subsection{Kết quả trực quan hóa hệ động lực}
+
+Sau khi nạp bộ tham số hành vi vào module kết xuất \texttt{visualize\_results.py}, đồ thị chứng minh thành công năng lực triệt tỏa biến cố của mạch ngắt thuật toán (Circuit breaker).
+
+Khi hệ thống không có bộ điều khiển, chỉ số sai số dự đoán phần thưởng (RPE) - đại diện cho vòng lặp phần thưởng - phân kỳ về vô cùng, miêu tả hành vi mất kiểm soát.
+
+Tuy nhiên, ngay khi khối PID kích hoạt ($K_p=0.5, K_i=0.1, K_d=0.2$), hệ thống đã ngăn chặn RPE phân kỳ về vô cùng, ép buộc đường tín hiệu tiến vào trạng thái dao động ổn định xoay quanh vạch giới hạn an toàn. 
+
+Sự cân bằng do thuật toán tạo ra này minh chứng đanh thép rằng lý thuyết điều khiển cổ điển có năng lực trực tiếp triệt tiêu các hành vi thao túng tâm lý trên thiết kế nền tảng số.
