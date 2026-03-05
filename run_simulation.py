@@ -141,6 +141,8 @@ def ogata_thinning_step(
         if rng.random() <= lam_t / lambda_star:
             kernel.add_event(t)
             accepted.append(t)
+            if len(accepted) > 500:  # Prevent simulation explosion when branching ratio is near 1
+                break
             # Update upper bound after accepted event (intensity may spike)
             lambda_star = max(
                 kernel.intensity(t, alpha1_eff, alpha2) * 1.5,
