@@ -5,7 +5,7 @@
 
 \subsubsection{Cơ chế dopamine và sai lệch dự đoán phần thưởng}
 
-Để hiểu bản chất kỹ thuật của thiết kế gây nghiện, chúng ta cần xem xét cơ chế dopamine dưới góc độ toán học. Theo nghiên cứu đột phá của Schultz và cộng sự (1997) \cite{schultz1997}, não bộ không phản ứng với phần thưởng tuyệt đối, mà phản ứng với \textit{sai lệch dự đoán phần thưởng} (Reward Prediction Error - RPE).
+Để hiểu bản chất kỹ thuật của thiết kế gây nghiện, chúng ta cần xem xét cơ chế dopamine dưới góc độ toán học. Theo nghiên cứu đột phá của Schultz và cộng sự (1997) \cite{schultz1997}, não bộ không phản ứng với phần thưởng tuyệt đối, mà phản ứng với sai lệch dự đoán phần thưởng (RPE).
 
 Tín hiệu dopamine $\delta_t$ tại thời điểm $t$ được mô hình hóa bởi phương trình Temporal Difference (TD):
 
@@ -18,15 +18,15 @@ Trong đó:
 \begin{itemize}
     \item $\delta_t$: Tín hiệu dopamine (RPE)
     \item $R_t$: Phần thưởng thực tế tại thời điểm $t$
-    \item $V(S_t)$: Giá trị kỳ vọng ở trạng thái $S_t$
-    \item $\gamma \in [0,1]$: Hệ số chiết khấu (discount factor)
+    \item $V(S_t$: Giá trị kỳ vọng ở trạng thái $S_t$
+    \item $\gamma \in [0,1]$: Hệ số chiết khấu
 \end{itemize}
 
 \begin{definition}[Sai lệch dự đoán phần thưởng]
 RPE là chênh lệch giữa phần thưởng nhận được và phần thưởng kỳ vọng. Khi $\delta_t > 0$, não bộ nhận được phần thưởng cao hơn dự kiến và tăng tiết dopamine. Khi $\delta_t < 0$, não bộ thất vọng và giảm dopamine.
 \end{definition}
 
-Trong bối cảnh \textit{Tâm thần học tính toán} (Computational Psychiatry) \cite{comp_psychiatry}, việc sử dụng các mô hình Học tăng cường (Reinforcement Learning) để đo lường mức độ nghiện hành vi được xem là một phương pháp đại diện (proxy) hợp lệ trên lâm sàng. Việc theo dõi chuỗi tín hiệu $RPE$ cung cấp một thước đo định lượng chính xác về trạng thái "khao khát" (craving) bị kích hoạt bởi các lịch trình phần thưởng biến đổi (variable ratio schedule). Mạng xã hội hiện đại liên tục thao túng lịch trình này, tối đa hóa $|\delta_t|$ nhằm giữ cho hệ thần kinh của người dùng luôn trong trạng thái thiếu hụt thông tin (information deprivation) thường trực, từ đó ngăn chặn sự bão hòa sinh lý tự nhiên (natural saturation).
+Trong bối cảnh tâm thần học tính toán \cite{comp_psychiatry}, việc sử dụng các mô hình học tăng cường để đo lường mức độ nghiện hành vi được xem là một phương pháp đại diện hợp lệ trên lâm sàng. Việc theo dõi chuỗi tín hiệu $RPE$ cung cấp một thước đo định lượng chính xác về trạng thái khao khát bị kích hoạt bởi các lịch trình phần thưởng biến đổi. Mạng xã hội hiện đại liên tục thao túng lịch trình này, tối đa hóa $|\delta_t|$ nhằm giữ cho hệ thần kinh của người dùng luôn trong trạng thái thiếu hụt thông tin thường trực, từ đó ngăn chặn sự bão hòa sinh lý tự nhiên.
 
 \subsubsection{Vòng lặp hành vi và học tăng cường sinh học}
 
@@ -36,23 +36,23 @@ Não bộ con người hoạt động như một hệ thống học tăng cườ
     S_t \xrightarrow{\pi(a|s)} A_t \xrightarrow{env} R_t, S_{t+1}
 \end{equation}
 
-Trong đó $\pi(a|s)$ là chính sách hành vi (policy) được học qua thời gian. Mạng xã hội khai thác vòng lặp này bằng cách:
+Trong đó $\pi(a|s)$ là chính sách hành vi được học qua thời gian. Mạng xã hội khai thác vòng lặp này bằng cách:
 
 \begin{enumerate}
-    \item \textbf{Giảm độ trễ phản hồi:} Thời gian từ hành động (cuộn, nhấn like) đến phần thưởng (nội dung mới, thông báo) được tối ưu về milliseconds.
+    \item \textbf{Giảm độ trễ phản hồi:} Thời gian từ hành động (cuộn, nhấn like) đến phần thưởng (nội dung mới, thông báo) được tối ưu về mili-giây.
     \item \textbf{Tăng tần suất kích thích:} Số lượng cơ hội nhận phần thưởng trên phút được tối đa hóa.
-    \item \textbf{Ngẫu nhiên hóa có kiểm soát:} Sử dụng lịch trình phần thưởng biến đổi (variable ratio schedule) - kỹ thuật mạnh nhất trong tâm lý học hành vi.
+    \item \textbf{Ngẫu nhiên hóa có kiểm soát:} Sử dụng lịch trình phần thưởng biến đổi - kỹ thuật mạnh nhất trong tâm lý học hành vi.
 \end{enumerate}
 
-\subsubsection{Thuyết Quá trình Kép (Dual-Process Theory) và Temporal Point-Processes}
+\subsubsection{Thuyết quá trình kép và quá trình điểm thời gian}
 
-Hành vi của người dùng mạng xã hội có thể được định lượng và giải thích triệt để thông qua lăng kính của Thuyết Quá trình Kép (Dual-Process Theory) trong tâm lý học nhận thức. Nhằm mô hình hóa toán học khung lý thuyết này, Agarwal và cộng sự (2024) \cite{agarwal2024_system2} đã đề xuất một kiến trúc giải cấu trúc tiện ích (utility) và sự gắn kết (engagement) thông qua các quá trình điểm thời gian (Temporal Point-Processes). Theo đó, tư duy con người được chi phối bởi hai hệ thống độc lập:
+Hành vi của người dùng mạng xã hội có thể được định lượng và giải thích triệt để thông qua lăng kính của thuyết quá trình kép trong tâm lý học nhận thức. Nhằm mô hình hóa toán học khung lý thuyết này, Agarwal và cộng sự (2024) \cite{agarwal2024_system2} đã đề xuất một kiến trúc giải cấu trúc tiện ích và sự gắn kết thông qua các quá trình điểm thời gian. Theo đó, tư duy con người được chi phối bởi hai hệ thống độc lập:
 \begin{itemize}
-    \item \textbf{Hệ thống 1 (System-1):} Đại diện cho tư duy vô thức, bốc đồng, tự động phản xạ và bị chi phối mạnh mẽ bởi các kích thích ngắn hạn mang tính dopaminergic (ví dụ: hành vi lướt màn hình vô thức, clickbait).
-    \item \textbf{Hệ thống 2 (System-2):} Đại diện cho tư duy có ý thức, chậm rãi, đòi hỏi nỗ lực phân tích phân bổ và hướng tới các giá trị/tiện ích (Utility) dài hạn mang tính phản tư.
+    \item \textbf{Hệ thống 1:} Đại diện cho tư duy vô thức, bốc đồng, tự động phản xạ và bị chi phối mạnh mẽ bởi các kích thích giải phóng dopamine ngắn hạn (ví dụ: hành vi lướt màn hình vô thức, clickbait).
+    \item \textbf{Hệ thống 2:} Đại diện cho tư duy có ý thức, chậm rãi, đòi hỏi nỗ lực phân tích phân bổ và hướng tới các giá trị dài hạn mang tính phản tư.
 \end{itemize}
 
-Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại được thiết kế với hàm mục tiêu độc quyền là thao túng và cực đại hóa sự gắn kết của Hệ thống 1 (System-1 Engagement), từ đó tước đoạt hoàn toàn quyền tự chủ của Hệ thống 2. Để biểu diễn toán học sự thao túng này, cường độ tương tác của người dùng theo thời gian thực được mô hình hóa bằng hàm mật độ xác suất hỗn hợp mũ (mixed exponential density) của Temporal Point-Processes. Toàn bộ phương trình hạt nhân $\kappa(t)$ tổng 2 hàm mũ phân rã dưới đây được trích dẫn chuẩn xác từ Phương trình (1), Mục 2.3 và Phụ lục A (Lemma 2) của bài báo Agarwal và cộng sự (2024) \cite{agarwal2024}:
+Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại được thiết kế với hàm mục tiêu độc quyền là thao túng và cực đại hóa sự gắn kết của Hệ thống 1, từ đó tước đoạt hoàn toàn quyền tự chủ của Hệ thống 2. Để biểu diễn toán học sự thao túng này, cường độ tương tác của người dùng theo thời gian thực được mô hình hóa bằng hàm mật độ xác suất hỗn hợp mũ của quá trình điểm thời gian. Toàn bộ phương trình hạt nhân $\kappa(t)$ tổng 2 hàm mũ phân rã dưới đây được trích dẫn chuẩn xác từ Phương trình (1), Mục 2.3 và Phụ lục A (Lemma 2) của bài báo Agarwal và cộng sự (2024) \cite{agarwal2024}:
 
 \begin{equation}
     \kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)
@@ -60,18 +60,18 @@ Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại đư
 
 Trong phương trình trên:
 \begin{itemize}
-    \item \textbf{Thành phần 1 ($\alpha^1, \beta^1$):} Tham số hóa động lực học của Hệ thống 1 (System-1). Hệ số phân rã $\beta^1$ rất lớn, biểu thị cho sự bốc đồng suy biến nhanh chóng. Trọng số $\alpha^1$ càng lớn chứng tỏ hành vi phản xạ vô thức càng chiếm ưu thế tuyệt đối trước màn hình.
-    \item \textbf{Thành phần 2 ($\alpha^2, \beta^2$):} Tham số hóa động lực học của Hệ thống 2 (System-2), nơi hệ số phân rã $\beta^2$ nhỏ hơn đáng kể, đồng thời bảo toàn chu kỳ tập trung dài hạn và khả năng tiêu thụ ý nghĩa nhân thức.
+    \item \textbf{Thành phần 1 ($\alpha^1, \beta^1$):} Tham số hóa động lực học của Hệ thống 1. Hệ số phân rã $\beta^1$ rất lớn, biểu thị cho sự bốc đồng suy biến nhanh chóng. Trọng số $\alpha^1$ càng lớn chứng tỏ hành vi phản xạ vô thức càng chiếm ưu thế tuyệt đối trước màn hình.
+    \item \textbf{Thành phần 2 ($\alpha^2, \beta^2$):} Tham số hóa động lực học của Hệ thống 2, nơi hệ số phân rã $\beta^2$ nhỏ hơn đáng kể, đồng thời bảo toàn chu kỳ tập trung dài hạn và khả năng tiêu thụ ý nghĩa nhận thức.
 \end{itemize}
 
-Việc kiến trúc Mạch ngắt thuật toán (Algorithmic Circuit Breaker) để sinh ra \textbf{Ma sát chánh niệm} (Mindful Friction) mang một ý đồ toán học rõ ràng. Ma sát giao diện vô hình này được cấy ghép nhằm mục đích làm suy giảm nghiêm trọng trọng số $\alpha^1$ trong phiếm hàm $\kappa(t)$. Bằng cách triệt tiêu động năng nội tại của sự bốc đồng, hệ thống cắt đứt luồng xử lý tự động, từ đó cưỡng chế khối não bộ phải chuyển giao quyền kiểm soát cơ học về lại Hệ thống 2 thống trị.
+Việc kiến trúc mạch ngắt thuật toán để sinh ra ma sát chánh niệm mang một ý đồ toán học rõ ràng. Ma sát giao diện vô hình này được cấy ghép nhằm mục đích làm suy giảm nghiêm trọng trọng số $\alpha^1$ trong phiếm hàm $\kappa(t)$. Bằng cách triệt tiêu động năng nội tại của sự bốc đồng, hệ thống cắt đứt luồng xử lý tự động, từ đó cưỡng chế khối não bộ phải chuyển giao quyền kiểm soát cơ học về lại Hệ thống 2 thống trị.
 \subsection{Lý thuyết điều khiển và hệ thống phản hồi}
 
 \subsubsection{Mô hình hóa hệ thống phản hồi}
 
-Mạng xã hội hoạt động như một hệ thống vòng kín (closed-loop system). Theo lý thuyết điều khiển, tính ổn định của hệ thống phụ thuộc vào hệ số khuếch đại vòng lặp (loop gain) $G$.
+Mạng xã hội hoạt động như một hệ thống vòng kín. Theo lý thuyết điều khiển, tính ổn định của hệ thống phụ thuộc vào hệ số khuếch đại vòng lặp $G$.
 
-Phương trình trạng thái của mức độ tương tác $E(t)$ (engagement level) có thể biểu diễn như sau:
+Phương trình trạng thái của mức độ tương tác $E(t)$ có thể biểu diễn như sau:
 
 \begin{equation}
     \frac{dE}{dt} = (\alpha - \beta) E(t) + u(t)
@@ -81,13 +81,13 @@ Phương trình trạng thái của mức độ tương tác $E(t)$ (engagement 
 Trong đó:
 \begin{itemize}
     \item $E(t)$: Mức độ tương tác tại thời điểm $t$
-    \item $\alpha > 0$: Hệ số kích thích từ thuật toán (algorithmic stimulation)
-    \item $\beta > 0$: Hệ số mệt mỏi tự nhiên (natural fatigue)
-    \item $u(t)$: Tín hiệu điều khiển ngoại sinh (external control signal)
+    \item $\alpha > 0$: Hệ số kích thích từ thuật toán
+    \item $\beta > 0$: Hệ số mệt mỏi tự nhiên
+    \item $u(t)$: Tín hiệu điều khiển ngoại sinh
 \end{itemize}
 
 \begin{theorem}[Điều kiện ổn định Lyapunov]
-Hệ thống \eqref{eq:engagement_dynamics} ổn định khi và chỉ khi $\alpha < \beta$. Nếu $\alpha > \beta$, hệ thống sẽ phát tán (diverge) với tốc độ hàm mũ.
+Hệ thống \eqref{eq:engagement_dynamics} ổn định khi và chỉ khi $\alpha < \beta$. Nếu $\alpha > \beta$, hệ thống sẽ phân kỳ với tốc độ hàm mũ.
 \end{theorem}
 
 \begin{proof}
@@ -98,13 +98,13 @@ Xét hàm Lyapunov $V(E) = \frac{1}{2}E^2$. Đạo hàm theo thời gian:
 Khi $u = 0$ (không có điều khiển), $\dot{V} < 0$ khi và chỉ khi $\alpha < \beta$.
 \end{proof}
 
-Do sự lệch pha của hàm mục tiêu (Misaligned Objective Functions) trong việc cực đại hóa thời gian tương tác (Stray et al., 2021) \cite{stray2021}, thuật toán gợi ý hiện tại cố tình đẩy $\alpha \gg \beta$ (ví dụ: $\alpha = 0.8$, $\beta = 0.2$), khiến đạo hàm mức độ tương tác luôn dương:
+Do sự lệch pha của hàm mục tiêu trong việc cực đại hóa thời gian tương tác (Stray et al., 2021) \cite{stray2021}, thuật toán gợi ý hiện tại cố tình đẩy $\alpha \gg \beta$ (ví dụ: $\alpha = 0.8$, $\beta = 0.2$), khiến đạo hàm mức độ tương tác luôn dương:
 
 \begin{equation}
     \frac{dE}{dt} \approx 0.6 \cdot E(t) > 0
 \end{equation}
 
-Điều này dẫn đến sự tăng trưởng hàm mũ (exponential growth) hay còn gọi là hiện tượng \textit{lướt vô thức} (mindless scrolling).
+Điều này dẫn đến sự tăng trưởng hàm mũ hay còn gọi là hiện tượng \textit{lướt vô thức}.
 
 \subsubsection{Hàm truyền và phân tích ổn định}
 
@@ -130,26 +130,26 @@ Cực (pole) của hệ thống: $p = \alpha - \beta$
 
 \subsection{Xử lý Ngôn ngữ Tự nhiên Cục bộ và Tác động Tâm lý}
 
-\subsubsection{Cơ sở lý thuyết của Shift-Left Local NLP Heuristics}
+\subsubsection{Cơ sở lý thuyết của lọc NLP cục bộ}
 
-Thay vì sử dụng các mô hình nhúng không gian vector (vector embeddings) hay học sâu (deep learning) phức tạp và tiêu tốn tài nguyên đo lường sự thao túng dư luận, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp tiếp cận \textit{Shift-Left Local NLP Heuristics}.
+Thay vì sử dụng các không gian vector hay học sâu phức tạp và tiêu tốn tài nguyên đo lường sự thao túng dư luận, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp tiếp cận lọc NLP cục bộ (Local NLP Heuristics).
 
-"Shift-Left" trong kỹ thuật phần mềm truyền thống mang ý nghĩa đẩy việc kiểm thử về giai đoạn đầu của vòng đời phát triển. Trong bối cảnh đồ án này, "Shift-Left" mang ý nghĩa kiến trúc: đẩy toàn bộ khối lượng tính toán và phân tích ngôn ngữ tự nhiên (NLP) rời khỏi máy chủ trung tâm, chuyển giao hoàn toàn về phía thiết bị cuối của người dùng (End-user Device).
+"Shift-Left" trong kỹ thuật phần mềm truyền thống mang ý nghĩa đẩy việc kiểm thử về giai đoạn đầu của vòng đời phát triển. Trong bối cảnh đồ án này, "Shift-Left" mang ý nghĩa kiến trúc: đẩy toàn bộ khối lượng tính toán và phân tích ngôn ngữ tự nhiên (NLP) rời khỏi máy chủ trung tâm, chuyển giao hoàn toàn về phía thiết bị cuối của người dùng.
 
 \subsubsection{Thuật toán đo lường độc tính tĩnh}
 
-Thay vì khởi tạo các vector trạng thái đa chiều trôi dạt (drift velocity), hệ thống tính toán một điểm số vô hướng duy nhất đại diện cho mức độ phơi nhiễm ngôn từ độc hại (Toxicity Score).
+Thay vì khởi tạo các vector trạng thái đa chiều trôi dạt, hệ thống tính toán một điểm số vô hướng duy nhất đại diện cho mức độ phơi nhiễm ngôn từ độc hại.
 
-Thuật toán giả định sử dụng một từ điển tĩnh (static dictionary heuristic) chứa các thuật ngữ có trọng số phân loại độc tính cao nhất, được trích xuất từ tập dữ liệu Jigsaw Toxic Comment Classification. Điểm số độc hại $\Gamma(t)$ tại thời điểm $t$ có miền giá trị được giới hạn nghiêm ngặt $\Gamma(t) \in [0.0, 1.0]$.
+Thuật toán giả định sử dụng một từ điển tĩnh chứa các thuật ngữ có trọng số phân loại độc tính cao nhất, được trích xuất từ tập dữ liệu Jigsaw Toxic Comment Classification. Điểm số độc hại $\Gamma(t)$ tại thời điểm $t$ có miền giá trị được giới hạn nghiêm ngặt $\Gamma(t) \in [0.0, 1.0]$.
 
-Trong môi trường thực tế lý thuyết (Production Architecture), thuật toán chỉ cần duyệt nội dung văn bản vô danh với độ phức tạp thời gian cực kỳ tối ưu $\mathcal{O}(1)$ để tính toán tỷ trọng và trả về $\Gamma(t)$ trực tiếp trên thiết bị (Local Device). Còn tại môi trường mô phỏng toán học (Simulation Environment) triển khai trong khuôn khổ đồ án, $\Gamma(t)$ được mô hình hóa bằng sự kết hợp của hàm tuần hoàn chu kỳ (Cyclic sine wave) và nhiễu ngẫu nhiên phân phối chuẩn (Gaussian noise) để giả lập sự biến thiên liên tục của một luồng cấp dữ liệu (News Feed) mạng xã hội.
-\subsubsection{Đạo đức công nghệ: Bảo vệ Quyền riêng tư cốt lõi (Privacy by Design)}
+Trong môi trường lý thuyết, thuật toán chỉ cần duyệt nội dung văn bản vô danh với độ phức tạp thời gian cực kỳ tối ưu $\mathcal{O}(1)$ để tính toán tỷ trọng và trả về $\Gamma(t)$ trực tiếp trên thiết bị. Còn tại môi trường mô phỏng toán học triển khai trong khuôn khổ đồ án, $\Gamma(t)$ được mô hình hóa bằng sự kết hợp của hàm tuần hoàn chu kỳ và nhiễu ngẫu nhiên phân phối chuẩn để giả lập sự biến thiên liên tục của một luồng cấp dữ liệu mạng xã hội.
+\subsubsection{Đạo đức công nghệ: Bảo vệ Quyền riêng tư cốt lõi}
 
-Quyết định kiến trúc từ bỏ các không gian vector phức tạp tại máy chủ để sử dụng một thuật toán Heuristic tính toán nội bộ mang một ý nghĩa đạo đức (AI Ethics) và bảo mật sâu sắc.
+Quyết định kiến trúc từ bỏ các không gian vector phức tạp tại máy chủ để sử dụng một thuật toán tính toán nội bộ mang một ý nghĩa đạo đức công nghệ và bảo mật sâu sắc.
 
-Bằng cách thiết lập nguyên lý \textit{Shift-Left Local NLP}, mô hình toán học này chứng minh rằng hệ thống không bao giờ cần thiết phải gửi bất kỳ văn bản tự nhiên (user text) nào mà người dùng đang đọc về máy chủ. Việc đánh giá rủi ro chỉ cần dựa vào một con số vô hướng vô danh $\Gamma(t)$ chạy qua hệ phương trình điều khiển PID. 
+Bằng cách thiết lập nguyên lý Privacy by Design, mô hình toán học này chứng minh rằng hệ thống không bao giờ cần thiết phải gửi bất kỳ văn bản tự nhiên nào mà người dùng đang đọc về máy chủ. Việc đánh giá rủi ro chỉ cần dựa vào một con số vô hướng vô danh $\Gamma(t)$ chạy qua hệ phương trình điều khiển PID. 
 
-Điều này định nghĩa một tiêu chuẩn thiết kế \textit{Privacy by Design} tuyệt đối: ngay cả khi máy chủ backend bị tấn công và lộ lọt toàn bộ cơ sở dữ liệu, kẻ tấn công cũng không có quyền truy cập vào thông tin định dạng nội dung mà người dùng thực tế đã xem, xóa bỏ triệt để rủi ro xâm phạm danh tính cá nhân trong quá trình đo lường sức khỏe tâm lý.
+Điều này định nghĩa một tiêu chuẩn thiết kế riêng tư tuyệt đối: ngay cả khi máy chủ backend bị tấn công và lộ lọt toàn bộ cơ sở dữ liệu, kẻ tấn công cũng không có quyền truy cập vào thông tin định dạng nội dung mà người dùng thực tế đã xem, xóa bỏ triệt để rủi ro xâm phạm danh tính cá nhân trong quá trình đo lường sức khỏe tâm lý.
 
 \subsection{Mô hình kinh tế và giá trị trọn đời}
 
@@ -185,12 +185,12 @@ Nguyên nhân:
     \item Tăng giá trị quảng cáo do môi trường an toàn hơn
 \end{enumerate}
 
-\subsection{Căn chỉnh Giá trị Thuật toán (Value Alignment)}
+\subsection{Căn chỉnh giá trị thuật toán}
 
-\subsubsection{Sự lệch pha mục tiêu (Misaligned Objectives)}
+\subsubsection{Sự lệch pha mục tiêu}
 
-Sự bất cân xứng quyền lực lớn nhất của thời đại kỹ thuật số bắt nguồn từ bài toán căn chỉnh giá trị (Value Alignment Problem) \cite{stray2021}. Hàm mục tiêu nội tại của thuật toán mạng xã hội được thiết kế chỉ để cực đại hóa Thời gian tương tác (Time-on-site) thay vì Thời gian ý nghĩa (Time well spent). Vì người dùng cuối (End-users) hoàn toàn không có đặc quyền truy cập hay tinh chỉnh trọng số mạng neural tại phía máy chủ (Server-side weights), bất kỳ nỗ lực căn chỉnh nào dựa vào sự tự giác của nhà cung cấp nền tảng đều mang tính ảo tưởng.
+Sự bất cân xứng quyền lực lớn nhất của thời đại kỹ thuật số bắt nguồn từ bài toán căn chỉnh giá trị \cite{stray2021}. Hàm mục tiêu nội tại của thuật toán mạng xã hội được thiết kế chỉ để cực đại hóa thời gian tương tác thay vì thời gian ý nghĩa. Vì người dùng cuối hoàn toàn không có đặc quyền truy cập hay tinh chỉnh trọng số mạng neural tại phía máy chủ, bất kỳ nỗ lực căn chỉnh nào dựa vào sự tự giác của nhà cung cấp nền tảng đều mang tính ảo tưởng.
 
-\subsubsection{Middleware phía máy khách (Client-side Middleware)}
+\subsubsection{Phần mềm trung gian phía máy khách}
 
-Để giải quyết triệt để sự lệch pha này, giải pháp Algorithmic Circuit Breaker được giới thiệu như một lớp phần mềm trung gian phía máy khách (Client-side Middleware). Kiến trúc này ép buộc các thuật toán gợi ý khổng lồ phải căn chỉnh lại theo hệ giá trị của người dùng ngay tại tầng trình diễn tĩnh (Presentation layer). Thay vì cố gắng can thiệp vào máy chủ không thể tiếp cận, hệ thống đóng vai trò như một bộ lọc nhiễu ngoại suy (extrapolative noise filter), định hình lại đầu ra của thuật toán (Algorithm Output) trước khi kích thích tố thần kinh được truyền đến võng mạc người dùng cuối.
+Để giải quyết triệt để sự lệch pha này, giải pháp mạch ngắt thuật toán được giới thiệu như một lớp middleware phía máy khách. Kiến trúc này ép buộc các thuật toán gợi ý khổng lồ phải căn chỉnh lại theo hệ giá trị của người dùng ngay tại tầng trình diễn tĩnh. Thay vì cố gắng can thiệp vào máy chủ không thể tiếp cận, hệ thống đóng vai trò như một bộ lọc nhiễu ngoại suy, định hình lại đầu ra của thuật toán trước khi kích thích tố thần kinh được truyền đến võng mạc người dùng cuối.

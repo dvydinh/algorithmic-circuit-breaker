@@ -3,7 +3,7 @@
 
 \subsection{Tổng kết}
 
-Dự án đã giải quyết trọn vẹn yêu cầu của đề tài thông qua việc tái định nghĩa các vấn đề xã hội bằng ngôn ngữ kỹ thuật:
+Dự án đã bám sát các mục tiêu cốt lõi của đề tài thông qua việc tái định nghĩa các vấn đề xã hội bằng ngôn ngữ kỹ thuật:
 
 \begin{enumerate}
     \item \textbf{Định lượng hóa thành công:} Chuyển đổi "nghiện" thành RPE, "điều hướng" thành drift velocity, "rủi ro" thành risk index.
@@ -34,7 +34,7 @@ Tương tự như kỹ sư cơ khí phải đảm bảo máy móc có circuit br
     \begin{itemize}
         \item Mô hình hóa tác động tâm lý bằng lý thuyết điều khiển tự động
         \item Đề xuất phương pháp lượng hóa sự khao khát (craving) bằng phương trình RPE
-        \item Cụ thể hóa bài toán Căn chỉnh Giá trị (Value Alignment) dưới dạng Middleware phía máy khách
+        \item Cụ thể hóa bài toán căn chỉnh giá trị dưới dạng phần mềm trung gian phía máy khách
     \end{itemize}
     
     \item \textbf{Đóng góp thực tiễn:}
@@ -52,27 +52,27 @@ Tương tự như kỹ sư cơ khí phải đảm bảo máy móc có circuit br
     \end{itemize}
 \end{enumerate}
 
-\subsection{Sự đánh đổi và Hạn chế Hệ thống (Engineering Trade-offs \& Limitations)}
+\subsection{Sự đánh đổi và hạn chế hệ thống}
 
-Dưới góc nhìn thiết kế kiến trúc phần mềm (Software Architecture), dự án này buộc phải chấp nhận những sự đánh đổi mang tính quyết định để hiện thực hóa sản phẩm:
+Dưới góc nhìn thiết kế kiến trúc phần mềm, dự án này buộc phải chấp nhận những sự đánh đổi mang tính quyết định để hiện thực hóa sản phẩm:
 
 \textbf{1. Mô hình RPE chỉ là một Biến đại diện (Proxy Variable):}
 Việc quy đổi trực tiếp Vận tốc cuộn (Scroll Velocity) thành Tín hiệu sai lệch dự đoán phần thưởng (RPE) trong phương trình Rescorla-Wagner là một phép tính xấp xỉ mang tính kỹ thuật. Mô hình này không thể phản ánh 100% mức độ phức tạp sinh học của sự phân tiết Dopamine trong thực tế. Nó bỏ qua ngưỡng chịu đựng nền (baseline tolerance) khác biệt của từng cá nhân và các tác nhân sinh lý ngoại lai.
 
-\textbf{2. Điểm mù Ngữ cảnh của Bộ lọc NLP Shift-Left:}
-Để đổi lấy chuẩn mực \textit{Privacy by Design} mô phỏng lý thuyết (không giả định gửi văn bản về máy chủ), kiến trúc hệ thống buộc phải hy sinh độ chính xác phân tích. Việc ứng dụng giải thuật Từ điển tĩnh (Static Dictionary Heuristics) để cô lập dữ liệu cục bộ chắc chắn sẽ hạn chế phân tích ngữ cảnh ngữ nghĩa (Semantic Context). Mô hình không thể phân biệt được sự mỉa mai (Sarcasm), tính giễu nhại (Irony) hay trích dẫn mang tính giáo dục, dẫn đến tỷ lệ Dương tính giả (False Positive Rate) cao hơn đáng kể so với việc khai thác các mô hình ngôn ngữ lớn (LLMs) điện toán đám mây.
+\textbf{2. Điểm mù ngữ cảnh của bộ lọc NLP:}
+Để đổi lấy chuẩn mực riêng tư mô phỏng lý thuyết (không giả định gửi văn bản về máy chủ), kiến trúc hệ thống buộc phải hy sinh độ chính xác phân tích. Việc ứng dụng giải thuật từ điển tĩnh để cô lập dữ liệu cục bộ chắc chắn sẽ hạn chế phân tích ngữ cảnh ngữ nghĩa. Mô hình không thể phân biệt được sự mỉa mai, tính giễu nhại hay trích dẫn mang tính giáo dục, dẫn đến tỷ lệ dương tính giả cao hơn đáng kể so với việc khai thác các mô hình học sâu khổng lồ.
 
 \textbf{Hướng phát triển thực dụng:}
 \begin{itemize}
-    \item Tích hợp các mô hình NLP cục bộ siêu nhẹ (Small Language Models - SLMs chạy trên WebGPU) để cải thiện ngữ cảnh mà không hy sinh Privacy.
-    \item Thu thập dữ liệu đo thị giác (Eye-tracking) hoặc nhịp tim (nếu có phần cứng hỗ trợ) để làm phong phú hóa các biến Proxy tính toán RPE.
+    \item Tích hợp các mô hình NLP cục bộ siêu nhẹ (SLMs chạy trên WebGPU) để cải thiện ngữ cảnh mà không hy sinh sự riêng tư.
+    \item Thu thập dữ liệu đo thị giác hoặc nhịp tim (nếu có phần cứng hỗ trợ) để làm phong phú hóa các biến đại diện tính toán RPE.
 \end{itemize}
 
-\subsection{Lời kết: Vị thế của một Công cụ Kiểm toán}
+\subsection{Lời kết: Vị thế của một công cụ kiểm toán}
 
-Cần khẳng định rõ ràng: \textbf{Algorithmic Circuit Breaker không phải là một viên đạn bạc (Silver bullet)} có khả năng triệt tiêu chứng nghiện mạng xã hội trên toàn cầu. Đối đầu với một ngành công nghiệp được tối ưu hóa hàng thập kỷ bởi hàng nghìn kỹ sư xuất sắc nhất thế giới để giữ chân người dùng là một bài toán bất khả thi đối với một công cụ Client-side đơn lẻ.
+Cần khẳng định rõ ràng: \textbf{Mạch ngắt thuật toán không phải là một viên đạn bạc} có khả năng triệt tiêu chứng nghiện mạng xã hội trên toàn cầu. Đối đầu với một ngành công nghiệp được tối ưu hóa hàng thập kỷ bởi hàng nghìn kỹ sư xuất sắc nhất thế giới để giữ chân người dùng là một bài toán bất khả thi đối với một công cụ cục bộ đơn lẻ.
 
-Định vị chính xác nhất của dự án này: Đây là một \textbf{Công cụ Kiểm toán (Auditing Tool) và Nâng cao nhận thức}. Giải pháp phơi bày các thuật toán thao túng tâm lý vốn được thiết kế để ẩn mình, biến chúng thành các đại lượng toán học có thể quan sát, đo lường và can thiệp. Việc tạo ra một "mạch ngắt" chứng minh một nguyên lý kỹ thuật cốt lõi: Con người hoàn toàn có quyền và có đủ năng lực công nghệ để giành lại sự tự chủ nhận thức, buộc các thuật toán phải căn chỉnh theo "Thời gian ý nghĩa" thay vì "Thời gian tiêu thụ".
+Định vị chính xác nhất của dự án này: Đây là một \textbf{công cụ kiểm toán và nâng cao nhận thức}. Giải pháp phơi bày các thuật toán thao túng tâm lý vốn được thiết kế để ẩn mình, biến chúng thành các đại lượng toán học có thể quan sát, đo lường và can thiệp. Việc tạo ra một "mạch ngắt" chứng minh một nguyên lý kỹ thuật cốt lõi: Con người hoàn toàn có quyền và có đủ năng lực công nghệ để giành lại sự tự chủ nhận thức, buộc các thuật toán phải căn chỉnh theo thời gian ý nghĩa thay vì thời gian tiêu thụ.
 
 \textbf{Tương lai của công nghệ không chỉ phụ thuộc vào khả năng kỹ thuật, mà còn nằm ở sự dũng cảm thiết kế các điểm dừng.}
 

@@ -1,25 +1,25 @@
 % 01_gioithieu.tex - Phần 1: Giới thiệu
 \section{Giới thiệu}
 
-\subsection{Tuyên bố tính mới (Novelty) và tiếp cận kỹ thuật}
+\subsection{Tính cấp thiết và phương pháp tiếp cận kỹ thuật}
 
-Dự án này bác bỏ cách tiếp cận truyền thống xem người dùng như những cá thể cần được "giáo dục" hoặc "chẩn đoán y tế". Chúng tôi tái định nghĩa hệ thống đề xuất thành một kiến trúc đo lường proxy và can thiệp bảo toàn quyền riêng tư (Privacy-preserving proxy measurement \& intervention architecture).
+Dự án này bác bỏ cách tiếp cận truyền thống xem người dùng như những cá thể cần được "giáo dục". Chúng tôi thiết lập góc nhìn hệ thống bằng một kiến trúc đo lường proxy và can thiệp bảo toàn quyền riêng tư.
 
-Góc nhìn của kỹ sư phần mềm được thể hiện thông qua việc định lượng hóa các thao túng tâm lý trừu tượng thành các biến số toán học cứng (hard mathematical variables). Thay vì thu thập dữ liệu nội dung hay chẩn đoán lâm sàng, hệ thống sử dụng các đại lượng proxy hành vi (như vận tốc cuộn - scroll velocity) để gián tiếp đo lường trạng thái tâm lý. Sự quy đổi này cho phép thiết lập hệ thống bảo vệ triệt để trên nền tảng kỹ thuật, loại trừ hoàn toàn sự phụ thuộc vào các phán đoán chủ quan.
+Góc nhìn của kỹ sư phần mềm được thể hiện thông qua việc định lượng hóa các thao túng tâm lý trừu tượng thành các biến số toán học cứng. Thay vì thu thập dữ liệu nội dung hay chẩn đoán lâm sàng, hệ thống sử dụng các đại lượng proxy hành vi (như vận tốc cuộn) để gián tiếp đo lường trạng thái tâm lý. Sự quy đổi này cho phép thiết lập hệ thống bảo vệ triệt để trên nền tảng kỹ thuật, loại trừ hoàn toàn sự phụ thuộc vào các phán đoán chủ quan.
 
 \subsection{Đầu ra kỳ vọng}
 
-Báo cáo này nghiên cứu ba khía cạnh trọng yếu của mạng xã hội dưới góc nhìn kỹ sư phần mềm và cung cấp một bản chứng minh khái niệm (Proof-of-Concept - PoC) kỹ thuật nhằm đối phó trực tiếp với chúng:
+Báo cáo này nghiên cứu ba khía cạnh trọng yếu của mạng xã hội dưới góc nhìn kỹ sư phần mềm và cung cấp một bản chứng minh khái niệm (Proof-of-Concept) kỹ thuật nhằm đối phó trực tiếp với chúng:
 
 \begin{enumerate}
-    \item Thiết kế gây nghiện (Addictive design): Nghiên cứu vòng lặp phản hồi dopamine thông qua phương trình sai số dự đoán phần thưởng (Reward prediction error).
+    \item Thiết kế gây nghiện: Nghiên cứu vòng lặp phản hồi dopamine thông qua phương trình sai số dự đoán phần thưởng (RPE).
     
-    \item Thao túng dư luận (Opinion manipulation): Nghiên cứu hệ thống tối ưu hóa mức độ tương tác (Engagement optimization) thông qua ngôn từ độc hại.
+    \item Thao túng dư luận: Nghiên cứu hệ thống tối ưu hóa mức độ tương tác thông qua ngôn từ độc hại.
     
-    \item Trách nhiệm quản lý (Regulatory responsibility): Báo cáo chứng minh rằng máy móc và thuật toán có thể mang trách nhiệm tự điều chỉnh.
+    \item Trách nhiệm quản lý: Báo cáo chứng minh rằng máy móc và thuật toán có thể mang trách nhiệm tự điều chỉnh.
 \end{enumerate}
 
-Đầu ra cốt lõi: Bản PoC minh chứng thành công rằng các hành vi thao túng thuật toán hoàn toàn có thể bị vô hiệu hóa bởi lý thuyết điều khiển cổ điển (PID controller) mà không hề xâm phạm đến quyền riêng tư của người dùng.
+Đầu ra cốt lõi: Bản PoC minh chứng rằng các hành vi thao túng thuật toán có thể được điều tiết và kiểm soát rủi ro thông qua kiến trúc điều khiển tự động mà vẫn bảo toàn nghiêm ngặt quyền riêng tư của người dùng.
 
 \subsection{Cấu trúc báo cáo}
 

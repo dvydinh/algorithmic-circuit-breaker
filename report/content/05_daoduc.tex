@@ -1,9 +1,9 @@
 % 05_daoduc.tex - Phần 4: Đạo đức, pháp lý và kinh tế
-\section{Đạo đức nghề nghiệp và Trách nhiệm kỹ sư}
+\section{Đạo đức nghề nghiệp và trách nhiệm kỹ sư}
 
-\subsection{Tuân thủ Bộ quy tắc Đạo đức ACM và Chống lại Dark Patterns}
+\subsection{Tuân thủ bộ quy tắc đạo đức ACM và chống lại thiết kế độc hại}
 
-Ứng dụng kỹ thuật phần mềm vào tâm lý học đòi hỏi một khung đánh giá đạo đức khắt khe. Dự án này được thiết kế dựa trên sự đối chiếu trực tiếp với Bộ quy tắc Đạo đức và Đạo đức Nghề nghiệp của Hiệp hội Máy tính (ACM Code of Ethics):
+Ứng dụng kỹ thuật phần mềm vào tâm lý học đòi hỏi một khung đánh giá đạo đức khắt khe. Dự án này được thiết kế dựa trên sự đối chiếu trực tiếp với bộ quy tắc đạo đức và đạo đức nghề nghiệp của Hiệp hội Máy tính ACM:
 
 \begin{itemize}
     \item \textbf{Quy tắc 1.1 - Đóng góp cho xã hội và hạnh phúc con người:} Yêu cầu các chuyên gia công nghệ phải giảm thiểu tác động tiêu cực của hệ thống.
@@ -12,15 +12,15 @@
 
 Dưới lăng kính của Quy tắc 1.2, các mẫu thiết kế phi đạo đức mang tính biểu tượng như tính năng cuộn vô tận hay phát video tự động là những vi phạm rõ rệt. Về mặt kiến trúc, chúng tước đoạt các điểm dừng tự nhiên của giao diện, cố tình khai thác nhược điểm sinh lý thần kinh để cực đại hóa thời gian tương tác. 
 
-Hệ thống Algorithmic Circuit Breaker ra đời như một nỗ lực thực thi Quy tắc 1.1 bằng mã nguồn. Bằng cách áp dụng ma sát chánh niệm, hệ thống không ép buộc hay tước đoạt quyền truy cập của người dùng (như các phần mềm khóa Parental Control truyền thống), mà khôi phục lại tính minh bạch của lằn ranh thời gian và bảo vệ tối đa quyền tự chủ của hệ thống phản tư não bộ.
+Hệ thống mạch ngắt thuật toán ra đời như một nỗ lực thực thi Quy tắc 1.1 bằng mã nguồn. Bằng cách áp dụng ma sát chánh niệm, hệ thống không ép buộc hay tước đoạt quyền truy cập của người dùng (như các phần mềm khóa kiểm soát gia đình truyền thống), mà khôi phục lại tính minh bạch của lằn ranh thời gian và bảo vệ tối đa quyền tự chủ của hệ thống phản tư não bộ.
 
-\subsection{Lằn ranh giới hạn: Công cụ bảo vệ hay Phần mềm gián điệp}
+\subsection{Lằn ranh giới hạn: Công cụ bảo vệ hay phần mềm gián điệp}
 
 Giải quyết bài toán thao túng tâm lý tuyệt đối không được phép đánh đổi bằng quyền riêng tư của người dùng. Dưới góc độ đạo đức nghề nghiệp, một kiến trúc can thiệp tự chẩn đoán nội dung bằng cách gửi văn bản người dùng đọc về máy chủ trung tâm không khác gì một phần mềm gián điệp được hợp pháp hóa.
 
-Do đó, kiến trúc Algorithmic Circuit Breaker v3.0 tuân thủ một cách cực đoan bộ quy chuẩn đạo đức của ACM/IEEE thông qua nguyên lý thiết kế \textit{Privacy by Design}. 
+Do đó, kiến trúc mạch ngắt thuật toán v3.0 tuân thủ một cách cực đoan bộ quy chuẩn đạo đức của ACM/IEEE thông qua nguyên lý thiết kế quyền riêng tư cốt lõi. 
 
-\subsection{Bảo mật tột đỉnh bằng Toán học hóa}
+\subsection{Bảo mật tột đỉnh bằng toán học hóa}
 
 Tất cả các cơ chế cào dữ liệu tập trung xâm phạm quyền riêng tư bị loại bỏ cục bộ hóa. Việc phân tích định lượng độc hại được quy hoạch hoàn toàn về phía luồng thiết bị cuối bằng phương pháp quét cục bộ sớm, sử dụng mô hình Heuristic độ phức tạp $O(1)$ để xử lý độc lập không cần bên trung gian.
 

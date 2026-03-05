@@ -11,7 +11,7 @@ Script mô phỏng tích hợp \texttt{run\_simulation.py} đã được nâng c
     \item Vận tốc cuộn biến thiên liên tục, lập mô hình cho cường độ sai lệch dự đoán phần thưởng RPE.
 \end{itemize}
 
-\subsection{Kết quả trực quan hóa: Sự suy giảm $\alpha^1$ và vận tốc cuộn}
+\subsection{Trực quan hóa: Tác động của hệ số phân rã lên $\alpha^1$ và vận tốc cuộn}
 
 Sau khi nạp bộ tham số hành vi 10,000 bước vào module kết xuất \texttt{visualize\_results.py}, đồ thị Hình \ref{fig:sim_result} chứng minh thành công năng lực triệt tỏa biến cố của mạch ngắt thuật toán.
 
@@ -25,10 +25,10 @@ Sau khi nạp bộ tham số hành vi 10,000 bước vào module kết xuất \t
 Biểu đồ cho thấy rõ ràng hệ quả của ma sát chánh niệm điều khiển bởi khối PID:
 \begin{itemize}
     \item \textbf{Triệt tiêu $\alpha^1$:} Tín hiệu hành động ($K_p=1.2, K_i=0.1, K_d=0.2$) từ PID sinh ra một hệ số phân rã liên tục ép trọng số bốc đồng $\alpha^1$ suy giảm tiệm cận về 0 mỗi khi mức độ phần thưởng có dấu hiệu phân kỳ.
-    \item \textbf{Cắt đứt vận tốc cuộn:} Vận tốc cuộn tỷ lệ thuận với $\alpha^1$. Khi $\alpha^1$ bị triệt tiêu, vận tốc cuộn sụt giảm đồng thuận, tước đoạt động năng vô thức.
+    \item \textbf{Kiểm soát vận tốc cuộn:} Vận tốc cuộn tỷ lệ thuận với $\alpha^1$. Khi $\alpha^1$ suy giảm, vận tốc cuộn sụt giảm đồng thuận, hạn chế động năng vô thức.
 \end{itemize}
 
-Sự cân bằng động học này minh chứng đanh thép rằng cấu trúc phương trình vi phân kết hợp PID có năng lực toán học hóa và đoạt lại quyền tự chủ cảm xúc trước các thiết kế gây nghiện mà không cần sử dụng bất kỳ sự cấm đoán cực đoan nào.
+Kết quả động học này cho thấy cấu trúc phương trình vi phân kết hợp PID có khả năng giới hạn mức độ sai lệch dự đoán phần thưởng, từ đó hỗ trợ quá trình điều tiết hành vi vô thức một cách mềm mỏng mà không cần sử dụng cấm đoán định tuyến.
 
 \subsection{Đánh giá kiến trúc phân cấp PPO-PID}
 
@@ -38,7 +38,7 @@ Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích l
 
 Đánh giá trên tập kiểm tra độc lập 2,000 bước cho thấy kiến trúc kết hợp duy trì khả năng kiểm soát biến rủi ro tổng hợp dưới mức nguy hiểm. Hệ số suy giảm thể hiện mức rất ổn định, chứng tỏ PPO chủ động bóp méo đường cong bốc đồng $\alpha^1$ từ trước khi xảy ra các đứt gãy sinh học.
 
-\subsubsection{Nghiên cứu cắt bỏ định lượng và tính vượt trội}
+\subsubsection{Phân tích đặc trưng thành phần}
 Để chứng minh tính tất yếu của kiến trúc kết hợp, một đánh giá thành phần được thực thi trên môi trường mô phỏng 1,000 bước với 3 kịch bản kiểm chứng độc lập:
 \begin{enumerate}
     \item \textbf{Kịch bản cơ sở (Không can thiệp):} Bộ điều khiển bị vô hiệu hóa. Hệ thống cho thấy mức dopamine liên tục duy trì ở mức tối đa do ảnh hưởng trực diện từ mức độ độc hại của nền tảng mà không gặp bất kỳ kháng cự ma sát nào.
@@ -50,8 +50,8 @@ Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích l
     \centering
     % \includegraphics[width=1\textwidth]{images/ablation_result.png}
     \vspace{3cm} % Giữ chỗ 3cm chờ ảnh thật
-    \caption{[PENDING: CHÈN ẢNH BIỂU ĐỒ ABLATION STUDY VÀO ĐÂY LẤY TỪ KAGGLE]}
+    \caption{[PENDING: CHÈN ẢNH BIỂU ĐỒ PHÂN TÍCH THÀNH PHẦN VÀO ĐÂY LẤY TỪ KAGGLE]}
     \label{fig:ablation_result}
 \end{figure}
 
-Kết luận thực nghiệm này củng cố luận điểm: Máy học tăng cường phân bố không thay thế lý thuyết điều khiển cổ điển, thiết kế hợp tác cho thấy chúng làm nhiệm vụ bộ tinh chỉnh thích nghi vượt hẳn giới hạn tĩnh của PID thông thường. Kiến trúc bảo vệ phân cấp giải phóng người dùng khỏi việc phản kháng với môi trường thuật toán không gian mạng.
+Kết luận thực nghiệm này củng cố luận điểm: Máy học tăng cường phân bố đóng vai trò tinh chỉnh thích nghi bổ trợ hữu hiệu cho các giới hạn tĩnh của PID thông thường. Kiến trúc bảo vệ phân cấp cung cấp một khung công cụ tiềm năng để giảm thiểu các tác động tiêu cực từ nền tảng mạng lưới.

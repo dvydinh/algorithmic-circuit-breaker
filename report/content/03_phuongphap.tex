@@ -23,7 +23,7 @@ Với $RPE = R(t) - V(t)$ đóng vai trò là biến trạng thái phản hồi.
 
 Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức thiết kế ưu tiên quyền riêng tư (\textit{Privacy by Design}), hệ thống loại bỏ hoàn toàn các cấu trúc mạng nơ-ron học sâu cồng kềnh trong việc phân tích nội dung. Thay vào đó, kiến trúc lý thuyết của hệ thống ứng dụng phương pháp quét cục bộ sớm. Cấu trúc này dùng một từ điển tĩnh gồm các từ khóa mang độc tính cao nhất, đánh dấu sẵn ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Thay vì tính toán phức tạp trên máy chủ, một điểm số độc hại $\Gamma(t)$ được vi tính hóa với miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị nội hạt. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng bị truyền tải thoát ra ngoài.
 
-\subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
+\subsection{Trách nhiệm quản lý: Bộ điều khiển PID}
 
 Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán.
 
