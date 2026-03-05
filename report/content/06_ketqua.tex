@@ -36,7 +36,7 @@ Kết quả động học này cho thấy cấu trúc phương trình vi phân k
 
 Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích lũy trung bình liên tục được tối ưu dốc lên theo biên độ đường cong tích cực. Xu hướng tăng dần đều này phản ánh đúng thực tế Agent học được chuỗi giá trị tinh chỉnh tham số PID ($K_p$, $K_i$, $K_d$, $\theta_{friction}$) theo quỹ đạo an toàn mà không cần sử dụng án phạt bạo lực.
 
-Đánh giá trên tập kiểm tra độc lập 2,000 bước cho thấy kiến trúc kết hợp duy trì khả năng kiểm soát biến rủi ro tổng hợp dưới mức nguy hiểm. Hệ số suy giảm thể hiện mức rất ổn định, chứng tỏ PPO chủ động bóp méo đường cong bốc đồng $\alpha^1$ từ trước khi xảy ra các đứt gãy sinh học.
+Đánh giá trên tập kiểm tra độc lập 2,000 bước cho thấy kiến trúc kết hợp duy trì khả năng kiểm soát tuyệt đối biến rủi ro tổng hợp. Cụ thể, mức độ khát khao (Dopamine Level) trung bình được giữ ở mức $0.7068$ và Chỉ số Rủi ro (Risk Index) đạt $0.7204$, hoàn toàn chặn đứng việc chạm ngưỡng nghiện ngập cực đoan ($0.8$). Đặc biệt, hệ thống đã tiến hành kích hoạt $1,954$ điểm nghẽn chánh niệm cấu thành hệ số suy giảm (Decay Factor) trung bình rất ổn định ở mức $0.6265$, giới hạn vận tốc cuộn trung bình ở $511.75$ đơn vị. Những con số máy học thực nghiệm này khẳng định rằng vòng lặp PPO chủ động bóp méo đường cong bốc đồng $\alpha^1$ theo phương pháp phòng ngừa từ xa trước khi xảy ra các đứt gãy sinh lý.
 
 \subsubsection{Phân tích đặc trưng thành phần}
 Để chứng minh tính tất yếu của kiến trúc kết hợp, một đánh giá thành phần được thực thi trên môi trường mô phỏng 1,000 bước với 3 kịch bản kiểm chứng độc lập:
