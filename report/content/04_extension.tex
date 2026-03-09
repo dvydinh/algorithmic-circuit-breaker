@@ -48,7 +48,9 @@ manifest.json & Khung chỉ thị quyền hệ thống. & Manifest V3 \\
 \end{tabular}
 \end{table}
 
-\subsection{Kiến trúc Flask Backend}
+\subsection{Kiến trúc Client-Server Nguyên khối (Monolithic Client-Server Architecture)}
+
+Trái ngược với các thiết kế phân tán cồng kềnh, nguyên mẫu (Proof-of-Concept) hiện tại được xây dựng hoàn toàn dựa trên khối lượng nhẹ (lightweight architecture). Chrome Extension vận hành như một "cảm biến mù" (blind sensor) ở tuyến đầu - chỉ thu thập vận tốc cuộn và điểm số độc hại vô hướng. Dữ liệu này được đóng gói thành một payload JSON cơ bản và truyền dẫn thông qua giao thức REST API đến một Backend Python Flask đơn nút mạng (single-node) tại \texttt{server.py}. Để tối ưu hóa khắt khe độ trễ sinh ra trong khối hệ thống điều khiển PID phản hồi nhanh, trạng thái phiên hoạt động của người dùng (user session state) được quản lý và xử lý trực tiếp trên bộ nhớ lưu trữ RAM dưới dạng cấu trúc từ điển nguyên sinh (in-memory dictionary), từ bỏ hoàn toàn việc sử dụng mạng lưới Vi dịch vụ (Microservices) hay các hệ quản trị CSDL trung gian phức tạp như Redis Cache. Kiến trúc này đặc biệt đáp ứng chuẩn mực vận hành thời gian thực.
 
 \subsubsection{Mô hình UserAgent Học Tăng Cường}
 

@@ -19,11 +19,9 @@ $RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm 
 
 \subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
 
-Luồng nội dung độc hại (toxicity) được các nền tảng sử dụng để kích hoạt trạng thái "chiến đấu hay bỏ chạy", giam cầm người dùng vào các buồng vang (echo chambers).
+\subsubsection{Xử lý Ngôn ngữ Tự nhiên Cục bộ (Shift-Left Local NLP Heuristics)}
 
-Giải pháp giải quyết bài toán này mà không đánh đổi quyền riêng tư là nguyên lý Shift-Left Local NLP Heuristics. Nhóm nghiên cứu đã sử dụng một từ điển tĩnh gồm 150 thuật ngữ có độc tính cao nhất, được chắt lọc từ tập dữ liệu Jigsaw gốc.
-
-Thao tác tính điểm độc hại $\Gamma(t)$ được thực thi nghiêm ngặt trên trình duyệt của máy khách (Client-side). Cụ thể, thuật toán sẽ duyệt cây DOM theo độ phức tạp thời gian cực nhẹ $O(1)$, đếm tần suất xuất hiện nhóm từ vựng và sinh ra một số vô hướng duy nhất. Tuyệt đối không có văn bản người dùng (user text) nào được truyền sang máy chủ. Mô hình đáp ứng tiêu chuẩn \textit{Privacy by Design} một cách tận gốc.
+Nhằm tuân thủ tuyệt đối chuẩn mực đạo đức \textit{Privacy by Design} (Thiết kế đặt quyền riêng tư làm trọng tâm), hệ thống loại bỏ hoàn toàn các mô hình học sâu (Deep Learning) cồng kềnh trong việc phân tích nội dung. Thay vào đó, phần mở rộng trình duyệt (Chrome Extension) ứng dụng phương pháp "Shift-Left Local NLP Heuristics". Trình duyệt sử dụng một từ điển tĩnh được cấu hình cứng (hardcoded static dictionary) gồm 150 từ khóa mang độc tính cao nhất, được trích xuất ngoại tuyến từ tập dữ liệu Jigsaw Toxic Comment. Tiện ích mở rộng quét toàn bộ cây DOM nội hạt thông qua Biểu thức chính quy (Regular Expressions - Regex) với độ phức tạp thời gian $\mathcal{O}(1)$, từ đó vi tính hóa một Điểm số Độc hại (Toxicity Score, $\Gamma(t)$) có miền giới hạn từ 0.0 đến 1.0 trực tiếp tại thiết bị. Kiến trúc này đảm bảo tuyệt đối không có bất kỳ chuỗi văn bản tự nhiên nào của người dùng (user text) bị truyền tải về máy chủ.
 
 \subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
 
@@ -37,3 +35,19 @@ Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 s
 \end{equation}
 
 Khi thao túng tâm lý vọt qua ngưỡng an toàn, bộ điều khiển sinh ra lực ma sát kỹ thuật số (digital friction). Điều này chứng minh tuyệt đối rằng đội ngũ kỹ sư có thể tự tay xây dựng các cơ chế quản lý tự động trực tiếp vào lõi phần mềm.
+
+\subsubsection{Công thức Chỉ số Rủi ro Tổng hợp (Risk Index)}
+
+Tín hiệu kích hoạt mạch ngắt thuật toán (đại lượng $e(t)$ trong khối PID) được định lượng bởi Chỉ số Rủi ro tổng hợp ($I_{risk}(t)$). Chỉ số này liên kết đa chiều các trạng thái tương tác thành một đại lượng phản hồi tuyến tính duy nhất. Hàm rủi ro được thiết lập chính xác bao gồm 3 thành phần cấu thành:
+
+\begin{equation}
+    I_{risk}(t) = w_1 \cdot A(t) + w_2 \cdot \Gamma(t) + w_3 \cdot S(t)
+    \label{eq:risk_index}
+\end{equation}
+
+Trong đó, các biến tham số được định nghĩa như sau:
+\begin{itemize}
+    \item $A(t)$: Trạng thái Gây nghiện (Addiction) biểu diễn dưới dạng vận tốc cuộn cơ học (Velocity), chịu trọng số cao nhất $w_1 = 0.6$.
+    \item $\Gamma(t)$: Điểm số Độc hại (Toxicity) quét cục bộ, đánh giá mức phơi nhiễm theo thời gian thực với trọng số $w_2 = 0.3$.
+    \item $S(t)$: Thời lượng Phiên hoạt động (Session Duration) trích xuất sự hao hụt năng lượng sinh lý, vận hành với trọng số $w_3 = 0.1$.
+\end{itemize}
