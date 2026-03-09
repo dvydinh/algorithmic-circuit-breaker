@@ -1,0 +1,240 @@
+% A1_code.tex - Phụ lục A: Code đầy đủ
+
+\section{Phụ lục A: Code đầy đủ}
+
+\subsection{A.1. Vector embedding simulation}
+
+\begin{lstlisting}[language=Python, caption=Mô phỏng không gian vector và drift velocity]
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+
+class UserVectorSpace:
+    def __init__(self, n_dim=5):
+        self.n_dim = n_dim
+        # Dinh nghia cac diem hut (attractors)
+        self.attractors = {
+            'extreme_left': np.array([-5, -5, 3, 4, -3]),
+            'extreme_right': np.array([-5, 5, 3, 4, -3]),
+            'conspiracy': np.array([2, 0, 4, 5, -5]),
+            'neutral': np.array([0, 0, 0, 0, 0])
+        }
+        
+    def compute_drift_velocity(self, u_t, u_prev, dt=1.0):
+        """Tinh van toc troi dat"""
+        return (u_t - u_prev) / dt
+    
+    def find_nearest_attractor(self, u):
+        """Tim diem hut gan nhat"""
+        min_dist = float('inf')
+        nearest = None
+        for name, attractor in self.attractors.items():
+            dist = np.linalg.norm(u - attractor)
+            if dist < min_dist:
+                min_dist = dist
+                nearest = (name, attractor)
+        return nearest
+    
+    def compute_manipulation_index(self, u_t, u_prev, dt=1.0):
+        """Tinh chi so dieu huong"""
+        v_drift = self.compute_drift_velocity(u_t, u_prev, dt)
+        _, a_nearest = self.find_nearest_attractor(u_t)
+        d_nearest = a_nearest - u_t
+        
+        # Tranh chia cho 0
+        if np.linalg.norm(v_drift) < 1e-6 or np.linalg.norm(d_nearest) < 1e-6:
+            return 0.0
+        
+        # Cosine similarity
+        M = np.dot(v_drift, d_nearest) / (np.linalg.norm(v_drift) * np.linalg.norm(d_nearest))
+        return M
+
+# Mo phong
+space = UserVectorSpace()
+
+# Khoi tao nguoi dung o vi tri trung tinh
+u = np.array([0.1, 0.2, 0.1, 0.0, 0.1])
+trajectory = [u.copy()]
+
+# Mo phong 100 buoc
+for t in range(100):
+    # Content vector - gia lap noi dung duoc goi y
+    # Ban dau trung tinh, sau do dan tro nen cuc doan
+    if t < 50:
+        noise = 0.1 * np.random.randn(5)
+        c = np.array([0, 0, 0.2, 0.1, 0]) + noise
+    else:
+        # Day ve extreme_right
+        c = space.attractors['extreme_right'] * 0.15 + 0.2 * np.random.randn(5)
+    
+    # Cap nhat vector nguoi dung
+    lambda_rate = 0.08
+    u_new = (1 - lambda_rate) * u + lambda_rate * c
+    
+    trajectory.append(u_new.copy())
+    u = u_new
+
+trajectory = np.array(trajectory)
+
+# Visualize voi PCA
+pca = PCA(n_components=2)
+trajectory_2d = pca.fit_transform(trajectory)
+
+attractors_array = np.array(list(space.attractors.values()))
+attractors_2d = pca.transform(attractors_array)
+
+plt.figure(figsize=(10, 8))
+plt.plot(trajectory_2d[:, 0], trajectory_2d[:, 1], 'b-', alpha=0.6, linewidth=2, label='User Trajectory')
+plt.scatter(trajectory_2d[0, 0], trajectory_2d[0, 1], c='green', s=200, marker='o', label='Start', zorder=5)
+plt.scatter(trajectory_2d[-1, 0], trajectory_2d[-1, 1], c='red', s=200, marker='X', label='End', zorder=5)
+
+# Ve attractors
+for i, (name, _) in enumerate(space.attractors.items()):
+    plt.scatter(attractors_2d[i, 0], attractors_2d[i, 1], c='orange', s=300, marker='*', edgecolor='black', linewidth=2, zorder=6)
+    plt.text(attractors_2d[i, 0] + 0.3, attractors_2d[i, 1], name, fontsize=10)
+
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('User Vector Drift in 2D PCA Space')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.savefig('vector_drift.png', dpi=300)
+plt.show()
+
+# Tinh manipulation index theo thoi gian
+M_values = []
+for i in range(1, len(trajectory)):
+    M = space.compute_manipulation_index(trajectory[i], trajectory[i-1])
+    M_values.append(M)
+
+plt.figure(figsize=(10, 4))
+plt.plot(M_values, linewidth=2)
+plt.axhline(y=0.5, color='r', linestyle='--', label='Warning Threshold')
+plt.xlabel('Time Step')
+plt.ylabel('Manipulation Index')
+plt.title('Manipulation Index Over Time')
+plt.legend()
+plt.grid(True)
+plt.savefig('manipulation_index.png', dpi=300)
+plt.show()
+\end{lstlisting}
+
+\subsection{A.2. Full Circuit Breaker Implementation}
+
+\begin{lstlisting}[language=Python, caption=Triển khai đầy đủ hệ thống Circuit Breaker]
+class CompleteCircuitBreaker:
+    def __init__(self, config):
+        self.Kp = config.get('Kp', 0.5)
+        self.Ki = config.get('Ki', 0.1)
+        self.Kd = config.get('Kd', 0.2)
+        self.threshold = config.get('threshold', 0.35)  # Tuned
+        self.weights = config.get('weights', [0.25, 0.30, 0.20, 0.15, 0.10])  # 5 components
+        
+        # State variables
+        self.integral = 0.0
+        self.prev_error = 0.0
+        self.intervention_history = []
+        
+        # Sensors
+        self.velocity_sensor = VelocitySensor()
+        self.toxicity_sensor = ToxicitySensor()
+        self.drift_sensor = DriftSensor()
+        
+    def sense(self, user_actions, content_consumed):
+        """Khoi cam bien"""
+        velocity = self.velocity_sensor.measure(user_actions)
+        toxicity = self.toxicity_sensor.measure(content_consumed)
+        drift = self.drift_sensor.measure(user_actions)
+        
+        return velocity, toxicity, drift
+    
+    def control(self, risk_index, dt=1.0):
+        """Bo dieu khien PID"""
+        error = max(0, risk_index - self.threshold)
+        
+        # P: Proportional
+        P = self.Kp * error
+        
+        # I: Integral (voi anti-windup)
+        self.integral += error * dt
+        self.integral = np.clip(self.integral, 0, 10)
+        I = self.Ki * self.integral
+        
+        # D: Derivative
+        derivative = (error - self.prev_error) / dt
+        D = self.Kd * derivative
+        
+        # Tong hop
+        u = P + I + D
+        u = np.clip(u, 0, 1)
+        
+        self.prev_error = error
+        return u, {'P': P, 'I': I, 'D': D}
+    
+    def actuate(self, u, recommendation_system):
+        """Co che can thiep (tuned thresholds)"""
+        if u < 0.2:
+            level = 0
+            action = "normal"
+            # Khong can thiep
+        elif u < 0.4:
+            level = 1
+            action = "friction"
+            # Them delay
+            delay_ms = 200 + u * 1000
+            recommendation_system.add_delay(delay_ms)
+        elif u < 0.6:
+            level = 2
+            action = "redirect"
+            # Thay doi objective function
+            recommendation_system.set_objective('safe_mode')
+            recommendation_system.prioritize_orthogonal_content()
+        else:
+            level = 3
+            action = "break"
+            # Ngat mach hoan toan
+            recommendation_system.pause_feed(duration=600)  # 10 phut
+            recommendation_system.show_message("Ban can nghi ngoi")
+        
+        self.intervention_history.append({
+            'level': level,
+            'action': action,
+            'control_signal': u
+        })
+        
+        return level, action
+
+class VelocitySensor:
+    def __init__(self, window=60):
+        self.window = window  # seconds
+        self.history = []
+        
+    def measure(self, user_actions):
+        current_time = user_actions[-1]['timestamp']
+        recent_actions = [a for a in user_actions if current_time - a['timestamp'] < self.window]
+        velocity = len(recent_actions) / (self.window / 60)  # items per minute
+        return min(1.0, velocity / 20.0)  # Normalize
+
+class ToxicitySensor:
+    def __init__(self, window=1800):
+        self.window = window  # 30 minutes
+        
+    def measure(self, content_consumed):
+        toxicity_sum = sum([c['toxicity_score'] for c in content_consumed])
+        return min(1.0, toxicity_sum / 10.0)  # Normalize
+
+class DriftSensor:
+    def __init__(self, vector_space):
+        self.vector_space = vector_space
+        self.prev_vector = None
+        
+    def measure(self, user_actions):
+        current_vector = user_actions[-1]['user_vector']
+        if self.prev_vector is None:
+            self.prev_vector = current_vector
+            return 0.0
+        
+        M = self.vector_space.compute_manipulation_index(current_vector, self.prev_vector)
+        self.prev_vector = current_vector
+        return max(0, M)  # Chi quan tam drift duong
+\end{lstlisting}

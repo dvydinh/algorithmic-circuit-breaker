@@ -1,0 +1,214 @@
+% 02_lytuyet.tex - Phần 2: Cơ sở lý thuyết
+\section{Cơ sở lý thuyết}
+
+\subsection{Cơ sở sinh học thần kinh}
+
+\subsubsection{Cơ chế dopamine và sai lệch dự đoán phần thưởng}
+
+Để hiểu bản chất kỹ thuật của thiết kế gây nghiện, chúng ta cần xem xét cơ chế dopamine dưới góc độ toán học. Theo nghiên cứu đột phá của Schultz và cộng sự (1997) \cite{schultz1997}, não bộ không phản ứng với phần thưởng tuyệt đối, mà phản ứng với \textit{sai lệch dự đoán phần thưởng} (Reward Prediction Error - RPE).
+
+Tín hiệu dopamine $\delta_t$ tại thời điểm $t$ được mô hình hóa bởi phương trình Temporal Difference (TD):
+
+\begin{equation}
+    \delta_t = R_t + \gamma V(S_{t+1}) - V(S_t)
+    \label{eq:rpe}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $\delta_t$: Tín hiệu dopamine (RPE)
+    \item $R_t$: Phần thưởng thực tế tại thời điểm $t$
+    \item $V(S_t)$: Giá trị kỳ vọng ở trạng thái $S_t$
+    \item $\gamma \in [0,1]$: Hệ số chiết khấu (discount factor)
+\end{itemize}
+
+\begin{definition}[Sai lệch dự đoán phần thưởng]
+RPE là chênh lệch giữa phần thưởng nhận được và phần thưởng kỳ vọng. Khi $\delta_t > 0$, não bộ nhận được phần thưởng cao hơn dự kiến và tăng tiết dopamine. Khi $\delta_t < 0$, não bộ thất vọng và giảm dopamine.
+\end{definition}
+
+Các thuật toán hiện đại tối đa hóa $|\delta_t|$ bằng cách sử dụng cơ chế \textit{phần thưởng biến đổi} (variable ratio rewards), tạo ra chuỗi $R_t$ có phương sai cao. Điều này giữ cho hệ thống thần kinh luôn ở trạng thái thiếu hụt thông tin (information deprivation), ngăn cản sự bão hòa tự nhiên (natural saturation).
+
+\subsubsection{Vòng lặp hành vi và học tăng cường sinh học}
+
+Não bộ con người hoạt động như một hệ thống học tăng cường tự nhiên. Vòng lặp hành vi được mô tả bởi chu trình:
+
+\begin{equation}
+    S_t \xrightarrow{\pi(a|s)} A_t \xrightarrow{env} R_t, S_{t+1}
+\end{equation}
+
+Trong đó $\pi(a|s)$ là chính sách hành vi (policy) được học qua thời gian. Mạng xã hội khai thác vòng lặp này bằng cách:
+
+\begin{enumerate}
+    \item \textbf{Giảm độ trễ phản hồi:} Thời gian từ hành động (cuộn, nhấn like) đến phần thưởng (nội dung mới, thông báo) được tối ưu về milliseconds.
+    \item \textbf{Tăng tần suất kích thích:} Số lượng cơ hội nhận phần thưởng trên phút được tối đa hóa.
+    \item \textbf{Ngẫu nhiên hóa có kiểm soát:} Sử dụng lịch trình phần thưởng biến đổi (variable ratio schedule) - kỹ thuật mạnh nhất trong tâm lý học hành vi.
+\end{enumerate}
+
+\subsection{Lý thuyết điều khiển và hệ thống phản hồi}
+
+\subsubsection{Mô hình hóa hệ thống phản hồi}
+
+Mạng xã hội hoạt động như một hệ thống vòng kín (closed-loop system). Theo lý thuyết điều khiển, tính ổn định của hệ thống phụ thuộc vào hệ số khuếch đại vòng lặp (loop gain) $G$.
+
+Phương trình trạng thái của mức độ tương tác $E(t)$ (engagement level) có thể biểu diễn như sau:
+
+\begin{equation}
+    \frac{dE}{dt} = (\alpha - \beta) E(t) + u(t)
+    \label{eq:engagement_dynamics}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $E(t)$: Mức độ tương tác tại thời điểm $t$
+    \item $\alpha > 0$: Hệ số kích thích từ thuật toán (algorithmic stimulation)
+    \item $\beta > 0$: Hệ số mệt mỏi tự nhiên (natural fatigue)
+    \item $u(t)$: Tín hiệu điều khiển ngoại sinh (external control signal)
+\end{itemize}
+
+\begin{theorem}[Điều kiện ổn định Lyapunov]
+Hệ thống \eqref{eq:engagement_dynamics} ổn định khi và chỉ khi $\alpha < \beta$. Nếu $\alpha > \beta$, hệ thống sẽ phát tán (diverge) với tốc độ hàm mũ.
+\end{theorem}
+
+\begin{proof}
+Xét hàm Lyapunov $V(E) = \frac{1}{2}E^2$. Đạo hàm theo thời gian:
+\begin{equation}
+    \dot{V} = E\dot{E} = E[(\alpha - \beta)E + u] = (\alpha - \beta)E^2 + Eu
+\end{equation}
+Khi $u = 0$ (không có điều khiển), $\dot{V} < 0$ khi và chỉ khi $\alpha < \beta$.
+\end{proof}
+
+Hiện tại, thuật toán gợi ý đẩy $\alpha \gg \beta$ (ví dụ: $\alpha = 0.8$, $\beta = 0.2$), khiến đạo hàm mức độ tương tác luôn dương:
+
+\begin{equation}
+    \frac{dE}{dt} \approx 0.6 \cdot E(t) > 0
+\end{equation}
+
+Điều này dẫn đến sự tăng trưởng hàm mũ (exponential growth) hay còn gọi là hiện tượng \textit{lướt vô thức} (mindless scrolling).
+
+\subsubsection{Hàm truyền và phân tích ổn định}
+
+Áp dụng biến đổi Laplace cho phương trình \eqref{eq:engagement_dynamics} với $u(t) = 0$:
+
+\begin{equation}
+    sE(s) - E(0) = (\alpha - \beta)E(s)
+\end{equation}
+
+Hàm truyền của hệ thống:
+
+\begin{equation}
+    H(s) = \frac{E(s)}{E(0)} = \frac{1}{s - (\alpha - \beta)}
+\end{equation}
+
+Cực (pole) của hệ thống: $p = \alpha - \beta$
+
+\begin{itemize}
+    \item Nếu $p < 0$ (nghĩa là $\alpha < \beta$): Hệ thống ổn định, $E(t) \to 0$ khi $t \to \infty$
+    \item Nếu $p > 0$ (nghĩa là $\alpha > \beta$): Hệ thống không ổn định, $E(t) \to \infty$ khi $t \to \infty$
+    \item Nếu $p = 0$ (nghĩa là $\alpha = \beta$): Hệ thống ở biên giới ổn định
+\end{itemize}
+
+\subsection{Không gian vector và định lượng điều hướng}
+
+\subsubsection{Biểu diễn người dùng trong không gian nhúng}
+
+Nhóm nghiên cứu đề xuất mô hình hóa trạng thái tâm lý người dùng bằng vector nhúng $\vec{u} \in \mathbb{R}^n$ trong không gian $n$ chiều. Mỗi chiều đại diện cho một khía cạnh tâm lý hoặc sở thích:
+
+\begin{equation}
+    \vec{u}_t = [u_1, u_2, \ldots, u_n]^T
+\end{equation}
+
+Ví dụ với $n=5$:
+\begin{itemize}
+    \item $u_1$: Mức độ quan tâm đến chính trị
+    \item $u_2$: Hướng chính trị (trái - phải)
+    \item $u_3$: Mức độ cảm xúc tiêu cực
+    \item $u_4$: Xu hướng chia sẻ thông tin chưa kiểm chứng
+    \item $u_5$: Mức độ tin tưởng vào cơ quan chính thức
+\end{itemize}
+
+Vector này được cập nhật sau mỗi tương tác với nội dung $\vec{c}$ thông qua quy tắc:
+
+\begin{equation}
+    \vec{u}_{t+1} = \vec{u}_t + \eta \cdot \text{grad}_{\vec{u}}(\text{engagement}(\vec{u}_t, \vec{c}))
+\end{equation}
+
+Trong đó $\eta$ là tốc độ học (learning rate) và hàm engagement đo lường mức độ tương tác.
+
+\subsubsection{Vận tốc trôi dạt và phát hiện điều hướng}
+
+Sự điều hướng dư luận được định lượng bằng khái niệm \textit{vận tốc trôi dạt} (drift velocity):
+
+\begin{equation}
+    \vec{v}_{drift}(t) = \frac{\vec{u}_t - \vec{u}_{t-\Delta t}}{\Delta t}
+    \label{eq:drift_velocity}
+\end{equation}
+
+\begin{definition}[Điểm hút trong không gian trạng thái]
+Điểm hút (attractor) $\vec{a} \in \mathbb{R}^n$ là một vector đại diện cho trạng thái cực đoan mà thuật toán có xu hướng đẩy người dùng về phía đó do tính dễ dự đoán và engagement cao.
+\end{definition}
+
+Ví dụ các điểm hút:
+\begin{itemize}
+    \item $\vec{a}_{extreme\_left} = [-5, -5, 3, 4, -3]^T$: Cực đoan trái, cảm xúc tiêu cực cao
+    \item $\vec{a}_{extreme\_right} = [-5, 5, 3, 4, -3]^T$: Cực đoan phải, cảm xúc tiêu cực cao
+    \item $\vec{a}_{conspiracy} = [2, 0, 4, 5, -5]^T$: Thuyết âm mưu, tin tưởng thấp
+\end{itemize}
+
+Lực hút (attraction force) từ điểm hút $\vec{a}$ được mô hình hóa:
+
+\begin{equation}
+    \vec{F}_{attraction} = -k \cdot \nabla_{\vec{u}} \|\vec{u} - \vec{a}\|^2 = -2k(\vec{u} - \vec{a})
+\end{equation}
+
+Với $k > 0$ là hằng số khuếch đại của thuật toán. Khi $k$ lớn, lực hút mạnh, người dùng nhanh chóng bị đẩy về cực đoan.
+
+\subsubsection{Phát hiện điều hướng bằng phân tích hướng}
+
+Chúng ta định nghĩa chỉ số điều hướng (manipulation index):
+
+\begin{equation}
+    M(t) = \frac{\vec{v}_{drift}(t) \cdot \vec{d}_{nearest}}{\|\vec{v}_{drift}(t)\| \cdot \|\vec{d}_{nearest}\|}
+    \label{eq:manipulation_index}
+\end{equation}
+
+Trong đó $\vec{d}_{nearest} = \vec{a}_{nearest} - \vec{u}_t$ là vector từ vị trí hiện tại đến điểm hút gần nhất.
+
+\begin{itemize}
+    \item $M(t) \approx 1$: Người dùng đang di chuyển thẳng về điểm hút (nguy hiểm cao)
+    \item $M(t) \approx 0$: Người dùng di chuyển vuông góc (an toàn)
+    \item $M(t) \approx -1$: Người dùng đang thoát khỏi điểm hút (phục hồi)
+\end{itemize}
+
+\subsection{Mô hình kinh tế và giá trị trọn đời}
+
+\subsubsection{Định nghĩa Customer Lifetime Value}
+
+Giá trị trọn đời khách hàng được định nghĩa:
+
+\begin{equation}
+    CLV = \sum_{t=0}^{T} \frac{R_t - C_t}{(1+r)^t}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $R_t$: Doanh thu từ người dùng tại thời điểm $t$ (chủ yếu từ quảng cáo)
+    \item $C_t$: Chi phí phục vụ người dùng
+    \item $r$: Lãi suất chiết khấu
+    \item $T$: Thời gian sống của người dùng trên nền tảng
+\end{itemize}
+
+\subsubsection{Mối quan hệ giữa bảo vệ người dùng và $CLV$}
+
+Giả thuyết của chúng tôi: Việc bảo vệ người dùng khỏi quá tải sẽ tăng $T$ (kéo dài tuổi thọ tài khoản) và giảm rủi ro pháp lý.
+
+\begin{equation}
+    CLV_{protected} > CLV_{unprotected}
+\end{equation}
+
+Nguyên nhân:
+\begin{enumerate}
+    \item Giảm tỷ lệ burnout (kiệt sức) dẫn đến xóa tài khoản
+    \item Tăng danh tiếng thương hiệu, thu hút người dùng mới
+    \item Giảm chi phí tuân thủ pháp luật và tránh phạt
+    \item Tăng giá trị quảng cáo do môi trường an toàn hơn
+\end{enumerate}

@@ -1,0 +1,40 @@
+% A2_thongso.tex - Phụ lục B: Bảng thông số kỹ thuật
+\section{Phụ lục B: Bảng thông số kỹ thuật}
+
+\begin{table}[H]
+\centering
+\caption{Thông số kỹ thuật hệ thống (Tuned Version)}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Tham số} & \textbf{Giá trị} \\
+\hline
+Số chiều không gian vector & $n = 5$ (có thể mở rộng lên 100-300) \\
+\hline
+Hệ số PID & $K_p = 0.5$, $K_i = 0.1$, $K_d = 0.2$ \\
+\hline
+Ngưỡng an toàn & $I_{threshold} = 0.35$ (tuned from 0.5) \\
+\hline
+Ngưỡng Friction & $0.2$ (tuned from 0.3) \\
+\hline
+Ngưỡng Redirection & $0.4$ (tuned from 0.6) \\
+\hline
+Ngưỡng Circuit Break & $0.6$ (tuned from 0.8) \\
+\hline
+Trọng số risk index (5 components) & $w_1 = 0.25$ (Velocity), $w_2 = 0.30$ (Toxicity), $w_3 = 0.20$ (Manipulation), $w_4 = 0.15$ (Extremity), $w_5 = 0.10$ (Session) \\
+\hline
+Tần suất cập nhật & 2 Hz (mỗi 500ms) \\
+\hline
+Cửa sổ thời gian toxicity & 30 phút \\
+\hline
+Cửa sổ thời gian velocity & 60 giây \\
+\hline
+Tốc độ học vector & $\lambda = 0.05 - 0.10$ \\
+\hline
+Delay injection range & 200ms - 1200ms \\
+\hline
+Circuit break duration & 10 phút \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Ghi chú:} Các ngưỡng đã được hạ thấp trong giai đoạn hiệu chỉnh thực nghiệm để tăng độ nhạy của hệ thống và can thiệp sớm hơn khi phát hiện dấu hiệu rủi ro.

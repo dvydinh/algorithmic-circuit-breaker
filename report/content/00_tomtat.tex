@@ -1,0 +1,31 @@
+% 00_tomtat.tex - Tóm tắt / Abstract
+\section*{TÓM TẮT}
+\addcontentsline{toc}{section}{TÓM TẮT}
+
+\subsection*{Tiếng Việt}
+Báo cáo này nghiên cứu tác động của mạng xã hội đến tâm lý người dùng từ góc độ kỹ thuật hệ thống. Khác với các nghiên cứu xã hội học truyền thống, chúng tôi tiếp cận vấn đề bằng cách định lượng hóa các hiện tượng tâm lý thành các biến số toán học có thể đo lường và kiểm soát. Ba vấn đề chính được phân tích bao gồm: (1) thiết kế gây nghiện thông qua cơ chế sai lệch dự đoán phần thưởng, (2) điều hướng dư luận bằng vận tốc trôi dạt trong không gian vector, và (3) trách nhiệm điều chỉnh thông qua kiến trúc an toàn hệ thống.
+
+Giải pháp đề xuất là \textit{Algorithmic Circuit Breaker} - một cơ chế ngắt mạch tự động dựa trên lý thuyết điều khiển PID. Hệ thống hoạt động như một lớp phần mềm trung gian, giám sát liên tục các chỉ số sinh học và can thiệp khi phát hiện dấu hiệu mất ổn định. Phiên bản 2.2 của dự án triển khai đầy đủ hệ thống bao gồm:
+\begin{itemize}
+    \item Flask Backend: Server Python xử lý logic PID, mô phỏng dopamine, và tính toán chỉ số rủi ro theo thời gian thực với tính năng jitter để dữ liệu "sống động".
+    \item Chrome Extension: Giao diện Dual-Mode (HUD Cyberpunk và Sidebar Matrix Terminal), theo dõi vận tốc cuộn trang, sử dụng Background Bridge Pattern để vượt qua Mixed Content Policy.
+\end{itemize}
+
+Kết quả mô phỏng cho thấy giải pháp giúp duy trì hệ số khuếch đại vòng lặp dưới ngưỡng an toàn, đồng thời tối ưu hóa giá trị trọn đời khách hàng cho doanh nghiệp.
+
+\textbf{Từ khóa:} Mạng xã hội, tâm lý người dùng, thiết kế gây nghiện, lý thuyết điều khiển, đạo đức AI, hệ thống gợi ý, Chrome Extension, Flask Backend
+
+\subsection*{Abstract (English)}
+This report investigates the impact of social media on user psychology from a system engineering perspective. Unlike traditional sociological studies, we approach the problem by quantifying psychological phenomena into measurable and controllable mathematical variables. Three main issues are analyzed: (1) addictive design through reward prediction error mechanisms, (2) opinion manipulation via drift velocity in vector space, and (3) regulatory responsibility through system safety architecture.
+
+The proposed solution is the \textit{Algorithmic Circuit Breaker} - an automatic shutdown mechanism based on PID control theory. The system operates as middleware, continuously monitoring biological indicators and intervening when detecting signs of instability. Version 2.2 of the project includes a complete implementation:
+\begin{itemize}
+    \item Flask Backend: Python server handling PID logic, dopamine simulation, and real-time risk index calculation with jitter for "alive" data.
+    \item Chrome Extension: Dual-Mode UI (Cyberpunk HUD and Matrix Terminal Sidebar), scroll velocity tracking, using Background Bridge Pattern to bypass Mixed Content Policy.
+\end{itemize}
+
+Simulation results demonstrate that the solution maintains loop gain below safety thresholds while optimizing customer lifetime value for businesses.
+
+\textbf{Keywords:} Social media, user psychology, addictive design, control theory, AI ethics, recommendation systems, Chrome Extension, Flask Backend
+
+\newpage
