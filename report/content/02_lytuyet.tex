@@ -77,7 +77,7 @@ Xét hàm Lyapunov $V(E) = \frac{1}{2}E^2$. Đạo hàm theo thời gian:
 Khi $u = 0$ (không có điều khiển), $\dot{V} < 0$ khi và chỉ khi $\alpha < \beta$.
 \end{proof}
 
-Hiện tại, thuật toán gợi ý đẩy $\alpha \gg \beta$ (ví dụ: $\alpha = 0.8$, $\beta = 0.2$), khiến đạo hàm mức độ tương tác luôn dương:
+Do sự lệch pha của hàm mục tiêu (Misaligned Objective Functions) trong việc cực đại hóa thời gian tương tác (Stray et al., 2021) \cite{stray2021}, thuật toán gợi ý hiện tại cố tình đẩy $\alpha \gg \beta$ (ví dụ: $\alpha = 0.8$, $\beta = 0.2$), khiến đạo hàm mức độ tương tác luôn dương:
 
 \begin{equation}
     \frac{dE}{dt} \approx 0.6 \cdot E(t) > 0

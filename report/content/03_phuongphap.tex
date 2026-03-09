@@ -7,7 +7,7 @@
 
 Mạng xã hội cực đại hóa sự gắn kết bằng cách thao túng mức độ dopamine. Dưới góc độ kỹ thuật hệ thống, thiết kế gây nghiện hoạt động như một cỗ máy cờ bạc tận dụng tỷ lệ phần thưởng biến thiên. 
 
-Biện pháp đối phó của chúng tôi là toán học hóa sự kỳ vọng nội tâm. Lấy cảm hứng từ khám phá của Schultz et al. (1997) \cite{schultz1997dopamine} về nơ-ron dopamine, hệ thống mô hình hóa não bộ người dùng như một tác tử học tăng cường (reinforcement learning agent). Vận tốc cuộn (scroll velocity) được sử dụng làm biến proxy hành vi đại diện tuyệt đối cho tìm kiếm phần thưởng: cuộn càng nhanh, sự khao khát càng lớn.
+Biện pháp đối phó của chúng tôi là toán học hóa sự kỳ vọng nội tâm. Lấy cảm hứng từ khám phá của Schultz et al. (1997) \cite{schultz1997dopamine} về nơ-ron dopamine, và được hệ thống hóa trong các tác tử học tăng cường bởi Moerland và cộng sự (2017) \cite{moerland2017}, hệ thống mô hình hóa não bộ người dùng như một tác tử học tăng cường (reinforcement learning agent). Vận tốc cuộn (scroll velocity) được sử dụng làm biến proxy hành vi đại diện tuyệt đối cho tìm kiếm phần thưởng: cuộn càng nhanh, sự khao khát càng lớn.
 
 Mức độ nghiện được định lượng trực tiếp dưới dạng sai số dự đoán phần thưởng (reward prediction error - RPE) theo phương trình Rescorla-Wagner:
 
@@ -15,7 +15,7 @@ Mức độ nghiện được định lượng trực tiếp dưới dạng sai 
     V(t+1) = V(t) + \alpha [R(t) - V(t)]
 \end{equation}
 
-$RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm bảo tính liên tục sinh học, \textbf{mô hình tích phân rò rỉ (leaky integrator)} được áp dụng: khi $RPE \le 0$, mức độ dopamine suy giảm chậm theo hàm suy biến mũ ($\gamma = 0.95$) thay vì biến mất đột ngột. Trạng thái này sẽ kích thích đầu vào cho bộ điều khiển.
+$RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm bảo tính liên tục sinh học, dựa trên các mô hình tính toán về chứng nghiện hành vi (Kato et al., 2023) \cite{kato2023}, mô hình tích phân rò rỉ (leaky integrator) được áp dụng: khi $RPE \le 0$, mức độ dopamine suy giảm chậm theo hàm suy biến mũ ($\gamma = 0.95$) thay vì biến mất đột ngột. Trạng thái này sẽ kích thích đầu vào cho bộ điều khiển.
 
 \subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
 
