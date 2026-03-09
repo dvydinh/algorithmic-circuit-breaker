@@ -107,77 +107,29 @@ Cực (pole) của hệ thống: $p = \alpha - \beta$
     \item Nếu $p = 0$ (nghĩa là $\alpha = \beta$): Hệ thống ở biên giới ổn định
 \end{itemize}
 
-\subsection{Không gian vector và định lượng điều hướng}
+\subsection{Xử lý Ngôn ngữ Tự nhiên Cục bộ và Tác động Tâm lý}
 
-\subsubsection{Biểu diễn người dùng trong không gian nhúng}
+\subsubsection{Cơ sở lý thuyết của Shift-Left Local NLP Heuristics}
 
-Nhóm nghiên cứu đề xuất mô hình hóa trạng thái tâm lý người dùng bằng vector nhúng $\vec{u} \in \mathbb{R}^n$ trong không gian $n$ chiều. Mỗi chiều đại diện cho một khía cạnh tâm lý hoặc sở thích:
+Thay vì sử dụng các mô hình nhúng không gian vector (vector embeddings) hay học sâu (deep learning) phức tạp và tiêu tốn tài nguyên đo lường sự thao túng dư luận, kiến trúc v3.0 ứng dụng phương pháp tiếp cận \textit{Shift-Left Local NLP Heuristics}.
 
-\begin{equation}
-    \vec{u}_t = [u_1, u_2, \ldots, u_n]^T
-\end{equation}
+"Shift-Left" trong kỹ thuật phần mềm truyền thống mang ý nghĩa đẩy việc kiểm thử về giai đoạn đầu của vòng đời phát triển. Trong bối cảnh đồ án này, "Shift-Left" mang ý nghĩa kiến trúc: đẩy toàn bộ khối lượng tính toán và phân tích ngôn ngữ tự nhiên (NLP) rời khỏi máy chủ trung tâm (phía bên phải của mô hình Client-Server), chuyển giao hoàn toàn về phía ứng dụng của người dùng (phía bên trái - Client Browser).
 
-Ví dụ với $n=5$:
-\begin{itemize}
-    \item $u_1$: Mức độ quan tâm đến chính trị
-    \item $u_2$: Hướng chính trị (trái - phải)
-    \item $u_3$: Mức độ cảm xúc tiêu cực
-    \item $u_4$: Xu hướng chia sẻ thông tin chưa kiểm chứng
-    \item $u_5$: Mức độ tin tưởng vào cơ quan chính thức
-\end{itemize}
+\subsubsection{Thuật toán đo lường độc tính tĩnh}
 
-Vector này được cập nhật sau mỗi tương tác với nội dung $\vec{c}$ thông qua quy tắc:
+Thay vì khởi tạo các vector trạng thái đa chiều trôi dạt (drift velocity), hệ thống tính toán một điểm số vô hướng duy nhất đại diện cho mức độ phơi nhiễm ngôn từ độc hại (Toxicity Score).
 
-\begin{equation}
-    \vec{u}_{t+1} = \vec{u}_t + \eta \cdot \text{grad}_{\vec{u}}(\text{engagement}(\vec{u}_t, \vec{c}))
-\end{equation}
+Thuật toán sử dụng một từ điển tĩnh (static dictionary heuristic) chứa các thuật ngữ có trọng số phân loại độc tính cao nhất, được trích xuất và chắt lọc từ tập dữ liệu Jigsaw Toxic Comment Classification. Điểm số độc hại $\Gamma(t)$ tại thời điểm $t$ có miền giá trị được giới hạn nghiêm ngặt $\Gamma(t) \in [0.0, 1.0]$.
 
-Trong đó $\eta$ là tốc độ học (learning rate) và hàm engagement đo lường mức độ tương tác.
+Trong môi trường thực tế (production Extension), thuật toán duyệt cây DOM của nội dung hiển thị trên màn hình với độ phức tạp thời gian cực kỳ tối ưu $\mathcal{O}(1)$. Thuật toán đếm tần suất xuất hiện của danh sách từ khóa tĩnh, tính toán tỷ trọng, và trả về $\Gamma(t)$ trực tiếp trên thiết bị người dùng. Tại môi trường mô phỏng (Simulation), $\Gamma(t)$ được mô hình hóa bằng một quá trình bước ngẫu nhiên (Random Walk) theo phân phối chuẩn để giả lập sự biến thiên môi trường.
 
-\subsubsection{Vận tốc trôi dạt và phát hiện điều hướng}
+\subsubsection{Đạo đức công nghệ: Bảo vệ Quyền riêng tư cốt lõi (Privacy by Design)}
 
-Sự điều hướng dư luận được định lượng bằng khái niệm \textit{vận tốc trôi dạt} (drift velocity):
+Quyết định kiến trúc từ bỏ các không gian vector phức tạp tại máy chủ để sử dụng một thuật toán Heuristic tính toán nội bộ mang một ý nghĩa đạo đức (AI Ethics) và bảo mật sâu sắc.
 
-\begin{equation}
-    \vec{v}_{drift}(t) = \frac{\vec{u}_t - \vec{u}_{t-\Delta t}}{\Delta t}
-    \label{eq:drift_velocity}
-\end{equation}
+Bằng cách thực thi \textit{Shift-Left Local NLP}, hệ thống không bao giờ cần thiết phải gửi bất kỳ văn bản tự nhiên (user text) nào mà người dùng đang đọc về máy chủ trung tâm để phân tích. Hệ thống chỉ truyền đi một con số vô hướng vô danh $\Gamma(t)$ sang khối điều khiển PID. 
 
-\begin{definition}[Điểm hút trong không gian trạng thái]
-Điểm hút (attractor) $\vec{a} \in \mathbb{R}^n$ là một vector đại diện cho trạng thái cực đoan mà thuật toán có xu hướng đẩy người dùng về phía đó do tính dễ dự đoán và engagement cao.
-\end{definition}
-
-Ví dụ các điểm hút:
-\begin{itemize}
-    \item $\vec{a}_{extreme\_left} = [-5, -5, 3, 4, -3]^T$: Cực đoan trái, cảm xúc tiêu cực cao
-    \item $\vec{a}_{extreme\_right} = [-5, 5, 3, 4, -3]^T$: Cực đoan phải, cảm xúc tiêu cực cao
-    \item $\vec{a}_{conspiracy} = [2, 0, 4, 5, -5]^T$: Thuyết âm mưu, tin tưởng thấp
-\end{itemize}
-
-Lực hút (attraction force) từ điểm hút $\vec{a}$ được mô hình hóa:
-
-\begin{equation}
-    \vec{F}_{attraction} = -k \cdot \nabla_{\vec{u}} \|\vec{u} - \vec{a}\|^2 = -2k(\vec{u} - \vec{a})
-\end{equation}
-
-Với $k > 0$ là hằng số khuếch đại của thuật toán. Khi $k$ lớn, lực hút mạnh, người dùng nhanh chóng bị đẩy về cực đoan.
-
-\subsubsection{Phát hiện điều hướng bằng phân tích hướng}
-
-Chúng ta định nghĩa chỉ số điều hướng (manipulation index):
-
-\begin{equation}
-    M(t) = \frac{\vec{v}_{drift}(t) \cdot \vec{d}_{nearest}}{\|\vec{v}_{drift}(t)\| \cdot \|\vec{d}_{nearest}\|}
-    \label{eq:manipulation_index}
-\end{equation}
-
-Trong đó $\vec{d}_{nearest} = \vec{a}_{nearest} - \vec{u}_t$ là vector từ vị trí hiện tại đến điểm hút gần nhất.
-
-\begin{itemize}
-    \item $M(t) \approx 1$: Người dùng đang di chuyển thẳng về điểm hút (nguy hiểm cao)
-    \item $M(t) \approx 0$: Người dùng di chuyển vuông góc (an toàn)
-    \item $M(t) \approx -1$: Người dùng đang thoát khỏi điểm hút (phục hồi)
-\end{itemize}
+Điều này định nghĩa một tiêu chuẩn thiết kế \textit{Privacy by Design} tuyệt đối: ngay cả khi máy chủ backend bị tấn công và lộ lọt toàn bộ cơ sở dữ liệu, kẻ tấn công cũng không có quyền truy cập vào thông tin định dạng nội dung mà người dùng thực tế đã xem, xóa bỏ triệt để rủi ro xâm phạm danh tính cá nhân trong quá trình đo lường sức khỏe tâm lý.
 
 \subsection{Mô hình kinh tế và giá trị trọn đời}
 
