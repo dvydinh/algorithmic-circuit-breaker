@@ -75,15 +75,11 @@ def create_dashboard(df: pd.DataFrame, output_path: str, threshold: float = 0.35
              color=colors['baseline'], linewidth=1.5, linestyle='--', 
              label='Dopamine Baseline', alpha=0.7)
     
-    # Mark Break events with red vertical lines
-    break_events = df[df['intervention_type'] == 'break']
-    if not break_events.empty:
-        for _, row in break_events.iterrows():
-            ax1.axvline(x=row['time_min'], color=colors['break'], 
-                       alpha=0.5, linewidth=1, linestyle='-')
-        # Add one line to legend
-        ax1.axvline(x=-100, color=colors['break'], alpha=0.5, linewidth=2, 
-                   label='Break Event')
+    # Mark Break events with red translucent shaded regions
+    break_mask = df['intervention_type'] == 'break'
+    if break_mask.any():
+        ax1.fill_between(time, 0, 1.05, where=break_mask, 
+                         color=colors['break'], alpha=0.15, label='Break Active')
     
     # Mark Friction zones (light yellow background)
     friction_mask = df['intervention_type'] == 'friction'
@@ -157,6 +153,10 @@ def create_dashboard(df: pd.DataFrame, output_path: str, threshold: float = 0.35
     ax3.set_title('User Engagement Velocity', fontsize=12, pad=10)
     
     # ============ Final Styling ============
+    # Enforce strictly physical limits (no negative time margins)
+    for ax in axes:
+        ax.set_xlim(left=0)
+        
     # Adjust layout
     plt.tight_layout()
     fig.subplots_adjust(top=0.93, hspace=0.15)

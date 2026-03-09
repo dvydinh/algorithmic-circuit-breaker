@@ -8,7 +8,7 @@ from dataclasses import dataclass
 @dataclass
 class PIDConfig:
     """Hyperparameters for the PID Controller"""
-    kp: float = 0.5
+    kp: float = 1.2
     ki: float = 0.1
     kd: float = 0.2
     
@@ -20,7 +20,7 @@ class PIDConfig:
     # Intervention thresholds
     friction_threshold: float = 0.3
     reroute_threshold: float = 0.6
-    circuit_break_threshold: float = 0.75
+    circuit_break_threshold: float = 0.45
     
     # Integration limits for anti-windup
     integral_max: float = 2.0
@@ -41,6 +41,7 @@ class RLConfig:
     initial_expected_reward: float = 0.0
     
     # Scientific scaling factors
+    px_per_interaction: float = 600.0  # Heuristic: 1 simulated click equals approx 1 viewport scroll (600px)
     max_velocity_px_s: float = 800.0
     toxicity_reward_weight: float = 0.5
     rpe_scaling_factor: float = 2.5

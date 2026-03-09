@@ -10,6 +10,7 @@ class UserAgent:
         self.config = config or RLConfig()
         self.expected_reward = self.config.initial_expected_reward
         self.rpe = 0.0
+        self.current_dopamine = 0.0
         
     def calculate_rpe(self, velocity: float, toxicity_score: float) -> float:
         """
@@ -34,10 +35,18 @@ class UserAgent:
         
     def get_addiction_score(self) -> float:
         """
-        Map RPE to a 0-1 scale. Max RPE is theoretically 1.0.
+        Map RPE to a 0-1 scale using a leaky integrator. Max RPE is theoretically 1.0.
+        When RPE > 0, dopamine spikes. When RPE <= 0, dopamine decays exponentially.
         """
-        return max(0.0, min(self.rpe * self.config.rpe_scaling_factor, 1.0))
+        if self.rpe > 0:
+            self.current_dopamine += (self.rpe * self.config.rpe_scaling_factor)
+            self.current_dopamine = min(self.current_dopamine, 1.0)
+        else:
+            self.current_dopamine *= 0.95  # 5% decay per step
+            
+        return max(0.0, self.current_dopamine)
         
     def reset(self):
         self.expected_reward = self.config.initial_expected_reward
         self.rpe = 0.0
+        self.current_dopamine = 0.0

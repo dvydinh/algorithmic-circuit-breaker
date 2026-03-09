@@ -12,6 +12,7 @@ Models addictive engagement using the Rescorla-Wagner Reward Prediction Error (R
 ```text
 V(t+1) = V(t) + alpha * [R(t) - V(t)]
 ```
+Biological continuity is enforced via a **Leaky Integrator** state mechanism. When $RPE \le 0$ (reward circuit broken or expected reward met), the dopamine level does not crash to zero instantly, but degrades mathematically via a continuous exponential decay factor ($\gamma = 0.95$).
 Reward ($R(t)$) is parameterized by scroll velocity, acting as an absolute behavioral proxy for dopamine-seeking action.
 
 ### 2. Opinion Manipulation Countermeasure

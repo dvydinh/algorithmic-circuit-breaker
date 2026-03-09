@@ -15,7 +15,7 @@ Mức độ nghiện được định lượng trực tiếp dưới dạng sai 
     V(t+1) = V(t) + \alpha [R(t) - V(t)]
 \end{equation}
 
-$RPE = R(t) - V(t)$ sẽ đóng vai trò là khối tín hiệu kích thích đầu vào cho bộ điều khiển.
+$RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm bảo tính liên tục sinh học, \textbf{Mô hình Tích phân Rò rỉ (Leaky Integrator)} được áp dụng: khi $RPE \le 0$, mức độ dopamine suy giảm chậm theo hàm suy biến mũ ($\gamma = 0.95$) thay vì biến mất đột ngột. Trạng thái này sẽ kích thích đầu vào cho bộ điều khiển.
 
 \subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
 

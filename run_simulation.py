@@ -18,7 +18,7 @@ def run_simulation(steps=10000):
 
     # Initialize components
     rl_config = RLConfig(alpha=0.1, initial_expected_reward=0.2)
-    pid_config = PIDConfig(kp=0.5, ki=0.1, kd=0.2, w1=0.6, w2=0.3, w3=0.1, circuit_break_threshold=0.7)
+    pid_config = PIDConfig(kp=1.2, ki=0.1, kd=0.2, w1=0.6, w2=0.3, w3=0.1, circuit_break_threshold=0.45)
     
     user = UserAgent(config=rl_config)
     controller = CircuitBreaker(config=pid_config)
@@ -54,7 +54,7 @@ def run_simulation(steps=10000):
             dwell_time = (np.random.pareto(a=1.5) + 1) * 5.0
             
             # Simulated velocity metric (clicks representing scrolling interaction per min equivalent)
-            velocity = (clicks / dwell_time) * 60.0
+            velocity = (clicks * rl_config.px_per_interaction) / dwell_time
             
             # 3. Environmental Toxicity: Slowly shifting random walk based on environmental exposure
             toxicity = np.clip(toxicity + np.random.normal(0, 0.05), 0.0, 1.0)
