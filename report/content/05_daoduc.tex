@@ -1,10 +1,20 @@
 % 05_daoduc.tex - Phần 4: Đạo đức, pháp lý và kinh tế
-\section{Đạo đức và tuân thủ an toàn nghề nghiệp}
+\section{Đạo đức nghề nghiệp và Trách nhiệm kỹ sư}
 
-\subsection{Luận điểm quyền riêng tư tuyệt đối}
+\subsection{Lằn ranh giới hạn: Công cụ bảo vệ hay Phần mềm gián điệp}
 
-Việc giải quyết bài toán thao túng tâm lý không được phép đánh đổi bằng quyền riêng tư của người dùng. Một công cụ bảo vệ sẽ biến thành phần mềm gián điệp nếu nó quét văn bản tập trung trên máy chủ.
+Giải quyết bài toán thao túng tâm lý tuyệt đối không được phép đánh đổi bằng quyền riêng tư của người dùng. Dưới góc độ đạo đức nghề nghiệp, một kiến trúc can thiệp tự chẩn đoán nội dung bằng cách gửi văn bản người dùng đọc về máy chủ trung tâm không khác gì một phần mềm gián điệp (Spyware) được hợp pháp hóa.
 
-Do đó, kiến trúc v3.0 tuân thủ tuyệt đối và nghiêm ngặt bộ quy tắc nghề nghiệp của ACM/IEEE thông qua nguyên lý thiết kế \textit{Privacy by Design}. 
+Do đó, kiến trúc Algorithmic Circuit Breaker v3.0 tuân thủ một cách cực đoan bộ quy chuẩn đạo đức của ACM/IEEE thông qua nguyên lý thiết kế \textit{Privacy by Design}. 
 
-Tất cả các cơ chế cào dữ liệu (text-scraping) bề mặt đã bị nhổ rễ hoàn toàn. Máy chủ backend không bao giờ nhận được bất kỳ chuỗi văn bản, đường dẫn URL nào. Hệ thống giao tiếp thuần túy bằng siêu dữ liệu toán học dưới dạng đại lượng vô hướng: \texttt{velocity} (vận tốc) và \texttt{toxicity\_score} (điểm độc hại cục bộ). Kiến trúc sandbox này cung cấp lớp bảo mật tột đỉnh, loại bỏ vĩnh viễn nguy cơ rò rỉ hay khai thác danh tính người dùng.
+\subsection{Bảo mật tột đỉnh bằng Toán học hóa}
+
+Tất cả các cơ chế cào dữ liệu (text-scraping) tập trung đã bị nhổ rễ hoàn toàn khỏi hệ thống. Việc phân tích định lượng độc hại được đẩy hoàn toàn về phía máy khách (Shift-Left Local NLP), sử dụng mô hình Heuristic độ phức tạp $O(1)$ chạy ngầm trên trình duyệt. 
+
+Hệ thống giao tiếp với trung tâm phân tích thuần túy bằng siêu dữ liệu toán học dưới dạng đại lượng vô hướng vô danh (Anonymous scalars). Server backend từ chối tiếp nhận bất kỳ chuỗi văn bản hay đường dẫn URL nào, mà chỉ tiêu thụ mức vận tốc cuộn chuột (Tín hiệu hành vi) và điểm số độc hại (Tham số độc tính). Kiến trúc cô lập này cung cấp lớp bảo mật tột đỉnh: ngay cả khi máy chủ bị xâm nhập, dữ liệu rò rỉ cũng chỉ là các con số vô nghĩa, loại bỏ vĩnh viễn rủi ro bóc tách danh tính.
+
+\subsection{Trách nhiệm giải trình trước Tính ngoại biên Tâm lý}
+
+Các nền tảng mạng xã hội đang liên tục tối ưu hóa thuật toán gợi ý mà cố tình lờ đi Tính ngoại biên (Externalities) - những hệ lụy tâm lý và nhận thức đổ vỡ lên người dùng. Đồ án này khẳng định một nguyên tắc cốt lõi: Kỹ sư phần mềm không chỉ chịu trách nhiệm về tính hiệu quả (Efficiency) của dòng code, mà phải chịu trách nhiệm trực tiếp cho vòng lặp tương tác mà hệ thống của họ tạo ra.
+
+Việc chủ động thiết kế một mạch ngắt thuật toán (Circuit Breaker) dựa trên lý thuyết điều khiển tự động là một tuyên ngôn kỹ thuật. Nó chứng minh đanh thép rằng trách nhiệm điều tiết và bảo vệ sức khỏe tâm thần của người dùng - hoàn toàn có thể được hiện thực hóa bằng mã nguồn tự động độc lập, thay vì trông chờ vào những văn bản luật pháp trống rỗng.
