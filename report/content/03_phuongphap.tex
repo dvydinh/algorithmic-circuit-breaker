@@ -7,19 +7,19 @@
 
 Mạng xã hội cực đại hóa sự gắn kết bằng cách thao túng mức độ dopamine. Dưới góc độ kỹ thuật hệ thống, thiết kế gây nghiện hoạt động như một cỗ máy cờ bạc tận dụng tỷ lệ phần thưởng biến thiên. 
 
-Biện pháp đối phó của chúng tôi là toán học hóa sự kỳ vọng nội tâm. Lấy cảm hứng từ khám phá của Schultz et al. (1997) \cite{schultz1997dopamine} về nơ-ron dopamine, hệ thống mô hình hóa não bộ người dùng như một tác tử học tăng cường (Reinforcement learning agent). Vận tốc cuộn (Scroll velocity) được sử dụng làm biến proxy hành vi đại diện tuyệt đối cho tìm kiếm phần thưởng: cuộn càng nhanh, sự khao khát càng lớn.
+Biện pháp đối phó của chúng tôi là toán học hóa sự kỳ vọng nội tâm. Lấy cảm hứng từ khám phá của Schultz et al. (1997) \cite{schultz1997dopamine} về nơ-ron dopamine, hệ thống mô hình hóa não bộ người dùng như một tác tử học tăng cường (reinforcement learning agent). Vận tốc cuộn (scroll velocity) được sử dụng làm biến proxy hành vi đại diện tuyệt đối cho tìm kiếm phần thưởng: cuộn càng nhanh, sự khao khát càng lớn.
 
-Mức độ nghiện được định lượng trực tiếp dưới dạng sai số dự đoán phần thưởng (Reward prediction error - RPE) theo phương trình Rescorla-Wagner:
+Mức độ nghiện được định lượng trực tiếp dưới dạng sai số dự đoán phần thưởng (reward prediction error - RPE) theo phương trình Rescorla-Wagner:
 
 \begin{equation}
     V(t+1) = V(t) + \alpha [R(t) - V(t)]
 \end{equation}
 
-$RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm bảo tính liên tục sinh học, \textbf{Mô hình Tích phân Rò rỉ (Leaky Integrator)} được áp dụng: khi $RPE \le 0$, mức độ dopamine suy giảm chậm theo hàm suy biến mũ ($\gamma = 0.95$) thay vì biến mất đột ngột. Trạng thái này sẽ kích thích đầu vào cho bộ điều khiển.
+$RPE = R(t) - V(t)$ sẽ đóng vai trò tích lũy trạng thái. Để đảm bảo tính liên tục sinh học, \textbf{mô hình tích phân rò rỉ (leaky integrator)} được áp dụng: khi $RPE \le 0$, mức độ dopamine suy giảm chậm theo hàm suy biến mũ ($\gamma = 0.95$) thay vì biến mất đột ngột. Trạng thái này sẽ kích thích đầu vào cho bộ điều khiển.
 
 \subsection{Cơ chế đối phó thao túng dư luận: Shift-Left Local NLP Heuristics}
 
-Luồng nội dung độc hại (Toxicity) được các nền tảng sử dụng để kích hoạt trạng thái "chiến đấu hay bỏ chạy", giam cầm người dùng vào các buồng vang (Echo chambers).
+Luồng nội dung độc hại (toxicity) được các nền tảng sử dụng để kích hoạt trạng thái "chiến đấu hay bỏ chạy", giam cầm người dùng vào các buồng vang (echo chambers).
 
 Giải pháp giải quyết bài toán này mà không đánh đổi quyền riêng tư là nguyên lý Shift-Left Local NLP Heuristics. Nhóm nghiên cứu đã sử dụng một từ điển tĩnh gồm 150 thuật ngữ có độc tính cao nhất, được chắt lọc từ tập dữ liệu Jigsaw gốc.
 
@@ -27,7 +27,7 @@ Thao tác tính điểm độc hại $\Gamma(t)$ được thực thi nghiêm ng�
 
 \subsection{Trách nhiệm quản lý: Bộ điều khiển PID (Algorithmic Circuit Breaker)}
 
-Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán (Algorithmic circuit breaker).
+Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 sử dụng nền tảng của lý thuyết điều khiển cổ điển để xây dựng một mạch ngắt thuật toán (algorithmic circuit breaker).
 
 Được truyền cảm hứng từ ứng dụng PID vào kỹ thuật phần mềm của Hellerstein et al. (2004) \cite{hellerstein2004feedback}, bộ điều khiển xử lý biến trạng thái đầu vào:
 
@@ -36,4 +36,4 @@ Trách nhiệm quản lý phải được tự động hóa. Kiến trúc v3.0 s
     \label{eq:pid}
 \end{equation}
 
-Khi thao túng tâm lý vọt qua ngưỡng an toàn, bộ điều khiển sinh ra lực ma sát kỹ thuật số (Digital friction). Điều này chứng minh tuyệt đối rằng đội ngũ kỹ sư có thể tự tay xây dựng các cơ chế quản lý tự động trực tiếp vào lõi phần mềm.
+Khi thao túng tâm lý vọt qua ngưỡng an toàn, bộ điều khiển sinh ra lực ma sát kỹ thuật số (digital friction). Điều này chứng minh tuyệt đối rằng đội ngũ kỹ sư có thể tự tay xây dựng các cơ chế quản lý tự động trực tiếp vào lõi phần mềm.
