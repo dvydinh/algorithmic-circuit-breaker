@@ -5,18 +5,27 @@
 
 Để tuân thủ tuyệt đối chuẩn mực đạo đức không lưu trữ văn bản, hiệu năng của hệ thống được chứng minh thông qua khung mô phỏng dữ liệu tổng hợp thay vì thử nghiệm xâm phạm thủ công.
 
-Script mô phỏng tích hợp \texttt{run\_simulation.py} sử dụng các phân phối thống kê lượng hóa tiêu chuẩn hóa nhằm tái tạo tính dị hướng của con người:
+Script mô phỏng tích hợp \texttt{run\_simulation.py} đã được nâng cấp kiến trúc để sử dụng Quá trình Điểm Thời gian (Temporal Point-Processes) nhằm tái tạo cấu trúc vi mô của hành vi con người:
 \begin{itemize}
-    \item Phân phối Poisson (Poisson distribution): Được thiết lập để tạo khung tần suất tương tác cơ sở, tính toán mật độ các lượt vuốt thông thường.
-    \item Phân phối Pareto (Pareto distribution): Được cấu hình để mô phỏng cực đoan các khoảng thời gian nán lại (dwell times) mang tính "đuôi dài", đại diện chính xác về mặt toán học cho các trạng thái cuộn lướt vô định (doomscrolling) bất thường.
+    \item Hệ thống áp dụng hàm mật độ xác suất hỗn hợp mũ $\kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)$, trong đó $\alpha^1$ là trọng số bốc đồng của Hệ thống 1 (System-1).
+    \item Vận tốc cuộn (scroll velocity) biến thiên liên tục, lập mô hình cho cường độ hệ thống dự đoán phần thưởng (RPE).
 \end{itemize}
 
-\subsection{Kết quả trực quan hóa hệ động lực}
+\subsection{Kết quả trực quan hóa: Sự suy giảm $\alpha^1$ và Vận tốc cuộn}
 
-Sau khi nạp bộ tham số hành vi vào module kết xuất \texttt{visualize\_results.py}, đồ thị chứng minh thành công năng lực triệt tỏa biến cố của mạch ngắt thuật toán (circuit breaker).
+Sau khi nạp bộ tham số hành vi 10,000 bước vào module kết xuất \texttt{visualize\_results.py}, đồ thị Hình \ref{fig:sim_result} chứng minh thành công năng lực triệt tỏa biến cố của Mạch ngắt thuật toán (PID Circuit Breaker).
 
-Khi hệ thống không có bộ điều khiển, chỉ số sai số dự đoán phần thưởng (RPE) - đại diện cho vòng lặp phần thưởng - phân kỳ về vô cùng, miêu tả hành vi mất kiểm soát.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{images/simulation_result.png}
+    \caption{Trực quan hóa dữ liệu mô phỏng: Sự suy giảm trọng số bốc đồng $\alpha^1$ (System-1) và Vận tốc cuộn (Scroll Velocity) dưới sự tuần tự hóa của khối điều khiển PID.}
+    \label{fig:sim_result}
+\end{figure}
 
-Tuy nhiên, ngay khi khối PID kích hoạt ($K_p=1.2, K_i=0.1, K_d=0.2$), hệ thống đã ngăn chặn RPE phân kỳ về vô cùng, ép buộc đường tín hiệu tiến vào trạng thái dao động ổn định xoay quanh vạch giới hạn an toàn.
+Biểu đồ cho thấy rõ ràng hệ quả của \textit{Ma sát chánh niệm} (Mindful Friction) điều khiển bởi khối PID:
+\begin{itemize}
+    \item \textbf{Triệt tiêu $\alpha^1$:} Tín hiệu Control Signal ($K_p=1.2, K_i=0.1, K_d=0.2$) từ PID sinh ra một hệ số phân rã (decay factor) liên tục ép trọng số bốc đồng $\alpha^1$ suy giảm tiệm cận về 0 mỗi khi RPE có dấu hiệu phân kỳ.
+    \item \textbf{Cắt đứt Vận tốc cuộn:} Tốc độ cuộn (scroll velocity) tỷ lệ thuận với $\alpha^1$. Khi $\alpha^1$ bị triệt tiêu, Vận tốc cuộn sụt giảm tỷ lệ thuận, tước đoạt động năng vô thức.
+\end{itemize}
 
-Sự cân bằng do thuật toán tạo ra này minh chứng đanh thép rằng lý thuyết điều khiển cổ điển có năng lực trực tiếp triệt tiêu các hành vi thao túng tâm lý trên thiết kế nền tảng số.
+Sự cân bằng động học này minh chứng đanh thép rằng cấu trúc Temporal Point-Processes kết hợp PID có năng lực toán học hóa và đoạt lại quyền tự chủ cho Hệ thống 2 trước các thiết kế gây nghiện mà không cần sử dụng bất kỳ chặn cứng (Hard Blocks) thô bạo nào.

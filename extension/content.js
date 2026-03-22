@@ -1,8 +1,11 @@
 /**
- * Algorithm Circuit Breaker v2.2 - Content Script
+ * Algorithm Circuit Breaker v3.0 - Content Script
  * ================================================
  * Dual-Mode UI: HUD (Floating) + SIDEBAR (Matrix Terminal)
- * FIXED: Background Bridge for Mixed Content
+ * Mindful Friction Engine: Desaturation + Scroll Throttle
+ *
+ * ZERO overlays, ZERO alerts, ZERO display:none.
+ * Intervention is subliminal — the user feels friction, not punishment.
  */
 
 // ============================================================
@@ -21,8 +24,13 @@ const CONFIG = {
     TOXICITY_SOCIAL_PENALTY: 0.2,  // Extra penalty for social media sites
     TOXICITY_SCROLL_PENALTY: 0.2,  // Extra penalty for infinite scroll pages
 
-    // Interventions
-    BREAK_DURATION_SEC: 10         // Seconds to pause during Circuit Breaker
+    // Mindful Friction Thresholds
+    DESATURATION_THRESHOLD: 0.6,   // riskIndex above this → grayscale kicks in
+    SCROLL_THROTTLE_THRESHOLD: 0.8,// riskIndex above this → scroll delay kicks in
+    MAX_GRAYSCALE_PCT: 80,         // Maximum grayscale percentage at riskIndex=1.0
+    MIN_SCROLL_DELAY_MS: 100,      // Minimum scroll delay at threshold
+    MAX_SCROLL_DELAY_MS: 300,      // Maximum scroll delay at riskIndex=1.0
+    GRAYSCALE_LERP_SPEED: 0.08,    // Smoothing factor for grayscale transition (0–1)
 };
 
 // ============================================================
@@ -37,17 +45,158 @@ const state = {
     lastScrollTime: Date.now(),
     velocitySamples: [],
     sessionStart: Date.now(),
-    isBreakActive: false,
     serverOnline: false,
     lastData: { risk_index: 0, velocity: 0, status: 'SAFE' }
 };
 
+// ============================================================
+// MINDFUL FRICTION ENGINE
+// ============================================================
+const friction = {
+    currentGrayscale: 0,       // Current smoothed grayscale %
+    targetGrayscale: 0,        // Target grayscale % (set by riskIndex)
+    scrollDelay: 0,            // Current scroll delay in ms
+    isThrottling: false,       // Whether scroll listeners are installed
+    rafId: null,               // requestAnimationFrame handle
+    pendingScroll: null,       // setTimeout ID for deferred scroll
+};
+
+/**
+ * Level 1 — Desaturation (riskIndex > 0.6)
+ *
+ * Applies a proportional CSS grayscale filter to the entire page.
+ * The desaturation ramps linearly:
+ *   riskIndex 0.6 → 0%,   riskIndex 1.0 → MAX_GRAYSCALE_PCT%
+ *
+ * Transition is smoothed via requestAnimationFrame + linear
+ * interpolation to avoid jarring jumps.
+ */
+function applyDesaturation(riskIndex) {
+    if (riskIndex <= CONFIG.DESATURATION_THRESHOLD) {
+        friction.targetGrayscale = 0;
+    } else {
+        const t = (riskIndex - CONFIG.DESATURATION_THRESHOLD)
+                / (1.0 - CONFIG.DESATURATION_THRESHOLD);
+        friction.targetGrayscale = t * CONFIG.MAX_GRAYSCALE_PCT;
+    }
+
+    // Start smooth animation loop if not already running
+    if (friction.rafId === null) {
+        friction.rafId = requestAnimationFrame(animateGrayscale);
+    }
+}
+
+function animateGrayscale() {
+    const diff = friction.targetGrayscale - friction.currentGrayscale;
+
+    if (Math.abs(diff) < 0.5) {
+        // Close enough — snap and stop
+        friction.currentGrayscale = friction.targetGrayscale;
+        commitGrayscale();
+        friction.rafId = null;
+        return;
+    }
+
+    // Lerp toward target
+    friction.currentGrayscale += diff * CONFIG.GRAYSCALE_LERP_SPEED;
+    commitGrayscale();
+    friction.rafId = requestAnimationFrame(animateGrayscale);
+}
+
+function commitGrayscale() {
+    const pct = Math.round(friction.currentGrayscale * 10) / 10;
+    if (pct <= 0) {
+        document.documentElement.style.removeProperty('filter');
+    } else {
+        document.documentElement.style.filter = `grayscale(${pct}%)`;
+    }
+}
+
+/**
+ * Level 2 — Scroll Throttling (riskIndex > 0.8)
+ *
+ * Intercepts wheel and touchmove events with { passive: false },
+ * calls preventDefault(), then re-dispatches the scroll after a
+ * configurable delay.  This creates a subtle "sticky" feel —
+ * the page still moves, just slowly.
+ *
+ * Delay scales linearly:
+ *   riskIndex 0.8 → 100ms,   riskIndex 1.0 → 300ms
+ *
+ * IMPORTANT: Handlers are cached as named functions so they can
+ * be removed cleanly when riskIndex drops below threshold.
+ */
+function applyScrollThrottle(riskIndex) {
+    if (riskIndex <= CONFIG.SCROLL_THROTTLE_THRESHOLD) {
+        removeScrollThrottle();
+        return;
+    }
+
+    // Calculate delay
+    const t = (riskIndex - CONFIG.SCROLL_THROTTLE_THRESHOLD)
+            / (1.0 - CONFIG.SCROLL_THROTTLE_THRESHOLD);
+    friction.scrollDelay = CONFIG.MIN_SCROLL_DELAY_MS
+                         + t * (CONFIG.MAX_SCROLL_DELAY_MS - CONFIG.MIN_SCROLL_DELAY_MS);
+
+    if (!friction.isThrottling) {
+        window.addEventListener('wheel', throttledWheelHandler, { passive: false });
+        window.addEventListener('touchmove', throttledTouchHandler, { passive: false });
+        friction.isThrottling = true;
+        log(`Scroll throttle ON (${Math.round(friction.scrollDelay)}ms)`);
+    }
+}
+
+function removeScrollThrottle() {
+    if (friction.isThrottling) {
+        window.removeEventListener('wheel', throttledWheelHandler);
+        window.removeEventListener('touchmove', throttledTouchHandler);
+        friction.isThrottling = false;
+        if (friction.pendingScroll !== null) {
+            clearTimeout(friction.pendingScroll);
+            friction.pendingScroll = null;
+        }
+        log('Scroll throttle OFF');
+    }
+}
+
+/**
+ * Cached wheel handler — prevents default, then schedules a
+ * delayed scrollBy to emulate "heavy" scrolling.
+ */
+function throttledWheelHandler(e) {
+    e.preventDefault();
+
+    // If a scroll is already pending, ignore this event (coalesce)
+    if (friction.pendingScroll !== null) return;
+
+    const deltaY = e.deltaY;
+    const deltaX = e.deltaX;
+
+    friction.pendingScroll = setTimeout(() => {
+        window.scrollBy({ left: deltaX, top: deltaY, behavior: 'auto' });
+        friction.pendingScroll = null;
+    }, friction.scrollDelay);
+}
+
+/**
+ * Cached touchmove handler — prevents default smooth scrolling,
+ * letting the delayed wheel handler (via touch-to-scroll) create
+ * the same "sticky" effect on mobile.
+ */
+function throttledTouchHandler(e) {
+    // Only throttle single-finger vertical swipes (scrolling)
+    if (e.touches.length === 1) {
+        e.preventDefault();
+    }
+}
+
+
 const TOXICITY_DICTIONARY = ['fuck', 'suck', 'ass', 'shit', 'faggot', 'fucking', 'die', 'bitch', 'nigger', 'sucks', 'cunt', 'wikipedia', 'cock', 'fucksex', 'yourselfgo', 'dick', 'fucker', 'kill', 'asshole', 'cocksucker', 'piece', 'penis', 'mothjer', 'bastard', 'gay', 'eat', 'bitches', 'huge', 'shut', 'fat', 'damn', 'rape', 'dog', 'stupid', 'offfuck', 'mexicans', 'anal', 'pro', 'hanibal', 'assad', 'like', 'niggas', 'dickhead', 'pussy', 'get', 'idiot', 'block', 'bush', 'wiki', 'criminalwar', 'bunksteve', 'going', 'cocksucking', 'small', 'chester', 'marcolfuck', 'want', 'mother', 'cocks', 'fack', 'useless', 'homeland', 'notrhbysouthbanof', 'securityfuck', 'page', 'hate', 'whore', 'bot', 'admins', 'veggietales', 'jewish', 'ancestryfuck', 'cunts', 'moron', 'loves', 'shitfuck', 'anthony', 'bradbury', 'atheist', 'fuckin', 'must', 'person', 'fired', 'life', 'keep', 'jim', 'people', 'wales', 'know', 'talk', 'big', 'drink', 'bleachanhero', 'god', 'lick', 'bitchmattythewhite', 'thanks', 'hell', 'edits', 'user', 'haahhahahah', 'yaaa', 'yaaaa', 'nice', 'loser', 'nigga', 'come', 'arse', 'dirty', 'mum', 'takes', 'ban', 'work', 'give', 'right', 'said', 'little', 'ers', 'post', 'still', 'murder', 'real', 'removing', 'itsuck', 'homo', 'communism', 'information', 'eats', 'computer', 'fffff', 'rvv', 'uuuuuu', 'cccccc', 'kkkkkk', 'edit', 'blank', 'stop', 'edie', 'vandalism', 'take', 'king', 'nhrhs', 'shithead', 'mitt', 'romney', 'hey', 'yet', 'reading', 'warning', 'one'];
 
-const log = (msg) => CONFIG.DEBUG && console.log(`[CB v2.2] ${msg}`);
+const log = (msg) => CONFIG.DEBUG && console.log(`[CB v3.0] ${msg}`);
 
 // ============================================================
-// STYLES - Cyberpunk HUD + Matrix Sidebar
+// STYLES - Cyberpunk HUD + Matrix Sidebar (NO overlay / break)
 // ============================================================
 function injectStyles() {
     if (document.getElementById('cb-styles')) return;
@@ -361,26 +510,6 @@ function injectStyles() {
         }
         .cb-term-status.warn { background: rgba(255,255,0,0.15) !important; border-color: var(--cb-yellow) !important; color: var(--cb-yellow) !important; }
         .cb-term-status.danger { background: rgba(255,0,64,0.15) !important; border-color: var(--cb-red) !important; color: var(--cb-red) !important; }
-        
-        /* ===== INTERVENTIONS ===== */
-        .cb-friction { filter: grayscale(100%) !important; transition: filter 0.5s !important; }
-        
-        .cb-break {
-            position: fixed !important;
-            inset: 0 !important;
-            background: linear-gradient(135deg, #a11 0%, #d33 50%, #a11 100%) !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-            z-index: 2147483647 !important;
-            color: #fff !important;
-            font-family: 'Segoe UI', sans-serif !important;
-        }
-        .cb-break-icon { font-size: 72px !important; margin-bottom: 16px !important; }
-        .cb-break-title { font-size: 32px !important; font-weight: 700 !important; margin-bottom: 8px !important; }
-        .cb-break-sub { font-size: 18px !important; opacity: 0.9 !important; }
-        .cb-break-timer { font-size: 52px !important; font-weight: 700 !important; margin-top: 24px !important; }
     `;
     document.head.appendChild(css);
 }
@@ -724,8 +853,6 @@ class LocalNLPScanner {
 // SEND DATA VIA BACKGROUND BRIDGE
 // ============================================================
 async function sendData() {
-    if (state.isBreakActive) return;
-
     const velocity = getAverageVelocity();
     const toxicity = LocalNLPScanner.getToxicityScore();
     const scrollTime = (Date.now() - state.sessionStart) / 1000;
@@ -741,9 +868,9 @@ async function sendData() {
         });
 
         if (response && response.success) {
-            log(`Recv: dopa=${response.data.dopamine?.toFixed(3)} risk=${response.data.risk_index?.toFixed(3)}`);
+            log(`Recv: risk=${response.data.risk_index?.toFixed(3)} intervention=${response.data.intervention}`);
             updateUI(response.data);
-            handleIntervention(response.data.intervention);
+            handleIntervention(response.data);
         } else {
             log('Bridge error: ' + (response?.error || 'No response'));
         }
@@ -753,54 +880,32 @@ async function sendData() {
 }
 
 // ============================================================
-// INTERVENTIONS
+// MINDFUL FRICTION INTERVENTION HANDLER
 // ============================================================
-function handleIntervention(type) {
-    if (type === 'BREAK' && !state.isBreakActive) {
-        triggerBreak();
-    } else if (type === 'FRICTION' || type === 'REROUTE') {
-        document.body.classList.add('cb-friction');
-    } else {
-        document.body.classList.remove('cb-friction');
-    }
-}
+/**
+ * Replaces the old hard-break / binary-grayscale intervention.
+ *
+ * Instead of locking the screen, we apply proportional friction:
+ *   - riskIndex > 0.6 → desaturate page (grayscale scales with risk)
+ *   - riskIndex > 0.8 → additionally throttle scroll events
+ *
+ * Both effects ramp smoothly and release gradually when risk drops.
+ */
+function handleIntervention(data) {
+    const riskIndex = data.risk_index ?? 0;
 
-function triggerBreak() {
-    state.isBreakActive = true;
+    // Level 1: Desaturation (proportional grayscale)
+    applyDesaturation(riskIndex);
 
-    const overlay = document.createElement('div');
-    overlay.className = 'cb-break';
-    overlay.innerHTML = `
-        <div class="cb-break-icon">🛑</div>
-        <div class="cb-break-title">CIRCUIT BREAKER</div>
-        <div class="cb-break-sub">Take a breath. Resuming in:</div>
-        <div class="cb-break-timer" id="cb-countdown">10</div>
-    `;
-    document.body.appendChild(overlay);
-    document.body.style.overflow = 'hidden';
-
-    let sec = CONFIG.BREAK_DURATION_SEC;
-    const el = document.getElementById('cb-countdown');
-    if (el) el.textContent = sec;
-
-    const iv = setInterval(() => {
-        sec--;
-        if (el) el.textContent = sec;
-        if (sec <= 0) {
-            clearInterval(iv);
-            overlay.remove();
-            document.body.style.overflow = '';
-            state.isBreakActive = false;
-            state.velocitySamples = [];
-        }
-    }, 1000);
+    // Level 2: Scroll Throttling (delayed scroll response)
+    applyScrollThrottle(riskIndex);
 }
 
 // ============================================================
 // INIT
 // ============================================================
 function init() {
-    log('Initializing v2.2 (Matrix Sidebar)');
+    log('Initializing v3.0 (Mindful Friction)');
 
     injectStyles();
     createHUD();

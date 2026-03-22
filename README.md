@@ -1,46 +1,45 @@
 # Algorithmic Circuit Breaker v3.0
 
 ## System Overview
-A Privacy-Preserving Proxy Measurement & Intervention Architecture applying Classical Control Theory (PID) to mitigate user addiction and opinion manipulation in Recommender Systems. 
+Algorithmic Circuit Breaker v3.0 is a **Privacy-Preserving Proxy Measurement & Auditing Tool**. It applies Classical Control Theory (PID) to regulate user addiction and opinion manipulation in Recommender Systems. 
 
-The system operates strictly on mathematical proxy variables, demonstrating that actionable software engineering components can act as automated regulatory mechanisms without compromising user privacy.
+Positioned as an Auditing Tool rather than a "silver bullet," the system operates strictly on mathematical proxy variables. It demonstrates that actionable software engineering components can act as automated regulatory mechanisms to enforce **Value Alignment** (Time Well Spent) and protect user **Autonomy** without relying on coercive "Hard Blocks."
 
 ## Mathematical Models
 
-### 1. Dopamine Model (Addictive Design Countermeasure)
-Models addictive engagement using the Rescorla-Wagner Reward Prediction Error (RPE) equation:
+### 1. Dopamine Model & Computational Psychiatry
+Based on **Dual-Process Theory**, the system models addictive engagement (System-1 impulsivity) using the Rescorla-Wagner Reward Prediction Error (RPE) equation:
 ```text
 V(t+1) = V(t) + alpha * [R(t) - V(t)]
 ```
-Biological continuity is enforced via a **Leaky Integrator** state mechanism. When $RPE \le 0$ (reward circuit broken or expected reward met), the dopamine level does not crash to zero instantly, but degrades mathematically via a continuous exponential decay factor ($\gamma = 0.95$).
-Reward ($R(t)$) is parameterized by scroll velocity, acting as an absolute behavioral proxy for dopamine-seeking action.
+Biological continuity is enforced via a **Leaky Integrator** state mechanism. When $RPE \le 0$, the dopamine expectation degrades mathematically via a continuous exponential decay factor ($\gamma = 0.95$).
+Scroll velocity is strictly utilized as a **behavioral proxy** for dopamine-seeking action, validated within the framework of computational psychiatry models for behavioral addictions.
 
 ### 2. Opinion Manipulation Countermeasure
 Content toxicity exposure is calculated without centralized text-scraping. 
 - In production, it utilizes Shift-Left Local NLP Heuristics. Toxicity is scored $O(1)$ strictly on the client browser using a Jigsaw-derived dataset. ZERO user text is transmitted to the server.
 - In system simulation, toxicity is modeled mathematically as a simple Random Walk (`np.random.normal(0, 0.05)`). 
 
-### 3. PID Control (Regulatory Responsibility)
+### 3. PID Control (Mindful Friction Engine)
 A Proportional-Integral-Derivative (PID) controller monitors risk and applies interventions. The control signal is computed against a 3-Component Risk Index:
 
 ```text
 I_risk = w1 * Addiction + w2 * Toxicity + w3 * Session
 ```
 
-Based on configurable thresholds, the controller outputs a control signal triggering discrete states:
-1. `'FRICTION'`: Applied interface resistance.
-2. `'REROUTE'`: Active behavioral warnings.
-3. `'BREAK'`: Complete interaction circuit break.
+To prevent **Psychological Reactance**, the system avoids traditional "Hard Blocks". Instead, the PID output triggers a **Mindful Friction** strategy (passive deprivation):
+1. **Level 1 (Desaturation):** Applies proportional grayscale CSS filters to the DOM, silently choking visual dopamine rewards when Risk > 0.6.
+2. **Level 2 (Scroll Throttling):** Injects event-loop delays (100ms-300ms) into `wheel`/`touchmove` handlers when Risk > 0.8. This intentionally degrades the platform's frictionless UI to force a cognitive switch from System-1 back to System-2.
 
 ## Simulation Pipeline (`run_simulation.py`)
 
 Simulation data is driven by strict statistical distributions to mirror human interaction patterns autonomously:
-- **Interaction (Clicks)**: Governed by a **Poisson distribution**.
-- **Dwell Time**: Governed by a **Pareto distribution** to simulate realistic heavy-tailed engagement (doomscrolling).
+- **Interaction Flow**: Modeled via **Temporal Point-Processes** (Bi-exponential Hawkes Process).
+- **Dual-Process Distribution**: $\kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)$, where Component 1 represents System-1 impulsivity and Component 2 represents System-2 logic.
 
 ### Output CSV Columns (`simulation_log.csv`)
 
-The simulation outputs a deterministic record of system state per step containing exactly the following keys:
+The simulation outputs a deterministic record of system state per step (*Note: legacy columns preserved for visualization continuity*):
 
 | Column | Description |
 | :--- | :--- |
@@ -55,5 +54,9 @@ The simulation outputs a deterministic record of system state per step containin
 | `tolerance` | Tracking tolerance matching expected reward |
 | `risk_index` | 3-Component scalar risk output |
 | `control_signal_u` | PID numerical control command output |
-| `intervention_type` | Triggered state: `'break'`, `'reroute'`, `'friction'`, or `'none'` |
+| `intervention_type` | Legacy marker for active friction |
 | `interaction_type` | Origin interaction (static: `'click'`) |
+| `lambda_intensity` | Current $\kappa(t)$ intensity from Point-Process |
+| `alpha1_effective` | System-1 impulsivity weight under decay |
+| `alpha2` | System-2 logic weight |
+| `decay_factor` | PID-driven suppression scalar [0,1] applied to $\alpha^1$ |

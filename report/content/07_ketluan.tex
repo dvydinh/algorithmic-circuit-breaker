@@ -32,9 +32,9 @@ Tương tự như kỹ sư cơ khí phải đảm bảo máy móc có circuit br
 \begin{enumerate}
     \item \textbf{Đóng góp lý thuyết:}
     \begin{itemize}
-        \item Mô hình hóa tác động tâm lý bằng lý thuyết điều khiển
-        \item Định nghĩa drift velocity trong không gian vector nhúng
-        \item Chứng minh mối quan hệ giữa bảo vệ người dùng và $CLV$
+        \item Mô hình hóa tác động tâm lý bằng lý thuyết điều khiển tự động
+        \item Đề xuất phương pháp lượng hóa sự khao khát (craving) bằng phương trình RPE
+        \item Cụ thể hóa bài toán Căn chỉnh Giá trị (Value Alignment) dưới dạng Middleware phía máy khách
     \end{itemize}
     
     \item \textbf{Đóng góp thực tiễn:}
@@ -52,29 +52,28 @@ Tương tự như kỹ sư cơ khí phải đảm bảo máy móc có circuit br
     \end{itemize}
 \end{enumerate}
 
-\subsection{Hạn chế và hướng phát triển}
+\subsection{Sự đánh đổi và Hạn chế Hệ thống (Engineering Trade-offs \& Limitations)}
 
-\textbf{Hạn chế:}
+Dưới góc nhìn thiết kế kiến trúc phần mềm (Software Architecture), dự án này buộc phải chấp nhận những sự đánh đổi mang tính quyết định để hiện thực hóa sản phẩm:
+
+\textbf{1. Mô hình RPE chỉ là một Biến đại diện (Proxy Variable):}
+Việc quy đổi trực tiếp Vận tốc cuộn (Scroll Velocity) thành Tín hiệu sai lệch dự đoán phần thưởng (RPE) trong phương trình Rescorla-Wagner là một phép tính xấp xỉ mang tính kỹ thuật. Mô hình này không thể phản ánh 100% mức độ phức tạp sinh học của sự phân tiết Dopamine trong thực tế. Nó bỏ qua ngưỡng chịu đựng nền (baseline tolerance) khác biệt của từng cá nhân và các tác nhân sinh lý ngoại lai.
+
+\textbf{2. Điểm mù Ngữ cảnh của Bộ lọc NLP Shift-Left:}
+Để đổi lấy chuẩn mực \textit{Privacy by Design} tuyệt đối (không gửi văn bản về máy chủ), chúng tôi buộc phải hy sinh độ chính xác phân tích ngôn ngữ. Việc quét cây DOM cục bộ trên trình duyệt bằng Từ điển tĩnh (Static Dictionary Heuristics) chắc chắn sẽ dẫn đến việc mất hoàn toàn ngữ cảnh ngữ nghĩa (Semantic Context). Hệ thống không thể phân biệt được sự mỉa mai (Sarcasm), tính giễu nhại (Irony) hay trích dẫn mang tính giáo dục, dẫn đến tỷ lệ Dương tính giả (False Positive Rate) cao hơn đáng kể so với việc chạy các mô hình ngôn ngữ lớn (LLMs) trên máy chủ.
+
+\textbf{Hướng phát triển thực dụng:}
 \begin{itemize}
-    \item Chưa thử nghiệm trên người dùng thực
-    \item Mô hình hóa đơn giản chưa phản ánh đầy đủ độ phức tạp của tâm lý con người
-    \item Chưa giải quyết vấn đề privacy khi thu thập dữ liệu chi tiết
+    \item Tích hợp các mô hình NLP cục bộ siêu nhẹ (Small Language Models - SLMs chạy trên WebGPU) để cải thiện ngữ cảnh mà không hy sinh Privacy.
+    \item Thu thập dữ liệu đo thị giác (Eye-tracking) hoặc nhịp tim (nếu có phần cứng hỗ trợ) để làm phong phú hóa các biến Proxy tính toán RPE.
 \end{itemize}
 
-\textbf{Hướng phát triển:}
-\begin{itemize}
-    \item Thử nghiệm lâm sàng với IRB approval
-    \item Mở rộng sang các nền tảng khác: gaming, e-commerce
-    \item Chuẩn hóa thành IEEE/ISO standard
-    \item Xây dựng open-source toolkit cho developer
-\end{itemize}
+\subsection{Lời kết: Vị thế của một Công cụ Kiểm toán}
 
-\subsection{Lời kết}
+Cần khẳng định rõ ràng: \textbf{Algorithmic Circuit Breaker không phải là một viên đạn bạc (Silver bullet)} có khả năng triệt tiêu chứng nghiện mạng xã hội trên toàn cầu. Đối đầu với một ngành công nghiệp được tối ưu hóa hàng thập kỷ bởi hàng nghìn kỹ sư xuất sắc nhất thế giới để giữ chân người dùng là một bài toán bất khả thi đối với một công cụ Client-side đơn lẻ.
 
-Mạng xã hội đã trở thành một phần không thể thiếu của đời sống hiện đại. Nhưng như mọi công nghệ mạnh mẽ khác, nó cần được kiểm soát để phục vụ con người, không phải ngược lại.
+Định vị chính xác nhất của dự án này: Đây là một \textbf{Công cụ Kiểm toán (Auditing Tool) và Nâng cao nhận thức}. Giải pháp phơi bày các thuật toán thao túng tâm lý vốn được thiết kế để ẩn mình, biến chúng thành các đại lượng toán học có thể quan sát, đo lường và can thiệp. Việc tạo ra một "mạch ngắt" chứng minh một nguyên lý kỹ thuật cốt lõi: Con người hoàn toàn có quyền và có đủ năng lực công nghệ để giành lại sự tự chủ nhận thức, buộc các thuật toán phải căn chỉnh theo "Thời gian ý nghĩa" thay vì "Thời gian tiêu thụ".
 
-Algorithmic Circuit Breaker là bước đầu tiên trong hành trình biến AI từ công cụ tối đa hóa lợi nhuận thành công cụ bảo vệ sức khỏe con người. Chúng tôi hy vọng nghiên cứu này sẽ truyền cảm hứng cho các kỹ sư, nhà nghiên cứu và nhà hoạch định chính sách cùng nhau xây dựng một không gian số an toàn và bền vững hơn.
-
-\textbf{Tương lai của công nghệ không chỉ phụ thuộc vào khả năng kỹ thuật, mà còn phụ thuộc vào trách nhiệm đạo đức của những người tạo ra nó.}
+\textbf{Tương lai của công nghệ không chỉ phụ thuộc vào khả năng kỹ thuật, mà còn nằm ở sự dũng cảm thiết kế các điểm dừng.}
 
 \newpage

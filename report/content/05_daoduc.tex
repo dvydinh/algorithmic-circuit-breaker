@@ -1,6 +1,19 @@
 % 05_daoduc.tex - Phần 4: Đạo đức, pháp lý và kinh tế
 \section{Đạo đức nghề nghiệp và Trách nhiệm kỹ sư}
 
+\subsection{Tuân thủ Bộ quy tắc Đạo đức ACM và Chống lại Dark Patterns}
+
+Ứng dụng kỹ thuật phần mềm vào tâm lý học đòi hỏi một khung đánh giá đạo đức khắt khe. Dự án này được thiết kế dựa trên sự đối chiếu trực tiếp với Bộ quy tắc Đạo đức và Đạo đức Nghề nghiệp của Hiệp hội Máy tính (ACM Code of Ethics):
+
+\begin{itemize}
+    \item \textbf{Quy tắc 1.1 - Đóng góp cho xã hội và hạnh phúc con người:} Yêu cầu các chuyên gia công nghệ phải giảm thiểu tác động tiêu cực của hệ thống.
+    \item \textbf{Quy tắc 1.2 - Tránh gây hại:} Nghiêm cấm việc sử dụng hệ thống máy tính để bóc lột hoặc gây thiệt hại về tinh thần.
+\end{itemize}
+
+Dưới lăng kính của Quy tắc 1.2, các mẫu thiết kế phi đạo đức (Dark Patterns) mang tính lõi như tính năng \textit{Cuộn vô tận} (Infinite Scroll) hay \textit{Phát video tự động} (Auto-play) là những vi phạm rõ rệt. Về mặt kiến trúc, chúng tước đoạt điểm dừng tự nhiên (stopping cues) của giao diện, cố tình khai thác nhược điểm sinh lý thần kinh để 극 đại hóa thời gian tương tác. 
+
+Hệ thống Algorithmic Circuit Breaker ra đời như một nỗ lực thực thi Quy tắc 1.1 bằng mã nguồn. Bằng cách áp dụng "Ma sát chánh niệm" (Mindful Friction), hệ thống không ép buộc hay tước đoạt quyền truy cập của người dùng (như các phần mềm khóa Parental Control truyền thống), mà khôi phục lại tính \textit{Minh bạch} (Transparency) của lằn ranh thời gian và bảo vệ tối đa \textit{Quyền tự chủ} (Autonomy) của Hệ thống 2.
+
 \subsection{Lằn ranh giới hạn: Công cụ bảo vệ hay Phần mềm gián điệp}
 
 Giải quyết bài toán thao túng tâm lý tuyệt đối không được phép đánh đổi bằng quyền riêng tư của người dùng. Dưới góc độ đạo đức nghề nghiệp, một kiến trúc can thiệp tự chẩn đoán nội dung bằng cách gửi văn bản người dùng đọc về máy chủ trung tâm không khác gì một phần mềm gián điệp (Spyware) được hợp pháp hóa.

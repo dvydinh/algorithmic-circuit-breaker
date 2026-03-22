@@ -1,8 +1,16 @@
 /**
- * Algorithm Circuit Breaker v2.1 - Background Bridge
+ * Algorithm Circuit Breaker v3.0 - Background Bridge
  * ===================================================
  * Service Worker that proxies HTTP requests to bypass Mixed Content.
  * Content scripts send messages here, we fetch from localhost.
+ *
+ * Response shape from /analyze (forwarded to content.js):
+ *   { risk_index, pid_output, velocity, toxicity, status, intervention,
+ *     session_time, request_count }
+ *
+ * content.js uses risk_index directly for Mindful Friction:
+ *   - risk_index > 0.6 → proportional desaturation
+ *   - risk_index > 0.8 → scroll throttling
  */
 
 const API_BASE = 'http://127.0.0.1:5000';

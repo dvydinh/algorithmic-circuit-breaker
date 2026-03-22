@@ -26,7 +26,7 @@ Trong đó:
 RPE là chênh lệch giữa phần thưởng nhận được và phần thưởng kỳ vọng. Khi $\delta_t > 0$, não bộ nhận được phần thưởng cao hơn dự kiến và tăng tiết dopamine. Khi $\delta_t < 0$, não bộ thất vọng và giảm dopamine.
 \end{definition}
 
-Các thuật toán hiện đại tối đa hóa $|\delta_t|$ bằng cách sử dụng cơ chế \textit{phần thưởng biến đổi} (variable ratio rewards), tạo ra chuỗi $R_t$ có phương sai cao. Điều này giữ cho hệ thống thần kinh luôn ở trạng thái thiếu hụt thông tin (information deprivation), ngăn cản sự bão hòa tự nhiên (natural saturation).
+Trong bối cảnh \textit{Tâm thần học tính toán} (Computational Psychiatry) \cite{comp_psychiatry}, việc sử dụng các mô hình Học tăng cường (Reinforcement Learning) để đo lường mức độ nghiện hành vi được xem là một phương pháp đại diện (proxy) hợp lệ trên lâm sàng. Việc theo dõi chuỗi tín hiệu $RPE$ cung cấp một thước đo định lượng chính xác về trạng thái "khao khát" (craving) bị kích hoạt bởi các lịch trình phần thưởng biến đổi (variable ratio schedule). Mạng xã hội hiện đại liên tục thao túng lịch trình này, tối đa hóa $|\delta_t|$ nhằm giữ cho hệ thần kinh của người dùng luôn trong trạng thái thiếu hụt thông tin (information deprivation) thường trực, từ đó ngăn chặn sự bão hòa sinh lý tự nhiên (natural saturation).
 
 \subsubsection{Vòng lặp hành vi và học tăng cường sinh học}
 
@@ -44,6 +44,27 @@ Trong đó $\pi(a|s)$ là chính sách hành vi (policy) được học qua th�
     \item \textbf{Ngẫu nhiên hóa có kiểm soát:} Sử dụng lịch trình phần thưởng biến đổi (variable ratio schedule) - kỹ thuật mạnh nhất trong tâm lý học hành vi.
 \end{enumerate}
 
+\subsubsection{Thuyết Quá trình Kép (Dual-Process Theory) và Temporal Point-Processes}
+
+Hành vi của người dùng mạng xã hội có thể được định lượng và giải thích triệt để thông qua lăng kính của Thuyết Quá trình Kép (Dual-Process Theory) trong tâm lý học nhận thức. Nhằm mô hình hóa toán học khung lý thuyết này, Agarwal và cộng sự (2024) \cite{agarwal2024_system2} đã đề xuất một kiến trúc giải cấu trúc tiện ích (utility) và sự gắn kết (engagement) thông qua các quá trình điểm thời gian (Temporal Point-Processes). Theo đó, tư duy con người được chi phối bởi hai hệ thống độc lập:
+\begin{itemize}
+    \item \textbf{Hệ thống 1 (System-1):} Đại diện cho tư duy vô thức, bốc đồng, tự động phản xạ và bị chi phối mạnh mẽ bởi các kích thích ngắn hạn mang tính dopaminergic (ví dụ: hành vi lướt màn hình vô thức, clickbait).
+    \item \textbf{Hệ thống 2 (System-2):} Đại diện cho tư duy có ý thức, chậm rãi, đòi hỏi nỗ lực phân tích phân bổ và hướng tới các giá trị/tiện ích (Utility) dài hạn mang tính phản tư.
+\end{itemize}
+
+Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại được thiết kế với hàm mục tiêu độc quyền là thao túng và cực đại hóa sự gắn kết của Hệ thống 1 (System-1 Engagement), từ đó tước đoạt hoàn toàn quyền tự chủ của Hệ thống 2. Để biểu diễn toán học sự thao túng này, cường độ tương tác của người dùng theo thời gian thực được mô hình hóa bằng hàm mật độ xác suất hỗn hợp mũ (mixed exponential density) của Temporal Point-Processes:
+
+\begin{equation}
+    \kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)
+\end{equation}
+
+Trong phương trình trên:
+\begin{itemize}
+    \item \textbf{Thành phần 1 ($\alpha^1, \beta^1$):} Tham số hóa động lực học của Hệ thống 1 (System-1). Hệ số phân rã $\beta^1$ rất lớn, biểu thị cho sự bốc đồng suy biến nhanh chóng. Trọng số $\alpha^1$ càng lớn chứng tỏ hành vi phản xạ vô thức càng chiếm ưu thế tuyệt đối trước màn hình.
+    \item \textbf{Thành phần 2 ($\alpha^2, \beta^2$):} Tham số hóa động lực học của Hệ thống 2 (System-2), nơi hệ số phân rã $\beta^2$ nhỏ hơn đáng kể, đồng thời bảo toàn chu kỳ tập trung dài hạn và khả năng tiêu thụ ý nghĩa nhân thức.
+\end{itemize}
+
+Việc kiến trúc Mạch ngắt thuật toán (Algorithmic Circuit Breaker) để sinh ra \textbf{Ma sát chánh niệm} (Mindful Friction) mang một ý đồ toán học rõ ràng. Ma sát giao diện vô hình này được cấy ghép nhằm mục đích làm suy giảm nghiêm trọng trọng số $\alpha^1$ trong phiếm hàm $\kappa(t)$. Bằng cách triệt tiêu động năng nội tại của sự bốc đồng, hệ thống cắt đứt luồng xử lý tự động, từ đó cưỡng chế khối não bộ phải chuyển giao quyền kiểm soát cơ học về lại Hệ thống 2 thống trị.
 \subsection{Lý thuyết điều khiển và hệ thống phản hồi}
 
 \subsubsection{Mô hình hóa hệ thống phản hồi}
@@ -164,3 +185,13 @@ Nguyên nhân:
     \item Giảm chi phí tuân thủ pháp luật và tránh phạt
     \item Tăng giá trị quảng cáo do môi trường an toàn hơn
 \end{enumerate}
+
+\subsection{Căn chỉnh Giá trị Thuật toán (Value Alignment)}
+
+\subsubsection{Sự lệch pha mục tiêu (Misaligned Objectives)}
+
+Sự bất cân xứng quyền lực lớn nhất của thời đại kỹ thuật số bắt nguồn từ bài toán căn chỉnh giá trị (Value Alignment Problem) \cite{value_alignment}. Hàm mục tiêu nội tại của thuật toán mạng xã hội được thiết kế chỉ để cực đại hóa Thời gian tương tác (Time-on-site) thay vì Thời gian ý nghĩa (Time well spent). Vì người dùng cuối (End-users) hoàn toàn không có đặc quyền truy cập hay tinh chỉnh trọng số mạng neural tại phía máy chủ (Server-side weights), bất kỳ nỗ lực căn chỉnh nào dựa vào sự tự giác của nhà cung cấp nền tảng đều mang tính ảo tưởng.
+
+\subsubsection{Middleware phía máy khách (Client-side Middleware)}
+
+Để giải quyết triệt để sự lệch pha này, giải pháp Algorithmic Circuit Breaker được giới thiệu như một lớp phần mềm trung gian phía máy khách (Client-side Middleware). Kiến trúc này ép buộc các thuật toán gợi ý khổng lồ phải căn chỉnh lại theo hệ giá trị của người dùng ngay tại tầng trình diễn tĩnh (Presentation layer). Thay vì cố gắng can thiệp vào máy chủ không thể tiếp cận, hệ thống đóng vai trò như một bộ lọc nhiễu ngoại suy (extrapolative noise filter), định hình lại đầu ra của thuật toán (Algorithm Output) trước khi kích thích tố thần kinh được truyền đến võng mạc người dùng cuối.
