@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, CallbackList
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import DummyVecEnv
 from env.circuit_breaker_env import CircuitBreakerEnv
 
 def make_env(seed=42):
@@ -76,9 +76,9 @@ def train(timesteps: int = 2_000_000, save_path: str = "output/ppo_circuit_break
     print(f"Total timesteps: {timesteps:,}")
     print("=" * 60)
 
-    # Sử dụng SubprocVecEnv chạy 4 môi trường song song để tăng tốc
+    # Sử dụng DummyVecEnv thay vì SubprocVecEnv để ngăn tắc nghẽn bộ nhớ đệm /dev/shm trên Kaggle
     num_envs = 4
-    env = SubprocVecEnv([make_env(seed=42 + i) for i in range(num_envs)])
+    env = DummyVecEnv([make_env(seed=42 + i) for i in range(num_envs)])
 
     model = PPO(
         "MlpPolicy",
