@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, CallbackList
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from env.circuit_breaker_env import CircuitBreakerEnv
 
@@ -96,10 +96,20 @@ def train(timesteps: int = 2_000_000, save_path: str = "output/ppo_circuit_break
         device="cpu",  # Bắt buộc dùng CPU vì MlpPolicy nhỏ dùng GPU sẽ bị nghẽn cổ chai và lỗi CUDA sm_60
     )
 
+    checkpoint_callback = CheckpointCallback(
+        save_freq=max(1, 100_000 // num_envs),
+        save_path='output/checkpoints/',
+        name_prefix='ppo_chkpt'
+    )
+    callbacks = CallbackList([
+        ProgressCallback(print_freq=10_000),
+        checkpoint_callback
+    ])
+
     print("\nTraining PPO agent...")
     model.learn(
         total_timesteps=timesteps,
-        callback=ProgressCallback(print_freq=10_000),
+        callback=callbacks,
     )
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
