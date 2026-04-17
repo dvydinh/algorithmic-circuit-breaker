@@ -33,6 +33,9 @@ def run_static_scenario(pid_config, steps=2000):
     MAX_FRICTION_DELAY = 2.5
 
     for step in range(steps):
+        if step % 500 == 0 and step > 0:
+            print(f"    ... Đang mô phỏng step {step}/{steps} ...", flush=True)
+            
         # Adversarial Toxicity
         base_cycle = 0.5 + 0.4 * np.sin(time_elapsed / 800.0)
         noise_spike = rng.normal(0, 0.15)
@@ -97,6 +100,9 @@ def run_ppo_scenario(model_path, steps=2000):
     history = []
     
     for i in range(steps):
+        if i % 500 == 0 and i > 0:
+            print(f"    ... Đang mô phỏng step {i}/{steps} ...", flush=True)
+            
         action, _ = model.predict(obs, deterministic=True)
         obs, reward, terminated, truncated, info = env.step(action)
         hist = env.history[-1]
