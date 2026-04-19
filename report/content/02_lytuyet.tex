@@ -7,19 +7,18 @@
 
 Để hiểu bản chất kỹ thuật của thiết kế gây nghiện, chúng ta cần xem xét cơ chế dopamine dưới góc độ toán học. Theo nghiên cứu đột phá của Schultz và cộng sự (1997) \cite{schultz1997}, não bộ không phản ứng với phần thưởng tuyệt đối, mà phản ứng với sai lệch dự đoán phần thưởng (RPE).
 
-Tín hiệu dopamine $\delta_t$ tại thời điểm $t$ được mô hình hóa bởi phương trình Temporal Difference (TD):
+Tín hiệu dopamine $\delta(t)$ tại thời điểm $t$ được mô hình hóa bởi sai số dự đoán phần thưởng:
 
 \begin{equation}
-    \delta_t = R_t + \gamma V(S_{t+1}) - V(S_t)
+    \delta(t) = R(t) - V(t)
     \label{eq:rpe}
 \end{equation}
 
 Trong đó:
 \begin{itemize}
-    \item $\delta_t$: Tín hiệu dopamine (RPE)
-    \item $R_t$: Phần thưởng thực tế tại thời điểm $t$
-    \item $V(S_t$: Giá trị kỳ vọng ở trạng thái $S_t$
-    \item $\gamma \in [0,1]$: Hệ số chiết khấu
+    \item $\delta(t)$: Tín hiệu dopamine (RPE)
+    \item $R(t)$: Phần thưởng thực tế tại thời điểm $t$
+    \item $V(t)$: Giá trị kỳ vọng phần thưởng, được cập nhật theo quy tắc Rescorla-Wagner
 \end{itemize}
 
 \begin{definition}[Sai lệch dự đoán phần thưởng]
@@ -58,7 +57,7 @@ Các hệ thống gợi ý cốt lõi của không gian mạng hiện tại đư
     \kappa(t) = \beta^1\alpha^1\exp(-\beta^1t) + \beta^2\alpha^2\exp(-\beta^2t)
 \end{equation}
 
-Trong phương trình trên:
+Cường độ phát sinh tương tác thực tế được tính bằng $\lambda(t) = \mu_0 + \sum_i \kappa(t - t_i)$, trong đó $\mu_0$ đại diện cho tốc độ cuộn nền tảng khi không có kích thích bên ngoài. Trong phương trình trên:
 \begin{itemize}
     \item \textbf{Thành phần 1 ($\alpha^1, \beta^1$):} Tham số hóa động lực học của Hệ thống 1. Hệ số phân rã $\beta^1$ rất lớn, biểu thị cho sự bốc đồng suy biến nhanh chóng. Trọng số $\alpha^1$ càng lớn chứng tỏ hành vi phản xạ vô thức càng chiếm ưu thế tuyệt đối trước màn hình.
     \item \textbf{Thành phần 2 ($\alpha^2, \beta^2$):} Tham số hóa động lực học của Hệ thống 2, nơi hệ số phân rã $\beta^2$ nhỏ hơn đáng kể, đồng thời bảo toàn chu kỳ tập trung dài hạn và khả năng tiêu thụ ý nghĩa nhận thức.

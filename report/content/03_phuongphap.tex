@@ -47,7 +47,7 @@ Tín hiệu kích hoạt mạch ngắt thuật toán được định lượng b
 
 Trong đó, các biến tham số được định nghĩa như sau:
 \begin{itemize}
-    \item $A(t)$: Biến rủi ro gây nghiện, biểu diễn dưới dạng vận tốc cuộn cơ học, chịu trọng số cao nhất $w_1 = 0.6$.
+    \item $A(t)$: Biến trạng thái thần kinh (Dopamine Accumulator), định lượng mức độ hưng phấn tích lũy thông qua tích phân rò rỉ sai số dự đoán phần thưởng (RPE), chịu trọng số cao nhất $w_1 = 0.6$.
     \item $\Gamma(t)$: Điểm số độc hại quét trực tiếp, đánh giá mức phơi nhiễm theo thời gian thực với trọng số $w_2 = 0.3$.
     \item $S(t)$: Thời lượng phiên hoạt động, trích xuất sự hao hụt năng lượng sinh lý hệ thống, vận hành với trọng số $w_3 = 0.1$.
 \end{itemize}
@@ -58,11 +58,11 @@ Dưới góc độ kỹ thuật hệ thống và thiết kế tương tác ngư�
 
 Về mặt tâm lý học hành vi, các biện pháp can thiệp thô bạo này lập tức kích hoạt hiệu ứng tâm lý phản kháng. Khi cảm quan về quyền tự chủ bị đe dọa trực diện, xung đột nhận thức buộc não bộ phản ứng tiêu cực đối với chính hệ thống bảo vệ, thúc đẩy người dùng gỡ cài đặt phần mềm. Khóa cứng màn hình là biểu hiện của một triết lý thiết kế lười biếng, thiếu khả năng tinh chỉnh độ giãn nở của lực cản.
 
-Thay vào đó, thuật toán xuất ra cấu trúc ma sát chánh niệm lồng vào giao diện:
+Thay vào đó, thuật toán xuất ra cấu trúc ma sát chánh niệm thông qua hai cơ chế toán học:
 
 \begin{itemize}
-    \item \textbf{Cấp độ 1 - Triệt tiêu thị giác:} Khi $\text{Risk\_Index} > 0.6$, hệ thống tiêm mã CSS để giảm độ bão hòa màu của toàn bộ bề mặt hiển thị theo tỷ lệ tuyến tính. Hành động này lặng lẽ thu hồi hiệu ứng tưởng thưởng thị giác mà các nền tảng cố tình lập trình thông qua bảng màu rực rỡ, qua đó giảm kích thích.
-    \item \textbf{Cấp độ 2 - Điều biến luồng dữ liệu:} Khi $\text{Risk\_Index} > 0.8$, thuật toán chèn vi kẽ hở thời gian từ 100ms đến 300ms vào bộ tính toán sự kiện cuộn. Sự chậm trễ này phá vỡ cảm giác liền mạch mượt mà vốn duy trì thói quen vô thức, buộc vùng võng mạc cung cấp nhiên liệu nhận thức để chuyển sang hệ thống phản tư.
+    \item \textbf{Cấp độ 1 - Triệt tiêu tâm lý:} Bộ PID xuất ra hệ số đè nén $d(t) \in [0, 1]$ (decay\_factor), trực tiếp nhân với trọng số kích hoạt $\alpha^1$ của Hệ thống 1 trong phương trình Hawkes: $\alpha^1_{eff} = \alpha^1_{base} \cdot d(t)$. Khi $d(t) \to 0$, động năng bốc đồng bị triệt tiêu hoàn toàn, cắt đứt chu kỳ kích thích vô thức mà không cần chặn trực tiếp giao diện.
+    \item \textbf{Cấp độ 2 - Lực cản vật lý:} Bộ PID sinh ra độ trễ ma sát tuyến tính (Friction Delay) $f(t) = \min(u(t) \times 2.5, 2.5)$ giây trên mỗi tương tác, cộng dồn vào thời gian lưu trú của mỗi bài viết. Vận tốc cuộn sụp đổ theo $v(t) = \frac{n \cdot p}{D_{base} + n \cdot f(t)}$, ép hệ thống thần kinh có thời gian tự hạ nhiệt.
 \end{itemize}
 
 Lực ma sát này hoàn toàn vô hình. Nó tuân thủ quyền kiểm soát của người dùng nhưng ép bộ não tiêu tốn nhiều năng lượng giải mã hơn nếu tiếp tục muốn nhận phần thưởng từ việc lướt bảng tin.
