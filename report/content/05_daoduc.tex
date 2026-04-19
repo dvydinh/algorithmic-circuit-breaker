@@ -31,3 +31,25 @@ Biến trạng thái phân tích được tối giản hóa thuần túy thao t�
 Các nền tảng mạng xã hội đang liên tục tối ưu hóa thuật toán gợi ý mà cố tình lờ đi tính ngoại biên tâm lý - những hệ lụy thao túng và nhận thức đổ vỡ lên người dùng. Đồ án này khẳng định một nguyên tắc cốt lõi: kỹ sư phần mềm không chỉ chịu trách nhiệm về chức năng của dòng code, mà phải chịu trách nhiệm trực tiếp cho vòng lặp tương tác thiết kế nên hành vi mà hệ thống đó tạo ra.
 
 Việc chủ động thiết kế một mạch ngắt thuật toán phân cấp dựa trên học tăng cường sâu không đơn thuần là một bản vá kỹ thuật, mà là một tuyên ngôn đạo đức: chúng ta quy kết việc sử dụng máy học thuần túy để thao túng tâm lý vô thức là phi đạo đức, đồng thời khẳng định rằng kỹ sư phần mềm có quyền năng dùng chính trí tuệ nhân tạo để khắc chế trí tuệ nhân tạo. Trách nhiệm bảo vệ quyền tự chủ của con người trên không gian mạng hoàn toàn có thể được tự động hóa bằng thuật toán, thay vì ngồi trông chờ vào những văn bản luật pháp trống rỗng \cite{eu_dsa, vn_cybersec}.
+
+\subsection{Giới hạn đạo đức và rủi ro thiên kiến}
+
+Một hệ thống kỹ thuật trung thực phải thừa nhận những đánh đổi nội tại của chính nó. Mục này phân tích ba rủi ro đạo đức cấu trúc mà kiến trúc mạch ngắt thuật toán chưa giải quyết triệt để.
+
+\subsubsection{Thiên kiến thuật toán từ dữ liệu huấn luyện}
+
+Từ điển tĩnh trích xuất từ tập dữ liệu Jigsaw Toxic Comment Classification mang theo thiên kiến hệ thống vốn có của tập dữ liệu gốc. Các nghiên cứu kiểm toán đã chỉ ra rằng bộ dữ liệu này có tỷ lệ dương tính giả (False Positive) bất cân xứng đối với ngôn ngữ lóng của các nhóm thiểu số, phương ngữ địa phương và cách diễn đạt đặc thù của giới trẻ. Hệ quả là biến $\Gamma(t)$ có thể bị đẩy cao một cách sai lệch khi người dùng thuộc các nhóm yếu thế sử dụng từ ngữ hàng ngày hoàn toàn vô hại, biến công cụ bảo vệ sức khỏe tâm thần thành một cơ chế kiểm duyệt ngầm.
+
+Để giảm thiểu rủi ro này, hệ thống cần bổ sung cơ chế cho phép người dùng tự định nghĩa và hiệu chỉnh từ điển độc hại cá nhân, loại bỏ các thuật ngữ bị phân loại sai khỏi bộ lọc. Ngoài ra, trong môi trường triển khai thực tế, từ điển tĩnh cần được thay thế bằng mô hình ngữ cảnh có khả năng phân biệt giữa ngôn từ gây hại thực sự và cách nói thông tục.
+
+\subsubsection{Quyền tự quyết và cơ chế ghi đè khẩn cấp}
+
+Kiến trúc PPO-PID hiện tại áp dụng ma sát tự động dựa hoàn toàn trên tín hiệu hành vi, không phân biệt được ngữ cảnh sử dụng. Trong tình huống khẩn cấp — chẳng hạn người dùng đang cuộn nhanh để tìm cảnh báo thiên tai, thông tin tai nạn của người thân, hoặc tin nhắn y tế — việc hệ thống tự động chèn trễ ma sát 2.5 giây trên mỗi tương tác là hành vi phi đạo đức nghiêm trọng.
+
+Nguyên lý đạo đức kỹ thuật \cite{ieee_ethics} quy định rằng mọi hệ thống tự động đều phải cung cấp cơ chế ghi đè khẩn cấp (Emergency Override) để con người giành lại quyền kiểm soát tuyệt đối. Kiến trúc cần bổ sung một nút tạm ngưng mạch ngắt (Bypass), cho phép người dùng xác nhận rằng họ đang trong ngữ cảnh cần quét dữ liệu tốc độ cao và tự nguyện chịu trách nhiệm cho quyết định đó. Thiếu cơ chế này, hệ thống vi phạm chính nguyên tắc tôn trọng quyền tự chủ mà nó tuyên bố bảo vệ.
+
+\subsubsection{Ranh giới giữa bảo vệ và phụ quyền công nghệ}
+
+Triết lý thiết kế ``tôi biết điều gì tốt nhất cho não bộ của bạn'' tiềm ẩn rủi ro trở thành chủ nghĩa phụ quyền công nghệ (Technological Paternalism). Nếu một người dùng chủ động chọn lướt mạng thụ động 2 tiếng đồng hồ sau một ngày làm việc cực nhọc như một hình thức xả stress có ý thức, việc hệ thống liên tục áp lực ma sát là hành vi xâm phạm tự do cá nhân — bất kể mức $A(t)$ có vượt ngưỡng hay không.
+
+Để duy trì tính chính danh đạo đức, Algorithmic Circuit Breaker phải được định vị là một công cụ tự nguyện tham gia (Opt-in), không phải hệ thống ép buộc (Opt-out). Người dùng phải chủ động cài đặt và kích hoạt mạch ngắt, tương tự hành vi tự nguyện thắt dây an toàn trên xe. Kỹ sư không có quyền định nghĩa thay cho người dùng thế nào là ``thời gian ý nghĩa'' — hệ thống chỉ cung cấp dữ liệu phản hồi để cá nhân tự ra quyết định có chủ đích.
