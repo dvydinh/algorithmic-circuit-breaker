@@ -13,7 +13,7 @@ Script mô phỏng tích hợp \texttt{run\_simulation.py} đã được nâng c
 
 \subsection{Trực quan hóa: Tác động của hệ số phân rã lên $\alpha^1$ và vận tốc cuộn}
 
-Sau khi nạp bộ tham số hành vi 10,000 bước vào module kết xuất \texttt{visualize\_results.py}, đồ thị Hình \ref{fig:sim_result} chứng minh thành công năng lực triệt tỏa biến cố của mạch ngắt thuật toán.
+Sau khi nạp bộ tham số hành vi 2,000 bước vào module kết xuất \texttt{visualize\_results.py}, đồ thị Hình \ref{fig:sim_result} chứng minh thành công năng lực triệt tỏa biến cố của mạch ngắt thuật toán.
 
 \begin{figure}[htbp]
     \centering
@@ -36,10 +36,10 @@ Kết quả động học này cho thấy cấu trúc phương trình vi phân k
 
 Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích lũy trung bình liên tục được tối ưu dốc lên theo biên độ đường cong tích cực. Xu hướng tăng dần đều này phản ánh đúng thực tế Agent học được chuỗi giá trị tinh chỉnh tham số PID ($K_p$, $K_i$, $K_d$, $\theta_{friction}$) theo quỹ đạo an toàn mà không cần sử dụng án phạt bạo lực.
 
-Đánh giá trên tập kiểm tra độc lập 2,000 bước cho thấy kiến trúc kết hợp duy trì khả năng kiểm soát tuyệt đối biến rủi ro tổng hợp. Cụ thể, mức độ khát khao (Dopamine Level) trung bình được giữ ở mức $0.7068$ và Chỉ số Rủi ro (Risk Index) đạt $0.7204$, hoàn toàn chặn đứng việc chạm ngưỡng nghiện ngập cực đoan ($0.8$). Đặc biệt, hệ thống đã tiến hành kích hoạt $1,954$ điểm nghẽn chánh niệm cấu thành hệ số suy giảm (Decay Factor) trung bình rất ổn định ở mức $0.6265$, giới hạn vận tốc cuộn trung bình ở $511.75$ đơn vị. Những con số máy học thực nghiệm này khẳng định rằng vòng lặp PPO chủ động bóp méo đường cong bốc đồng $\alpha^1$ theo phương pháp phòng ngừa từ xa trước khi xảy ra các đứt gãy sinh lý.
+Đánh giá trên tập kiểm tra độc lập 2,000 bước cho thấy kiến trúc kết hợp PPO-PID giảm đáng kể tỷ lệ thời gian nghiện so với kịch bản không can thiệp. Cụ thể, mức độ khát khao (Dopamine Level) trung bình được kéo xuống $0.7230$ (so với $0.9809$ của Baseline) và Chỉ số Rủi ro (Risk Index) trung bình đạt $0.7254$. Tỷ lệ thời gian dopamine vượt ngưỡng nghiện $0.8$ giảm từ $99.7\%$ (Baseline) xuống còn $50.2\%$, đồng thời tạo ra $27.8\%$ thời gian nằm dưới ngưỡng an toàn $0.5$ — một trạng thái gần như không tồn tại ở kịch bản Baseline ($0.1\%$). Hệ thống kích hoạt $1{,}922$ điểm nghẽn chánh niệm, duy trì hệ số suy giảm (Decay Factor) trung bình ở mức $0.6247$ và giới hạn vận tốc cuộn trung bình ở $473.62$ đơn vị. Những kết quả thực nghiệm này khẳng định rằng vòng lặp PPO chủ động bóp méo đường cong bốc đồng $\alpha^1$ theo phương pháp phòng ngừa từ xa, giảm gần một nửa thời gian phơi nhiễm nghiện so với kịch bản không bảo vệ.
 
 \subsubsection{Phân tích đặc trưng thành phần}
-Để chứng minh tính tất yếu của kiến trúc kết hợp, một đánh giá thành phần được thực thi trên môi trường mô phỏng 1,000 bước với 3 kịch bản kiểm chứng độc lập:
+Để chứng minh tính tất yếu của kiến trúc kết hợp, một đánh giá thành phần được thực thi trên môi trường mô phỏng 2,000 bước với 3 kịch bản kiểm chứng độc lập:
 \begin{enumerate}
     \item \textbf{Kịch bản cơ sở (Không can thiệp):} Bộ điều khiển bị vô hiệu hóa. Hệ thống cho thấy mức dopamine liên tục duy trì ở mức tối đa do ảnh hưởng trực diện từ mức độ độc hại của nền tảng mà không gặp bất kỳ kháng cự ma sát nào.
     \item \textbf{Kịch bản PID tĩnh (Truyền thống):} Khối điều khiển hoạt động đơn biến với hệ số hằng số. Mặc dù kéo giãn được sự hưng phấn xuống mức chấp nhận, giao diện bộc lộ nhược điểm can thiệp giật cục, liên tục đóng mở các ngưỡng dừng cực gắt một cách thiếu tinh tế dễ gây ức chế hệ thần kinh.
