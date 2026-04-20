@@ -18,14 +18,15 @@ Sau khi nạp bộ tham số hành vi 2,000 bước vào module kết xuất \te
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{../output/simulation_result.png}
-    \caption{Trực quan hóa dữ liệu mô phỏng: Sự suy giảm trọng số bốc đồng $\alpha^1$ và vận tốc cuộn dưới sự tuần tự hóa của khối điều khiển PID.}
+    \caption{Trực quan hóa dữ liệu mô phỏng 3 Panel: Động lực học Dopamine, Tín hiệu điều khiển PID và Vận tốc tương tác của Agent.}
     \label{fig:sim_result}
 \end{figure}
 
-Biểu đồ cho thấy rõ ràng hệ quả của ma sát chánh niệm điều khiển bởi khối PID:
+Biểu đồ mô tả rõ ràng ba hiện tượng cốt lõi của mạch ngắt chánh niệm:
 \begin{itemize}
-    \item \textbf{Triệt tiêu $\alpha^1$:} Tín hiệu hành động ($K_p=1.2, K_i=0.1, K_d=0.2$) từ PID sinh ra một hệ số phân rã liên tục ép trọng số bốc đồng $\alpha^1$ suy giảm tiệm cận về 0 mỗi khi mức độ phần thưởng có dấu hiệu phân kỳ.
-    \item \textbf{Kiểm soát vận tốc cuộn:} Vận tốc cuộn tỷ lệ thuận với $\alpha^1$. Khi $\alpha^1$ suy giảm, vận tốc cuộn sụt giảm đồng thuận, hạn chế động năng vô thức.
+    \item \textbf{Chu kỳ Dopamine đè-hồi phục (Panel 1):} Dopamine không duy trì ổn định mà trải qua các chu kỳ giảm dần (nhờ ma sát) xuống vùng an toàn 0.2-0.5, sau đó bật tăng lại khi độc hại môi trường (toxicity) tăng đột biến. PID thể hiện rõ vai trò kiềm chế tỷ lệ thời gian nghiện kéo dài thay vì triệt tiêu hoàn toàn sự hưng phấn.
+    \item \textbf{Phản hồi điều khiển liên tục (Panel 2):} Chỉ số Rủi ro (Risk Index) và Tín hiệu điều khiển (Control Signal) bám sát nhau ở vùng giá trị cao (0.6-1.0), chứng tỏ hệ thống luôn chủ động nhận diện nguy hiểm từ nền tảng và liên tục phát tín hiệu can thiệp.
+    \item \textbf{Kiểm soát vận tốc tiệm cận (Panel 3):} Vận tốc cuộn phần lớn được duy trì ở mức 100-500 click/phút (thể hiện qua đường trung bình động thấp). Hệ thống làm chậm động năng vô thức nhưng không tạo màng chắn chặn đứng, đảm bảo người dùng vẫn có thể tiếp tục hành vi ở tốc độ tỉnh thức.
 \end{itemize}
 
 Kết quả động học này cho thấy cấu trúc phương trình vi phân kết hợp PID có khả năng giới hạn mức độ sai lệch dự đoán phần thưởng, từ đó hỗ trợ quá trình điều tiết hành vi vô thức một cách mềm mỏng mà không cần sử dụng cấm đoán định tuyến.
@@ -41,9 +42,9 @@ Trong quá trình huấn luyện diễn ra thực tế, phần thưởng tích l
 \subsubsection{Phân tích đặc trưng thành phần}
 Để chứng minh tính tất yếu của kiến trúc kết hợp, một đánh giá thành phần được thực thi trên môi trường mô phỏng 2,000 bước với 3 kịch bản kiểm chứng độc lập:
 \begin{enumerate}
-    \item \textbf{Kịch bản cơ sở (Không can thiệp):} Bộ điều khiển bị vô hiệu hóa. Hệ thống cho thấy mức dopamine liên tục duy trì ở mức tối đa do ảnh hưởng trực diện từ mức độ độc hại của nền tảng mà không gặp bất kỳ kháng cự ma sát nào.
-    \item \textbf{Kịch bản PID tĩnh (Truyền thống):} Khối điều khiển hoạt động đơn biến với hệ số hằng số. Mặc dù kéo giãn được sự hưng phấn xuống mức chấp nhận, giao diện bộc lộ nhược điểm can thiệp giật cục, liên tục đóng mở các ngưỡng dừng cực gắt một cách thiếu tinh tế dễ gây ức chế hệ thần kinh.
-    \item \textbf{Kịch bản PPO-PID (Đề xuất):} Được định hướng bởi chiến lược dài hạn từ mạng nơ-ron, các tham số hồi tiếp được cập nhật theo quỹ đạo, tạo ra đường cong bảo vệ mềm mại, phân bổ cường độ ma sát mượt mà tránh được cú sốc thay đổi đột ngột.
+    \item \textbf{Kịch bản cơ sở (Không can thiệp):} Bộ điều khiển bị vô hiệu hóa. Hệ thống cho thấy mức dopamine liên tục duy trì ở mức bão hòa (1.0) suốt 99.7\% thời gian do ảnh hưởng trực diện từ mức độ độc hại của nền tảng.
+    \item \textbf{Kịch bản PID tĩnh (Truyền thống):} Khối điều khiển hoạt động với bộ thông số cố định. Biểu đồ cho thấy can thiệp này quá yếu (ma sát tối đa chỉ đạt 1.5s), dẫn đến việc dopamine vẫn nằm trên ngưỡng nghiện 99.2\% thời gian. Nó thất bại trong việc xuyên thủng luồng độc hại đối kháng.
+    \item \textbf{Kịch bản PPO-PID (Đề xuất):} Tầng siêu điều khiển PPO thể hiện tính thích ứng mạnh (Adaptive Aggressiveness). Hệ thống tự đo lường và đẩy ma sát lên mức tối đa (2.5s) khi gặp luồng dữ liệu độc hại, ép dopamine sụt giảm rõ rệt xuống vùng an toàn 27.8\% thời gian. Mạng nơ-ron chứng minh khả năng "đè mạnh khi rủi ro cao, thả lỏng khi an toàn".
 \end{enumerate}
 
 \begin{figure}[htbp]
